@@ -37,22 +37,34 @@
 
 ## Controls/Button Mapping
 - Controller0
-    - Button A: Runs launcher flywheel at slow speed (40% power)
-    - Button B: Runs launcher flywheel at high speed (70% power)
-    - Button Y: Ejects balls
-        - Runs Conveyer Forward
-        - Runs Ejector Wheel Backwards
+    - Button A: Decrease launcher RPM setpoint
+    - Button B: Closes launcher hood
+    - Button X: Increase launcher RPM setpoint
+    - Button Y: Opens lanucher hood
     - Button RB: Lifts Ball in Tower
         - Runs Conveyer Forward
         - Runs Ejector Wheel Forward
         - Runs Tower Wheel and Belts Forward(up)
-    - Button LB: Lowers Ball in Tower (*maybe be removed in the future)
-        - Runs Conveyer Backward
-        - Runs Ejector Wheel Backward
-        - Runs Tower Wheel and Belts Backward(down)
+    - Button LB: Launches Ball
+        - Runs Tower Belts Upward if there is a ball in the beam break
     - D-Pad:
-        - Right: Toggle PID Closed Loop Flywheel speed control On/Off (default RPM 3500)
-        - Up: Increases Closed Loop RPM target by 10 rpm
-        - Down: Decreases Closed Loop RPM target y 10 rpm
-    - Axis 0 (Left stick x axis): Drivetrain Turn Left/Right
-    - Axis 1 (Left stick y axis): Drivetrain Forward/Reverse
+        - Right: Fender low shot
+        - Down: Fender high shot
+        - Left: Mid tarmac shot
+        - Up: Long tarmac shot
+    - Left stick Y axis: Drivetrain Forward/Reverse
+    - Right stick X axis: Drivetrain Turn Left/Right
+
+- Controller1
+    - Button A: Intake Rollers Backward
+         - When held  
+    - Button B: Closes launcher hood
+    - Button X: Intake Rollers Forward
+         - When held
+    - Button Y: Opens lanucher hood
+    - Button RB: Climber Pivot
+        - When held
+    - Button LB: Intake Down
+        - when held
+    - Left stick Y axis: Climb Arms Up/Down
+    - Right stick X axis: Climb Arms Adjust
