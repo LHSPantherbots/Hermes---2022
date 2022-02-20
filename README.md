@@ -12,8 +12,8 @@
 |Intake     |CANSparkMax        |Conveyer           |8      |               |
 |Launcher   |CANSparkMax        |launcherLeader     | 9      |                   |
 |Launcher   |CANSparkMax        |launcherFollower   | 10     |                   |
-|Climb Hook |CANSparkMax        |climb              | 13      | May need to change ID |
-|Climb Hook |CANSparkMax        |hook               | 14      | Will need to change ID, conflicts with PDP |
+|Climb Hook |CANSparkMax        |climb left         | 13      |   |
+|Climb Hook |CANSparkMax        |climb right        | 14      |  |
 |Ball Ejector |CANSparkMax      |BallEject          | 11     |                   |
 |           | PDP               |                   | 2      |                   |
 |BallTower |CANSparkMax         |towerRoller        | 7     |                  |
@@ -24,14 +24,16 @@
 ## Solenoid Channel Table
 | Subsystem | Single/Double     | Channel(s)        | Device            | Notes         |
 |-----------|-------------------|-------------------|-------------------|---------------|
-| Intake    | Double            | 1,2                  | intakeSolenoid    |  |
-| Launcher  | Single            | 3                  |                   | Not defined yet, but needed for adjustable hood |
-| Climb Hook    | Double        | 4,5                  |                   | |
+| Intake    | Double            | 3,4                  | intakeSolenoid    |  |
+| Launcher  | Single            | 0                |                   |  |
+| Climb Pivot    | Double        | 1,2                 |                   | |
 
 ## DIO Channel Table
 | Subsystem | Device            | Channel | Notes            | 
 |-----------|-------------------|---------|------------------|
-|BallTower  | beamBreak         | 1       |                  |
+|BallTower  | beamBreak         | 0       |                  |
+|BallEjector| redInput          | 8       |                  |
+|BallEjector| blueInput         | 9       |                  |
 
 ## Controls/Button Mapping
 - Controller0
