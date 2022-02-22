@@ -211,21 +211,36 @@ public class RobotContainer {
     
 
     new JoystickButton(Gamepad1, GamePadButtons.LB)
-        .whenHeld(new RunCommand(intake::intakeDown, intake))
-        .whenReleased(new RunCommand(intake::intakeUp, intake));
+      .whenHeld(new RunCommand(intake::intakeDown, intake))
+      .whenReleased(new RunCommand(intake::intakeUp, intake));
     
     new JoystickButton(Gamepad1, GamePadButtons.X)
-        .whenHeld(new RunCommand(intake::intakeRollersForward, intake))
-        .whenReleased(new RunCommand (intake::intakeRollersOff, intake));
+      .whenHeld(new RunCommand(intake::intakeRollersForward, intake))
+      .whenReleased(new RunCommand (intake::intakeRollersOff, intake));
 
     new JoystickButton(Gamepad1, GamePadButtons.A)
-        .whenHeld(new RunCommand(intake::intakeRollersReverse, intake))
-        .whenReleased(new RunCommand (intake::intakeRollersOff, intake));
+      .whenHeld(new RunCommand(intake::intakeRollersReverse, intake))
+      .whenReleased(new RunCommand (intake::intakeRollersOff, intake));
     
-     new JoystickButton(Gamepad1, GamePadButtons.RB)
-     .whenHeld(new RunCommand(climbPivot::armBack, climbPivot));
-     
+    new JoystickButton(Gamepad1, GamePadButtons.RB)
+      .whenHeld(new RunCommand(climbPivot::armBack, climbPivot));
+
+    // new POVButton(Gamepad1, GamePadButtons.Up)
+    //   .whenPressed(new InstantCommand(climb::extendArms, climb));
     
+    // new POVButton(Gamepad1, GamePadButtons.Down)
+    //   .whenPressed(new InstantCommand(climb::retractArms, climb));
+
+    // .whenPressed(new InstantCommand(launcher::decreaseRPM, launcher))
+    // .whenReleased(new RunCommand(launcher::startRPM, launcher));
+    
+    new JoystickButton(Gamepad1, GamePadButtons.Y)
+      .whenPressed(new InstantCommand(climb::extendArms, climb))
+      .whenReleased(new RunCommand(climb::startArmSmartMotion, climb));
+    
+    new JoystickButton(Gamepad1, GamePadButtons.B)
+      .whenPressed(new InstantCommand(climb::retractArms, climb))
+      .whenReleased(new RunCommand(climb::startArmSmartMotion, climb));
     
     }
   
