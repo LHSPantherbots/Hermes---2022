@@ -10,6 +10,7 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.CANSparkMax.ControlType;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.RobotContainer;
 import frc.robot.Constants.CAN_ID;
 import frc.robot.Constants.SparkMaxPidConstants;
 
@@ -143,10 +144,12 @@ public class Climb extends SubsystemBase  {
     }
 
     public void manualClimb(double lift, double trim){
-        lift = deadBand(lift);
-        trim = deadBand(trim);
-        l_arm.set(lift + trim);
-        r_arm.set(lift - trim);
+        if (!RobotContainer.climbMode){
+            lift = deadBand(lift);
+            trim = deadBand(trim);
+            l_arm.set(lift + trim);
+            r_arm.set(lift - trim);
+        }
     }
 
 
@@ -194,6 +197,10 @@ public class Climb extends SubsystemBase  {
         
         pid_setPoint-=16;
         
+    }
+
+    public void setArmPidSetPoint(double setPoint){
+        pid_setPoint=setPoint;
     }
 
 

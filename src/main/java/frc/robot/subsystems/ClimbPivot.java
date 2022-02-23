@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.PH_Channel;
+import frc.robot.RobotContainer;
 import frc.robot.Constants.CAN_ID;
 
 
@@ -37,7 +38,11 @@ public class ClimbPivot extends SubsystemBase  {
         
     }
 
-
+    public void defaultArmState() {
+        if (!RobotContainer.climbMode){
+            armSolenoid.set(DoubleSolenoid.Value.kForward);
+        }
+    }
 
     public void armForward() {
         armSolenoid.set(DoubleSolenoid.Value.kForward);

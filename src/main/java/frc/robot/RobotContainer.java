@@ -33,6 +33,8 @@ import com.ctre.phoenix.motorcontrol.can.TalonSRX;
  * subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
+  public static boolean climbMode = false;
+
   public final Trajectories trajectories = new Trajectories();
   // Talon and Pigeon needed for subsystems defined here...
   public final static TalonSRX  talon1 = new TalonSRX(4);
@@ -43,8 +45,8 @@ public class RobotContainer {
   public final static BallTower ballTower = new BallTower();
   public final BallEjector ballEjector = new BallEjector(ballTower);
   public final Conveyor conveyor = new Conveyor();
-  public final Climb climb = new Climb();
-  public final ClimbPivot climbPivot = new ClimbPivot();
+  public final static Climb climb = new Climb();
+  public final static ClimbPivot climbPivot = new ClimbPivot();
 
 
   public final static Launcher launcher = new Launcher();  
@@ -126,7 +128,7 @@ public class RobotContainer {
 
 
      climbPivot.setDefaultCommand(
-       new RunCommand(climbPivot::armForward, climbPivot)
+       new RunCommand(climbPivot::defaultArmState, climbPivot)
      );
     // ballTower.setDefaultCommand(
     //   new RunCommand(() -> ballTower.feedBallToLauncher(Gamepad0.getRawAxis(GamePadButtons.rightTrigger)), ballTower)
@@ -277,5 +279,9 @@ public class RobotContainer {
 
     // return ramseteCommand.andThen(() -> driveTrain.tankDriveVolts(0, 0));
     return twoBallAuto;
+  }
+
+  static public void setClimbMode(){
+    climbMode=true;
   }
 }

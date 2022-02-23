@@ -2,6 +2,7 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.commands.*;
+import frc.robot.RobotContainer;
 
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -73,7 +74,7 @@ public class BallEjector extends SubsystemBase {
 
     public void autoEject(){
         //ball detected
-        if(isBallDetected())
+        if(isBallDetected() || !RobotContainer.climbMode)
         {
             //correct color
             if(doesAllianceMatch())
