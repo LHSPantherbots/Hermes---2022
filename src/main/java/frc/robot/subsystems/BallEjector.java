@@ -37,7 +37,7 @@ public class BallEjector extends SubsystemBase {
 
     // private final static DriverStation ds = DriverStation;
     // private final static Alliance alliance = DriverStation.getAlliance();
-    private final static String alliance = "Blue";
+    private final static String alliance = "Red";
     private double decayValue = 0.0;
     private double timeToDecay = 0.5; //seconds  assumes 10 ms loop timing may not be super accurate
     BallTower ejectorBallTower;
@@ -90,24 +90,28 @@ public class BallEjector extends SubsystemBase {
         {
         
             //correct color
-            if(doesAllianceMatch())
-            {
+            if(doesAllianceMatch() && !ejectorBallTower.isBallDetected())
+            {   
+                ballUp();
                 //no ball in tower
-                if(!ejectorBallTower.isBallDetected())
-                {
-                    ballUp();
-                }
-                //ball in tower already hold ball
-                else
-                {
-                    stop();
-                }
+                // if(!ejectorBallTower.isBallDetected())
+                // {
+                //     ballUp();
+                // }
+                // //ball in tower already hold ball
+                // else
+                // {
+                //     stop();
+                // }
 
             }
             //color does not match
-            else 
+            else if (!doesAllianceMatch())
             {
                 ballOut();
+            }
+            else if (doesAllianceMatch() && ejectorBallTower.isBallDetected()){
+                stop();
             }
         }
         else
@@ -130,6 +134,18 @@ public class BallEjector extends SubsystemBase {
     public boolean isBallDetected()
     {
         return (isBlue() || isRed());
+    }
+
+    public boolean hasTwoBalls() {
+        if (isBallDetected()) {
+            if (doesAllianceMatch() && ejectorBallTower.isBallDetected()) {
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            return false;
+        }
     }
 
     public boolean doesAllianceMatch()
