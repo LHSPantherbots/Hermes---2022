@@ -31,11 +31,14 @@ public class BallEjector extends SubsystemBase {
 
     CANSparkMax BallEject = new CANSparkMax(11, MotorType.kBrushless);
 
+
     RelativeEncoder ballejectEncoder;
 
     // private final static DriverStation ds = DriverStation;
     // private final static Alliance alliance = DriverStation.getAlliance();
     private final static String alliance = "Blue";
+    private double decayValue = 0.0;
+    private double timeToDecay = 0.5; //seconds  assumes 10 ms loop timing may not be super accurate
     BallTower ejectorBallTower;
     
 
@@ -72,9 +75,17 @@ public class BallEjector extends SubsystemBase {
     }
 
     public void autoEject(){
+        decayValue = decayValue - 0.01;
+
+        if(isBallDetected()){
+            decayValue = timeToDecay;
+        }
+
         //ball detected
-        if(isBallDetected())
+        if(isBallDetected() || (decayValue > 0.0 ) )
+        
         {
+        
             //correct color
             if(doesAllianceMatch())
             {
@@ -187,6 +198,7 @@ public class BallEjector extends SubsystemBase {
         SmartDashboard.putBoolean("Ball Detected", isBallDetected());
         SmartDashboard.putBoolean("Red", isRed());
         SmartDashboard.putBoolean("Blue", isBlue());
+        SmartDashboard.putNumber("Decay Value", decayValue);
         //SmartDashboard.putBoolean("Ball Ejector ", value);
 
 
