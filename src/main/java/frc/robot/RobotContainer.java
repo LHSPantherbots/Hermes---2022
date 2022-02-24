@@ -120,7 +120,7 @@ public class RobotContainer {
       new RunCommand(conveyor::conveyerForward, conveyor)
     );
 
-     climb.setDefaultCommand(
+    climb.setDefaultCommand(
       new RunCommand(() -> climb.manualClimb(
               Gamepad1.getRawAxis(GamePadButtons.leftY)*-0.95, 
              Gamepad1.getRawAxis(GamePadButtons.rightX)*0.65), climb)

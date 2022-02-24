@@ -56,16 +56,19 @@ public class Climb extends SubsystemBase  {
         r_pidController = r_arm.getPIDController();
 
         // PID coefficients these will need to be tuned
-        kP = SparkMaxPidConstants.kPP; 
+        // kP = SparkMaxPidConstants.kPP;
+        kP = 0.000051; 
         kI =  SparkMaxPidConstants.kI;
         kD = SparkMaxPidConstants.kD;
         kIz = SparkMaxPidConstants.kIz;
         kFF = SparkMaxPidConstants.kFF;
         kMaxOutput = SparkMaxPidConstants.kMaxOutput;
-        kMinOutput = SparkMaxPidConstants.kMinOutput;
+        // kMinOutput = SparkMaxPidConstants.kMinOutput;
+        kMinOutput = SparkMaxPidConstants.kMaxOutput*-1;
         maxRPM = SparkMaxPidConstants.maxRPM;
         maxVel = SparkMaxPidConstants.maxVel;
-        minVel = SparkMaxPidConstants.minVel;
+        // minVel = SparkMaxPidConstants.minVel;
+        minVel = SparkMaxPidConstants.maxVel*-1;
         maxAcc = SparkMaxPidConstants.maxAcc;
         allowedErr = SparkMaxPidConstants.allowedErr;
         // kP = 5e-5; 
@@ -81,23 +84,23 @@ public class Climb extends SubsystemBase  {
         // maxVel = 2000; // rpm
         // maxAcc = 1500;
         
-        l_pidController.setP(kP);
-        l_pidController.setI(kI);
-        l_pidController.setD(kD);
-        l_pidController.setIZone(kIz);
-        l_pidController.setFF(kFF);
-        l_pidController.setOutputRange(kMinOutput, kMaxOutput);
+        l_pidController.setP(kP, smartMotionProfile);
+        l_pidController.setI(kI, smartMotionProfile);
+        l_pidController.setD(kD, smartMotionProfile);
+        l_pidController.setIZone(kIz, smartMotionProfile);
+        l_pidController.setFF(kFF, smartMotionProfile);
+        l_pidController.setOutputRange(kMinOutput, kMaxOutput, smartMotionProfile);
 
-        r_pidController.setP(kP);
-        r_pidController.setI(kI);
-        r_pidController.setD(kD);
-        r_pidController.setIZone(kIz);
-        r_pidController.setFF(kFF);
-        r_pidController.setOutputRange(kMinOutput, kMaxOutput);
+        r_pidController.setP(kP, smartMotionProfile);
+        r_pidController.setI(kI, smartMotionProfile);
+        r_pidController.setD(kD, smartMotionProfile);
+        r_pidController.setIZone(kIz, smartMotionProfile);
+        r_pidController.setFF(kFF, smartMotionProfile);
+        r_pidController.setOutputRange(kMinOutput, kMaxOutput, smartMotionProfile);
 
 
         l_pidController.setSmartMotionMaxVelocity(maxVel, smartMotionProfile);
-        l_pidController.setSmartMotionMinOutputVelocity(minVel, smartMotionProfile);
+        // l_pidController.setSmartMotionMinOutputVelocity(minVel, smartMotionProfile);
         l_pidController.setSmartMotionMaxAccel(maxAcc, smartMotionProfile);
         l_pidController.setSmartMotionAllowedClosedLoopError(allowedErr, smartMotionProfile);
 
@@ -132,6 +135,15 @@ public class Climb extends SubsystemBase  {
         SmartDashboard.putNumber("Right Arm Pos", r_encoder.getPosition());
         SmartDashboard.putNumber("Left Arm Pos", l_encoder.getPosition());
         SmartDashboard.putNumber("Arm Set Point", pid_setPoint);
+
+        SmartDashboard.putNumber("Arm P Gain", l_pidController.getP(smartMotionProfile));
+        SmartDashboard.putNumber("Arm I Gain", l_pidController.getI(smartMotionProfile));
+        SmartDashboard.putNumber("Arm D Gain", l_pidController.getD(smartMotionProfile));
+        SmartDashboard.putNumber("Arm I Zone", l_pidController.getIZone(smartMotionProfile));
+        SmartDashboard.putNumber("Arm Feed Forward", l_pidController.getFF(smartMotionProfile));
+        SmartDashboard.putNumber("Arm Max Output", l_pidController.getSmartMotionMaxVelocity(smartMotionProfile));
+        // SmartDashboard.putNumber("Arm Min Output", l_pidController.getSmartMotionMinOutputVelocity(smartMotionProfile));
+        // SmartDashboard.putNumber("Arm PID SetPoint", l_pidController.)
     }
 
 
@@ -167,23 +179,25 @@ public class Climb extends SubsystemBase  {
         double allE = SmartDashboard.getNumber("Arm Allowed Closed Loop Error", 0);
 
         // if PID coefficients on SmartDashboard have changed, write new values to controller
-        if((p != kP)) { l_pidController.setP(p); r_pidController.setP(p); kP = p; }
-        if((i != kI)) { l_pidController.setI(i); r_pidController.setI(i); kI = i; }
-        if((d != kD)) { l_pidController.setD(d); r_pidController.setD(d); kD = d; }
-        if((iz != kIz)) { l_pidController.setIZone(iz); r_pidController.setIZone(iz); kIz = iz; }
-        if((ff != kFF)) { l_pidController.setFF(ff); r_pidController.setFF(ff); kFF = ff; }
-        if((max != kMaxOutput) || (min != kMinOutput)) { 
-            l_pidController.setOutputRange(min, max); 
-            r_pidController.setOutputRange(min, max); 
-            kMinOutput = min; kMaxOutput = max;
-        }
-        if((maxV != maxVel)) { l_pidController.setSmartMotionMaxVelocity(maxV,0); r_pidController.setSmartMotionMaxVelocity(maxV,0); maxVel = maxV; }
-        if((minV != minVel)) { l_pidController.setSmartMotionMinOutputVelocity(minV,0); r_pidController.setSmartMotionMinOutputVelocity(minV,0); minVel = minV; }
-        if((maxA != maxAcc)) { l_pidController.setSmartMotionMaxAccel(maxA,0); r_pidController.setSmartMotionMaxAccel(maxA,0); maxAcc = maxA; }
-        if((allE != allowedErr)) { l_pidController.setSmartMotionAllowedClosedLoopError(allE,0); r_pidController.setSmartMotionAllowedClosedLoopError(allE,0); allowedErr = allE; }
+        if((p != kP)) { l_pidController.setP(p, smartMotionProfile); r_pidController.setP(p, smartMotionProfile); kP = p; }
+        if((i != kI)) { l_pidController.setI(i, smartMotionProfile); r_pidController.setI(i, smartMotionProfile); kI = i; }
+        if((d != kD)) { l_pidController.setD(d, smartMotionProfile); r_pidController.setD(d, smartMotionProfile); kD = d; }
+        if((iz != kIz)) { l_pidController.setIZone(iz, smartMotionProfile); r_pidController.setIZone(iz, smartMotionProfile); kIz = iz; }
+        if((ff != kFF)) { l_pidController.setFF(ff, smartMotionProfile); r_pidController.setFF(ff, smartMotionProfile); kFF = ff; }
+        // if((max != kMaxOutput) || (min != kMinOutput)) { 
+        //     l_pidController.setOutputRange(min, max, smartMotionProfile); 
+        //     r_pidController.setOutputRange(min, max, smartMotionProfile); 
+        //     kMinOutput = min; kMaxOutput = max;
+        // }
+        if((maxV != maxVel)) { l_pidController.setSmartMotionMaxVelocity(maxV,smartMotionProfile); r_pidController.setSmartMotionMaxVelocity(maxV,smartMotionProfile); maxVel = maxV; }
+        if((minV != minVel)) { l_pidController.setSmartMotionMinOutputVelocity(minV,smartMotionProfile); r_pidController.setSmartMotionMinOutputVelocity(minV,smartMotionProfile); minVel = minV; }
+        if((maxA != maxAcc)) { l_pidController.setSmartMotionMaxAccel(maxA,smartMotionProfile); r_pidController.setSmartMotionMaxAccel(maxA,smartMotionProfile); maxAcc = maxA; }
+        if((allE != allowedErr)) { l_pidController.setSmartMotionAllowedClosedLoopError(allE,smartMotionProfile); r_pidController.setSmartMotionAllowedClosedLoopError(allE,smartMotionProfile); allowedErr = allE; }
         
-        l_pidController.setReference(pid_setPoint, ControlType.kSmartMotion);
-        r_pidController.setReference(pid_setPoint, ControlType.kSmartMotion);
+        // l_pidController.setReference(pid_setPoint, ControlType.kSmartMotion);
+        l_pidController.setReference(pid_setPoint, ControlType.kSmartMotion, smartMotionProfile);
+        r_pidController.setReference(pid_setPoint, ControlType.kSmartMotion, smartMotionProfile);
+        // pid_setPoint=0;
     }
    
 
