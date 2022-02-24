@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import frc.robot.RobotContainer;
 import frc.robot.Constants.RIO_Channels_DIO;
 
 public class BallEjector extends SubsystemBase {
@@ -77,8 +78,10 @@ public class BallEjector extends SubsystemBase {
     public void autoEject(){
         decayValue = decayValue - 0.01;
 
-        if(isBallDetected()){
+        if(isBallDetected() && !ejectorBallTower.isBallDetected()){
             decayValue = timeToDecay;
+        } else if (isBallDetected() && ejectorBallTower.isBallDetected() && doesAllianceMatch()){
+            decayValue = 0.0;
         }
 
         //ball detected
