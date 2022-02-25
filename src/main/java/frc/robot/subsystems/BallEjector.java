@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import frc.robot.RobotContainer;
 import frc.robot.Constants.RIO_Channels_DIO;
 
 public class BallEjector extends SubsystemBase {
@@ -32,11 +33,14 @@ public class BallEjector extends SubsystemBase {
 
     CANSparkMax BallEject = new CANSparkMax(11, MotorType.kBrushless);
 
+
     RelativeEncoder ballejectEncoder;
 
     // private final static DriverStation ds = DriverStation;
     // private final static Alliance alliance = DriverStation.getAlliance();
-    private final static String alliance = "Blue";
+    private final static String alliance = "Red";
+    private double decayValue = 0.0;
+    private double timeToDecay = 0.5; //seconds  assumes 10 ms loop timing may not be super accurate
     BallTower ejectorBallTower;
     
 
@@ -73,28 +77,41 @@ public class BallEjector extends SubsystemBase {
     }
 
     public void autoEject(){
+        decayValue = decayValue - 0.01;
+
+        if(isBallDetected() && !ejectorBallTower.isBallDetected()){
+            decayValue = timeToDecay;
+        } else if (isBallDetected() && ejectorBallTower.isBallDetected() && doesAllianceMatch()){
+            decayValue = 0.0;
+        }
+
         //ball detected
-        if(isBallDetected() || !RobotContainer.climbMode)
+        if((isBallDetected() || (decayValue > 0.0 )) && !RobotContainer.climbMode )
         {
+        
             //correct color
-            if(doesAllianceMatch())
-            {
+            if(doesAllianceMatch() && !ejectorBallTower.isBallDetected())
+            {   
+                ballUp();
                 //no ball in tower
-                if(!ejectorBallTower.isBallDetected())
-                {
-                    ballUp();
-                }
-                //ball in tower already hold ball
-                else
-                {
-                    stop();
-                }
+                // if(!ejectorBallTower.isBallDetected())
+                // {
+                //     ballUp();
+                // }
+                // //ball in tower already hold ball
+                // else
+                // {
+                //     stop();
+                // }
 
             }
             //color does not match
-            else 
+            else if (!doesAllianceMatch())
             {
                 ballOut();
+            }
+            else if (doesAllianceMatch() && ejectorBallTower.isBallDetected()){
+                stop();
             }
         }
         else
@@ -117,6 +134,18 @@ public class BallEjector extends SubsystemBase {
     public boolean isBallDetected()
     {
         return (isBlue() || isRed());
+    }
+
+    public boolean hasTwoBalls() {
+        if (isBallDetected()) {
+            if (doesAllianceMatch() && ejectorBallTower.isBallDetected()) {
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            return false;
+        }
     }
 
     public boolean doesAllianceMatch()
@@ -188,6 +217,7 @@ public class BallEjector extends SubsystemBase {
         SmartDashboard.putBoolean("Ball Detected", isBallDetected());
         SmartDashboard.putBoolean("Red", isRed());
         SmartDashboard.putBoolean("Blue", isBlue());
+        SmartDashboard.putNumber("Decay Value", decayValue);
         //SmartDashboard.putBoolean("Ball Ejector ", value);
 
 

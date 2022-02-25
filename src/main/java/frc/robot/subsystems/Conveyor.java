@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import frc.robot.RobotContainer;
 import frc.robot.commands.*;
 import frc.robot.RobotContainer;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
@@ -59,10 +60,10 @@ public class Conveyor extends SubsystemBase{
 
 
     public void conveyerForward() {
-        if (!RobotContainer.climbMode){ // stops conveyer if climbMode is enabled
-            Conveyer.set(.2);
-        } else {
+        if (RobotContainer.climbMode || RobotContainer.ballEjector.hasTwoBalls()){ // stops conveyer if climbMode is enabled
             Conveyer.stopMotor();
+        } else {
+            Conveyer.set(.2);
         }
         
     }

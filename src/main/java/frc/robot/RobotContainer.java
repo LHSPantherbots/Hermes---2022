@@ -43,7 +43,7 @@ public class RobotContainer {
   public final static ImuSubsystem imuSubsystem = new ImuSubsystem(pidgey);
   public final static DriveSubsystem driveTrain = new DriveSubsystem(imuSubsystem);
   public final static BallTower ballTower = new BallTower();
-  public final BallEjector ballEjector = new BallEjector(ballTower);
+  public final static BallEjector ballEjector = new BallEjector(ballTower);
   public final Conveyor conveyor = new Conveyor();
   public final static Climb climb = new Climb();
   public final static ClimbPivot climbPivot = new ClimbPivot();
