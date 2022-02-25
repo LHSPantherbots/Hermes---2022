@@ -57,9 +57,11 @@ public class Climb extends SubsystemBase  {
 
         // PID coefficients these will need to be tuned
         // kP = SparkMaxPidConstants.kPP;
-        kP = 0.000051; 
-        kI =  SparkMaxPidConstants.kI;
-        kD = SparkMaxPidConstants.kD;
+        kP = 0.0; 
+        // kI =  SparkMaxPidConstants.kI;
+        kI = 0.0;
+        // kD = SparkMaxPidConstants.kD;
+        kD = 0.0;
         kIz = SparkMaxPidConstants.kIz;
         kFF = SparkMaxPidConstants.kFF;
         kMaxOutput = SparkMaxPidConstants.kMaxOutput;
