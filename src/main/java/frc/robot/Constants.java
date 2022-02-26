@@ -126,7 +126,7 @@ public final class Constants {
         public static final double maxRPM = 5700;
         // Smart Motion Coefficients
         public static final double maxVel = 5700; // Same as RPM
-        public static final double maxAcc = 3000;
+        public static final double maxAcc = 4000;
         public static final double minVel = 0;
         public static final double allowedErr = 0;
     }

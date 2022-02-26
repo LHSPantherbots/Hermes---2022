@@ -86,7 +86,7 @@ public class BallEjector extends SubsystemBase {
         }
 
         //ball detected
-        if((isBallDetected() || (decayValue > 0.0 )) && !RobotContainer.climbMode )
+        if((isBallDetected() || (decayValue > 0.0 )) && !Climb.climbMode )
         {
         
             //correct color

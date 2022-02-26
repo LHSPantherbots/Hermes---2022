@@ -60,7 +60,7 @@ public class Conveyor extends SubsystemBase{
 
 
     public void conveyerForward() {
-        if (RobotContainer.climbMode || RobotContainer.ballEjector.hasTwoBalls()){ // stops conveyer if climbMode is enabled
+        if (Climb.climbMode || RobotContainer.ballEjector.hasTwoBalls()){ // stops conveyer if climbMode is enabled
             Conveyer.stopMotor();
         } else {
             Conveyer.set(.2);

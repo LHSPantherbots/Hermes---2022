@@ -80,7 +80,7 @@ public class BallTower extends SubsystemBase {
 
     public void autoTower(){
 
-        if (!isBallDetected() || !RobotContainer.climbMode){
+        if (!isBallDetected() && !Climb.climbMode){
             liftBall();
         }
         else{

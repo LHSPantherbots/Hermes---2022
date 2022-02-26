@@ -16,6 +16,8 @@ import frc.robot.Constants.SparkMaxPidConstants;
 
 
 public class Climb extends SubsystemBase  {
+
+    public static boolean climbMode = false;
     
     CANSparkMax l_arm = new CANSparkMax(CAN_ID.CLIMB_LEFT, MotorType.kBrushless);
     CANSparkMax r_arm = new CANSparkMax(CAN_ID.CLIMB_RIGHT, MotorType.kBrushless);
@@ -57,13 +59,14 @@ public class Climb extends SubsystemBase  {
 
         // PID coefficients these will need to be tuned
         // kP = SparkMaxPidConstants.kPP;
-        kP = 0.0; 
+        kP = 0.0000035; 
         // kI =  SparkMaxPidConstants.kI;
         kI = 0.0;
         // kD = SparkMaxPidConstants.kD;
-        kD = 0.0;
+        kD = 0.00002;
         kIz = SparkMaxPidConstants.kIz;
-        kFF = SparkMaxPidConstants.kFF;
+        // kFF = SparkMaxPidConstants.kFF;
+        kFF = 0.000165;
         kMaxOutput = SparkMaxPidConstants.kMaxOutput;
         // kMinOutput = SparkMaxPidConstants.kMinOutput;
         kMinOutput = SparkMaxPidConstants.kMaxOutput*-1;
@@ -135,7 +138,11 @@ public class Climb extends SubsystemBase  {
         SmartDashboard.putNumber("ClimbAmp", l_arm.getOutputCurrent());
         SmartDashboard.putNumber("HookAmp", r_arm.getOutputCurrent());
         SmartDashboard.putNumber("Right Arm Pos", r_encoder.getPosition());
+        SmartDashboard.putNumber("Right Arm Vel", r_encoder.getVelocity());
+        SmartDashboard.putNumber("Right Arm Current", r_arm.getOutputCurrent());
         SmartDashboard.putNumber("Left Arm Pos", l_encoder.getPosition());
+        SmartDashboard.putNumber("Left Arm Vel", l_encoder.getVelocity());
+        SmartDashboard.putNumber("Left Arm Current", l_arm.getOutputCurrent());
         SmartDashboard.putNumber("Arm Set Point", pid_setPoint);
 
         SmartDashboard.putNumber("Arm P Gain", l_pidController.getP(smartMotionProfile));
@@ -144,6 +151,7 @@ public class Climb extends SubsystemBase  {
         SmartDashboard.putNumber("Arm I Zone", l_pidController.getIZone(smartMotionProfile));
         SmartDashboard.putNumber("Arm Feed Forward", l_pidController.getFF(smartMotionProfile));
         SmartDashboard.putNumber("Arm Max Output", l_pidController.getSmartMotionMaxVelocity(smartMotionProfile));
+        SmartDashboard.putBoolean("Climb Mode", climbMode);
         // SmartDashboard.putNumber("Arm Min Output", l_pidController.getSmartMotionMinOutputVelocity(smartMotionProfile));
         // SmartDashboard.putNumber("Arm PID SetPoint", l_pidController.)
     }
@@ -228,6 +236,10 @@ public class Climb extends SubsystemBase  {
         else{
             return 0.0;
         }
+    }
+
+    public static void setClimbMode() {
+        climbMode=true;
     }
 }
 
