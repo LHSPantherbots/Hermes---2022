@@ -173,7 +173,8 @@ public class RobotContainer {
     driveTrain.setDefaultCommand(
       new RunCommand(() -> driveTrain.teleopDrive(
               Gamepad0.getRawAxis(GamePadButtons.leftY)*-0.95, 
-              Gamepad0.getRawAxis(GamePadButtons.rightX)*0.65), driveTrain)
+              Gamepad0.getRawAxis(GamePadButtons.rightX)*0.65,
+              Gamepad0.getRightBumper()), driveTrain)
 
     );
     ballEjector.setDefaultCommand(
@@ -251,28 +252,32 @@ public class RobotContainer {
       .whileHeld(new RunCommand(() -> ballTower.feedBallToLauncher(), ballTower))
       .whenReleased(new InstantCommand(ballTower::stopBelts));
 
-    new JoystickButton(Gamepad0, GamePadButtons.X)
-      .whenPressed(new InstantCommand(launcher::increaseRPM, launcher))
-      .whenReleased(new RunCommand(launcher::startRPM, launcher));
+    // new JoystickButton(Gamepad0, GamePadButtons.X)
+    //   .whenPressed(new InstantCommand(launcher::increaseRPM, launcher))
+    //   .whenReleased(new RunCommand(launcher::startRPM, launcher));
 
-    new JoystickButton(Gamepad0, GamePadButtons.A)
-    .whenPressed(new InstantCommand(launcher::decreaseRPM, launcher))
-    .whenReleased(new RunCommand(launcher::startRPM, launcher));
+    // new JoystickButton(Gamepad0, GamePadButtons.A)
+    // .whenPressed(new InstantCommand(launcher::decreaseRPM, launcher))
+    // .whenReleased(new RunCommand(launcher::startRPM, launcher));
 
     
-    new POVButton(Gamepad0, GamePadButtons.Up)
+    // new POVButton(Gamepad0, GamePadButtons.Up)
+    new JoystickButton(Gamepad0, GamePadButtons.Y)
       .whenPressed(new RunCommand(launcher::longTarmacShoot, launcher))
       .whenPressed(new RunCommand(leds::red, leds));
 
-      new POVButton(Gamepad0, GamePadButtons.Left)
+    // new POVButton(Gamepad0, GamePadButtons.Left)
+    new JoystickButton(Gamepad0, GamePadButtons.X)
       .whenPressed(new RunCommand(launcher::midTarmacShoot, launcher))
       .whenPressed(new RunCommand(leds::purple, leds));
 
-    new POVButton(Gamepad0, GamePadButtons.Down)
+    // new POVButton(Gamepad0, GamePadButtons.Down)
+    new JoystickButton(Gamepad0, GamePadButtons.A)
       .whenPressed(new RunCommand(launcher::fenderHighShoot, launcher))
       .whenPressed(new RunCommand(leds::green, leds));
       
-    new POVButton(Gamepad0, GamePadButtons.Right)
+    // new POVButton(Gamepad0, GamePadButtons.Right)
+    new JoystickButton(Gamepad0, GamePadButtons.B)
       .whenPressed(new RunCommand(launcher::fenderLowShoot, launcher))
       .whenPressed(new RunCommand(leds::blue, leds));
     
