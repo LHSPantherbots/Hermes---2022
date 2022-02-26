@@ -65,8 +65,8 @@ public class RobotContainer {
 
 
   // PIDControllers for Path Following defined here to avoid new PIDControlers being created each time auto is enabled in testing
-  private final PIDController left_PidController = new PIDController(DriveTrainConstants.left_Kp, 0, 1.2);
-  private final PIDController right_PidController =new PIDController(DriveTrainConstants.right_Kp, 0, 1.2);
+  private final PIDController left_PidController = new PIDController(DriveTrainConstants.kPDriveVel, 0, 0);
+  private final PIDController right_PidController =new PIDController(DriveTrainConstants.kPDriveVel, 0, 0);
   private final Command twoBallAuto = new TwoBallAuto();
   
   SequentialCommandGroup stopIntake = new SequentialCommandGroup(
@@ -331,30 +331,30 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     // // An ExampleCommand will run in autonomous
 
-    // var currTrajectory = trajectories.exampleTrajectory;
+    var currTrajectory = trajectories.exampleTrajectory;
 
-    // // Set bot known position to be the same as the first position of the trajectory
-    // driveTrain.resetOdometry(currTrajectory.getInitialPose());
+    // Set bot known position to be the same as the first position of the trajectory
+    driveTrain.resetOdometry(currTrajectory.getInitialPose());
 
-    // SmartDashboard.putNumber("Trajectory Durration", currTrajectory.getTotalTimeSeconds());
+    SmartDashboard.putNumber("Trajectory Durration", currTrajectory.getTotalTimeSeconds());
 
-    // RamseteCommand ramseteCommand = new RamseteCommand(
-    //   currTrajectory,
-    //   driveTrain::getPose,
-    //   new RamseteController(
-    //     DriveTrainConstants.kRamseteB,
-    //     DriveTrainConstants.kRamseteZeta),
-    //   new SimpleMotorFeedforward(DriveTrainConstants.ksVolts, DriveTrainConstants.kvVoltSecondsPerMeter, DriveTrainConstants.kaVoltSecondsSquaredPerMeter),
-    //   DriveTrainConstants.kDriveKinematics,
-    //   driveTrain::getWheelSpeeds,
-    //   left_PidController,
-    //   right_PidController,
-    //   driveTrain::tankDriveVolts,
-    //   driveTrain
-    // );
+    RamseteCommand ramseteCommand = new RamseteCommand(
+      currTrajectory,
+      driveTrain::getPose,
+      new RamseteController(
+        DriveTrainConstants.kRamseteB,
+        DriveTrainConstants.kRamseteZeta),
+      new SimpleMotorFeedforward(DriveTrainConstants.ksVolts, DriveTrainConstants.kvVoltSecondsPerMeter, DriveTrainConstants.kaVoltSecondsSquaredPerMeter),
+      DriveTrainConstants.kDriveKinematics,
+      driveTrain::getWheelSpeeds,
+      left_PidController,
+      right_PidController,
+      driveTrain::tankDriveVolts,
+      driveTrain
+    );
 
-    // return ramseteCommand.andThen(() -> driveTrain.tankDriveVolts(0, 0));
-    return twoBallAuto;
+    return ramseteCommand.andThen(() -> driveTrain.tankDriveVolts(0, 0));
+    // return twoBallAuto;
   }
 
   static public void setClimbMode(){

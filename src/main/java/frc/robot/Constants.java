@@ -85,10 +85,10 @@ public final class Constants {
     }
 
     public static final class DriveTrainConstants {
-        public static final double ksVolts = 0.099818;
-        public static final double kvVoltSecondsPerMeter = 3.4037;
-        public static final double kaVoltSecondsSquaredPerMeter = 0.25988;
-        public static final double kPDriveVel = 3.5864;
+        public static final double ksVolts = 0.21074;
+        public static final double kvVoltSecondsPerMeter = 2.8111;
+        public static final double kaVoltSecondsSquaredPerMeter = 0.58838;
+        public static final double kPDriveVel = 3.899;
         public static final double left_Ks = 0.14208;
         public static final double left_Kv = 3.2143;
         public static final double left_Ka = 0.16964;
@@ -97,7 +97,8 @@ public final class Constants {
         public static final double right_Kv = 3.4427;
         public static final double right_Ka = 0.24607;
         public static final double right_Kp = 3.4966;
-        public static final double kTrackwidthMeters = Units.inchesToMeters(24);
+        // public static final double kTrackwidthMeters = Units.inchesToMeters(24);
+        public static final double kTrackwidthMeters = 0.62675;
         public static final double kMaxSpeedMetersPerSecond = .75;
         public static final double kMaxAccelerationMetersPerSecondSquared = .5;
         public static final double kRamseteB = 2;
