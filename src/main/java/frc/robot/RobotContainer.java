@@ -58,7 +58,9 @@ public class RobotContainer {
  // private final ClimbnHook climbnHook = new ClimbnHook();
 
   public final AutoCommand m_AutoCommand = new AutoCommand(driveTrain);
-  public final ClimbAuto m_ClimbAuto = new ClimbAuto(driveTrain, climbPivot, climb); 
+  public final Command m_ArmUp = new ArmUp(driveTrain, climbPivot, climb); 
+  public final Command m_AutoMidClimb = new AutoMidClimb(driveTrain, climbPivot, climb); 
+  public final Command m_AutoHighClimb = new AutoHighClimb(driveTrain, climbPivot, climb);
 
   XboxController Gamepad0 = new XboxController(0);  //Driver Controller
   XboxController Gamepad1 = new XboxController(1);  //Manipulator Controller
@@ -90,27 +92,27 @@ public class RobotContainer {
   ParallelCommandGroup ejectStop = new ParallelCommandGroup(
                 new RunCommand(() -> ballEjector.stop(), ballEjector), 
                 new RunCommand(() -> conveyor.conveyerStop(), conveyor));
-  SequentialCommandGroup test = new SequentialCommandGroup(
-    new InstantCommand(() -> System.out.println("ClimbAuto Command Triggered!")),
-    new InstantCommand(() -> Climb.setClimbMode()),
-    // add commands (numbers are arm possitions)
-    // 95
-    new InstantCommand(() -> climb.setArmPidSetPoint(95), climb),
-    new RunCommand(() -> climb.startArmSmartMotion(), climb)
-        .withTimeout(2.5),
-    // drive back short amount
-    new RunCommand(() -> driveTrain.teleopDrive(.325, 0), driveTrain)
-        .withTimeout(.3),
-    new RunCommand(() -> driveTrain.teleopDrive(0, 0), driveTrain).withTimeout(.1),
-    // 89
-    new InstantCommand(() -> climb.setArmPidSetPoint(89), climb),
-    new RunCommand(() -> climb.startArmSmartMotion(), climb)
-        .withTimeout(1.5),
-    // Check if contact??
-    // 0-1
-    new InstantCommand(() -> climb.setArmPidSetPoint(1), climb),
-    new RunCommand(() -> climb.startArmSmartMotion(), climb)
-        .withTimeout(3.5)
+  // SequentialCommandGroup test = new SequentialCommandGroup(
+  //   new InstantCommand(() -> System.out.println("ClimbAuto Command Triggered!")),
+  //   new InstantCommand(() -> Climb.setClimbMode()),
+  //   // add commands (numbers are arm possitions)
+  //   // 95
+  //   new InstantCommand(() -> climb.setArmPidSetPoint(95), climb),
+  //   new RunCommand(() -> climb.startArmSmartMotion(), climb)
+  //       .withTimeout(2.5),
+  //   // drive back short amount
+  //   new RunCommand(() -> driveTrain.teleopDrive(.325, 0), driveTrain)
+  //       .withTimeout(.3),
+  //   new RunCommand(() -> driveTrain.teleopDrive(0, 0), driveTrain).withTimeout(.1),
+  //   // 89
+  //   new InstantCommand(() -> climb.setArmPidSetPoint(89), climb),
+  //   new RunCommand(() -> climb.startArmSmartMotion(), climb)
+  //       .withTimeout(1.5),
+  //   // Check if contact??
+  //   // 0-1
+  //   new InstantCommand(() -> climb.setArmPidSetPoint(1), climb),
+  //   new RunCommand(() -> climb.startArmSmartMotion(), climb)
+  //       .withTimeout(3.5)
     // new RunCommand(() -> Timer.delay(.5)),
     // 10
     // new InstantCommand(() -> climb.setArmPidSetPoint(10), climb),
@@ -155,7 +157,7 @@ public class RobotContainer {
     // new InstantCommand(() -> climb.setArmPidSetPoint(1), climb),
     // new RunCommand(() -> climb.startArmSmartMotion(), climb)
     //     .withTimeout(.4)
-  );
+  // );
   // ParallelCommandGroup test = new ParallelCommandGroup(
   //  new InstantCommand(() -> System.out.println("ParallelCommandGroup test Triggered!")),
   //  m_AutoCommand 
@@ -305,17 +307,23 @@ public class RobotContainer {
     new JoystickButton(Gamepad1, GamePadButtons.RB)
       .whenHeld(new RunCommand(climbPivot::armBack, climbPivot));
 
-    new POVButton(Gamepad1, GamePadButtons.Up)
-      .whenPressed(new InstantCommand(climb::extendArms, climb))
-      .whenReleased(new RunCommand(climb::startArmSmartMotion, climb));
+    // new POVButton(Gamepad1, GamePadButtons.Up)
+    //   .whenPressed(new InstantCommand(climb::extendArms, climb))
+    //   .whenReleased(new RunCommand(climb::startArmSmartMotion, climb));
     
-    new POVButton(Gamepad1, GamePadButtons.Down)
-      .whenPressed(new InstantCommand(climb::retractArms, climb))
-      .whenReleased(new RunCommand(climb::startArmSmartMotion, climb));
+    // new POVButton(Gamepad1, GamePadButtons.Down)
+    //   .whenPressed(new InstantCommand(climb::retractArms, climb))
+    //   .whenReleased(new RunCommand(climb::startArmSmartMotion, climb));
 
-    new POVButton(Gamepad1, GamePadButtons.Left)
+    new POVButton(Gamepad1, GamePadButtons.Down)
       // .whenPressed(m_AutoCommand);
-      .whenPressed(test);
+      .whenPressed(m_AutoMidClimb);
+    
+    new POVButton(Gamepad1, GamePadButtons.Up)
+      .whenPressed(m_ArmUp);
+    
+    new POVButton(Gamepad1, GamePadButtons.Right)
+      .whenPressed(m_AutoHighClimb);
     
     // new JoystickButton(Gamepad1, GamePadButtons.Y)
     //   .whenPressed(new InstantCommand(climb::extendArms, climb))
