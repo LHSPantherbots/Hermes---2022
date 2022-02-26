@@ -237,6 +237,14 @@ public class DriveSubsystem extends SubsystemBase {
     public void teleopDrive(double move, double turn) {
       m_drive.arcadeDrive(move, turn); //m*.8 t*.6
     }
+
+    public void teleopDrive(double move, double turn, boolean governer) {
+      if (governer) {
+        m_drive.arcadeDrive(move, turn*.5);
+      } else {
+        m_drive.arcadeDrive(move, turn);
+      }
+    }
     
     public void resetEncoders() {
       leftEncoder.setPosition(0);
