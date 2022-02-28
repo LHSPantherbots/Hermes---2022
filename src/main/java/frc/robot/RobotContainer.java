@@ -7,6 +7,7 @@ package frc.robot;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.RamseteController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -36,7 +37,6 @@ import com.ctre.phoenix.motorcontrol.can.TalonSRX;
  */
 public class RobotContainer {
   public static boolean climbMode = false;
-
   public final Trajectories trajectories = new Trajectories();
   // Talon and Pigeon needed for subsystems defined here...
   public final static TalonSRX  talon1 = new TalonSRX(4);
@@ -57,7 +57,7 @@ public class RobotContainer {
   public final Leds leds = new Leds();
  // private final ClimbnHook climbnHook = new ClimbnHook();
 
-  public final AutoCommand m_AutoCommand = new AutoCommand(driveTrain);
+  public final AutoCommand m_AutoCommand = new AutoCommand(driveTrain, launcher, ballTower, intake);
   public final Command m_ArmUp = new ArmUp(driveTrain, climbPivot, climb); 
   public final Command m_AutoMidClimb = new AutoMidClimb(driveTrain, climbPivot, climb); 
   public final Command m_AutoHighClimb = new AutoHighClimb(driveTrain, climbPivot, climb);
@@ -166,7 +166,6 @@ public class RobotContainer {
   public RobotContainer() {
     // Configure the button bindings
 
-    
     configureButtonBindings();
 
 
@@ -240,9 +239,9 @@ public class RobotContainer {
     //Driver Gampad0
 
    
-    new JoystickButton(Gamepad0, GamePadButtons.RB)
-      .whileHeld(ballUp)
-      .whenReleased(ballStop);
+    // new JoystickButton(Gamepad0, GamePadButtons.RB)
+    //   .whileHeld(ballUp)
+    //   .whenReleased(ballStop);
     
     new JoystickButton(Gamepad0, GamePadButtons.Y)
       .whenPressed(launcher::hoodUp, launcher);
@@ -344,30 +343,32 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     // // An ExampleCommand will run in autonomous
 
-    var currTrajectory = trajectories.exampleTrajectory;
+    // var currTrajectory = trajectories.exampleTrajectory;
+    // var currTrajectory = trajectory;
 
-    // Set bot known position to be the same as the first position of the trajectory
-    driveTrain.resetOdometry(currTrajectory.getInitialPose());
+    // // Set bot known position to be the same as the first position of the trajectory
+    // driveTrain.resetOdometry(currTrajectory.getInitialPose());
 
-    SmartDashboard.putNumber("Trajectory Durration", currTrajectory.getTotalTimeSeconds());
+    // SmartDashboard.putNumber("Trajectory Durration", currTrajectory.getTotalTimeSeconds());
 
-    RamseteCommand ramseteCommand = new RamseteCommand(
-      currTrajectory,
-      driveTrain::getPose,
-      new RamseteController(
-        DriveTrainConstants.kRamseteB,
-        DriveTrainConstants.kRamseteZeta),
-      new SimpleMotorFeedforward(DriveTrainConstants.ksVolts, DriveTrainConstants.kvVoltSecondsPerMeter, DriveTrainConstants.kaVoltSecondsSquaredPerMeter),
-      DriveTrainConstants.kDriveKinematics,
-      driveTrain::getWheelSpeeds,
-      left_PidController,
-      right_PidController,
-      driveTrain::tankDriveVolts,
-      driveTrain
-    );
+    // RamseteCommand ramseteCommand = new RamseteCommand(
+    //   currTrajectory,
+    //   driveTrain::getPose,
+    //   new RamseteController(
+    //     DriveTrainConstants.kRamseteB,
+    //     DriveTrainConstants.kRamseteZeta),
+    //   new SimpleMotorFeedforward(DriveTrainConstants.ksVolts, DriveTrainConstants.kvVoltSecondsPerMeter, DriveTrainConstants.kaVoltSecondsSquaredPerMeter),
+    //   DriveTrainConstants.kDriveKinematics,
+    //   driveTrain::getWheelSpeeds,
+    //   left_PidController,
+    //   right_PidController,
+    //   driveTrain::tankDriveVolts,
+    //   driveTrain
+    // );
 
-    return ramseteCommand.andThen(() -> driveTrain.tankDriveVolts(0, 0));
+    // return ramseteCommand.andThen(() -> driveTrain.tankDriveVolts(0, 0));
     // return twoBallAuto;
+    return m_AutoCommand;
   }
 
   static public void setClimbMode(){

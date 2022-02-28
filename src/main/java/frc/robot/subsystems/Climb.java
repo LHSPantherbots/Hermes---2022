@@ -42,8 +42,8 @@ public class Climb extends SubsystemBase  {
         r_arm.setInverted(true);
         l_arm.setSmartCurrentLimit(40);
         r_arm.setSmartCurrentLimit(40);
-        l_arm.setClosedLoopRampRate(2);
-        r_arm.setClosedLoopRampRate(2);
+        l_arm.setClosedLoopRampRate(1);
+        r_arm.setClosedLoopRampRate(1);
 
         l_arm.setIdleMode(IdleMode.kBrake);
         r_arm.setIdleMode(IdleMode.kBrake);
