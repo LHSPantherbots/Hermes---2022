@@ -22,7 +22,9 @@ import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 
 public class Conveyor extends SubsystemBase{
     
-
+    public double timerDelaySetpoint = 0.5;
+    public double timerDelayValue = 0.0;
+    public boolean wasBallDetected = false; //was there a ball detected in the previous loop?
 
     // DigitalInput DownS = new DigitalInput(2);
     // DigitalInput UpS = new DigitalInput(0);
@@ -59,8 +61,24 @@ public class Conveyor extends SubsystemBase{
     }
 
 
+    
+
     public void conveyerForward() {
-        if (Climb.climbMode || RobotContainer.ballEjector.hasTwoBalls()){ // stops conveyer if climbMode is enabled
+        timerDelayValue = timerDelayValue - 0.01;
+
+        if(!wasBallDetected){ //if there is not ball detected reset the delay timer
+            timerDelayValue = timerDelaySetpoint;
+        }
+        
+        if(RobotContainer.ballEjector.isBallDetected()){
+            wasBallDetected = true;
+        }
+        else{
+            wasBallDetected = false;
+        }
+        
+
+        if (Climb.climbMode || (RobotContainer.ballEjector.hasTwoBalls() && (timerDelaySetpoint<0) )){ // stops conveyer if climbMode is enabled
             Conveyer.stopMotor();
         } else {
             Conveyer.set(.2);
@@ -75,6 +93,8 @@ public class Conveyor extends SubsystemBase{
     public void conveyerStop() {
         Conveyer.stopMotor();
     }
+
+    
 
     
 
