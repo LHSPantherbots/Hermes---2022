@@ -12,6 +12,7 @@ import com.revrobotics.ColorMatch;
 import com.revrobotics.ColorMatchResult;
 import com.revrobotics.ColorSensorV3;
 import com.revrobotics.RelativeEncoder;
+import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -47,6 +48,14 @@ public class BallEjector extends SubsystemBase {
 
     public BallEjector(BallTower ballTower) {
         ejectorBallTower = ballTower;
+
+        BallEject.restoreFactoryDefaults();
+        BallEject.setSmartCurrentLimit(20);
+        
+        BallEject.setIdleMode(IdleMode.kBrake);
+
+        //BallEject.setOpenLoopRampRate(.7);
+        
 
         // alliance = ds.getAlliance();
 
@@ -225,6 +234,7 @@ public class BallEjector extends SubsystemBase {
         SmartDashboard.putBoolean("Blue", isBlue());
         SmartDashboard.putNumber("Decay Value", decayValue);
         alliance = RobotContainer.allianceChooser.getSelected();
+        SmartDashboard.putNumber("Eject Motor Current", BallEject.getOutputCurrent());
         //SmartDashboard.putBoolean("Ball Ejector ", value);
 
 
