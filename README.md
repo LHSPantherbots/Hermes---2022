@@ -37,34 +37,32 @@
 
 ## Controls/Button Mapping
 - Controller0
-    - Button A: Decrease launcher RPM setpoint
-    - Button B: Closes launcher hood
-    - Button X: Increase launcher RPM setpoint
-    - Button Y: Opens lanucher hood
-    - Button RB: Lifts Ball in Tower
-        - Runs Conveyer Forward
-        - Runs Ejector Wheel Forward
-        - Runs Tower Wheel and Belts Forward(up)
+    - Button A: High fender shot
+    - Button B: Low fender shot
+    - Button X: Mid tarmac shot
+    - Button Y: Long tarmac shot
     - Button LB: Launches Ball
         - Runs Tower Belts Upward if there is a ball in the beam break
-    - D-Pad:
-        - Right: Fender low shot
-        - Down: Fender high shot
-        - Left: Mid tarmac shot
-        - Up: Long tarmac shot
+    - Select: Stops flywheel
+
     - Left stick Y axis: Drivetrain Forward/Reverse
     - Right stick X axis: Drivetrain Turn Left/Right
 
 - Controller1
     - Button A: Intake Rollers Backward
          - When held  
-    - Button B: Closes launcher hood
+    - Button B: Eject Ball
     - Button X: Intake Rollers Forward
          - When held
     - Button Y: Opens lanucher hood
     - Button RB: Climber Pivot
         - When held
     - Button LB: Intake Down
-        - when held
+        - When held
+    - D-Pad Down: Auto mid climb
+    - D-Pad Up: Arms up
+    - D-Pad Right: Auto high climb
     - Left stick Y axis: Climb Arms Up/Down
     - Right stick X axis: Climb Arms Adjust
+    - Start: Turn off climb mode
+

@@ -166,7 +166,7 @@ public class Climb extends SubsystemBase  {
     }
 
     public void manualClimb(double lift, double trim){
-        if (!RobotContainer.climbMode){
+        if (!climbMode){
             lift = deadBand(lift);
             trim = deadBand(trim);
             l_arm.set(lift + trim);
@@ -238,8 +238,13 @@ public class Climb extends SubsystemBase  {
         }
     }
 
-    public static void setClimbMode() {
-        climbMode=true;
+    public void setClimbModeTrue(){
+        climbMode = true;
+    }
+
+    public void setClimbModeFalse(){
+        climbMode = false;
+
     }
 }
 

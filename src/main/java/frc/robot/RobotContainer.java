@@ -10,6 +10,8 @@ import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.commands.*;
 import frc.robot.subsystems.*;
@@ -36,7 +38,8 @@ import com.ctre.phoenix.motorcontrol.can.TalonSRX;
  * subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
-  public static boolean climbMode = false;
+  //public static boolean climbMode = false;
+  public static String m_alliance = "None";
   public final Trajectories trajectories = new Trajectories();
   // Talon and Pigeon needed for subsystems defined here...
   public final static TalonSRX  talon1 = new TalonSRX(4);
@@ -49,7 +52,7 @@ public class RobotContainer {
   public final Conveyor conveyor = new Conveyor();
   public final static Climb climb = new Climb();
   public final static ClimbPivot climbPivot = new ClimbPivot();
-
+  
 
   public final static Launcher launcher = new Launcher();  
   public final static Intake intake = new Intake(talon1);
@@ -162,8 +165,17 @@ public class RobotContainer {
   //  new InstantCommand(() -> System.out.println("ParallelCommandGroup test Triggered!")),
   //  m_AutoCommand 
   // );
+  public static SendableChooser<String> allianceChooser = new SendableChooser<>();
+
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
+
+//Populate Alliance Selection Chooser
+    Shuffleboard.getTab("Autonomous").add(allianceChooser); 
+    allianceChooser.addOption("Red", "Red");
+    allianceChooser.addOption("Blue", "Blue"); 
+    allianceChooser.addOption("Auto Sort Off", "AutoOff");
+
     // Configure the button bindings
 
     configureButtonBindings();
@@ -243,11 +255,11 @@ public class RobotContainer {
     //   .whileHeld(ballUp)
     //   .whenReleased(ballStop);
     
-    new JoystickButton(Gamepad0, GamePadButtons.Y)
-      .whenPressed(launcher::hoodUp, launcher);
+    //new JoystickButton(Gamepad0, GamePadButtons.Y)
+    //  .whenPressed(launcher::hoodUp, launcher);
 
-    new JoystickButton(Gamepad0, GamePadButtons.B)
-      .whenPressed(launcher::hoodDown, launcher);
+    //new JoystickButton(Gamepad0, GamePadButtons.B)
+    //  .whenPressed(launcher::hoodDown, launcher);
     
     new JoystickButton(Gamepad0, GamePadButtons.LB)
       .whileHeld(new RunCommand(() -> ballTower.feedBallToLauncher(), ballTower))
@@ -303,8 +315,17 @@ public class RobotContainer {
       .whenHeld(new RunCommand(intake::intakeRollersReverse, intake))
       .whenReleased(new RunCommand (intake::intakeRollersOff, intake));
     
+    
     new JoystickButton(Gamepad1, GamePadButtons.RB)
       .whenHeld(new RunCommand(climbPivot::armBack, climbPivot));
+
+      new JoystickButton(Gamepad1, GamePadButtons.Start)
+      .whenPressed(new RunCommand(climb::setClimbModeFalse, climb))
+      .whenReleased(new RunCommand(leds::rainbow, leds));
+
+      new JoystickButton(Gamepad1, GamePadButtons.B)
+      .whenPressed(new RunCommand(ballEjector::ballOut, ballEjector));
+    
 
     // new POVButton(Gamepad1, GamePadButtons.Up)
     //   .whenPressed(new InstantCommand(climb::extendArms, climb))
@@ -319,7 +340,8 @@ public class RobotContainer {
       .whenPressed(m_AutoMidClimb);
     
     new POVButton(Gamepad1, GamePadButtons.Up)
-      .whenPressed(m_ArmUp);
+      .whenPressed(m_ArmUp)
+      .whenPressed(new RunCommand(leds::bluePulse, leds));
     
     new POVButton(Gamepad1, GamePadButtons.Right)
       .whenPressed(m_AutoHighClimb);
@@ -371,7 +393,10 @@ public class RobotContainer {
     return m_AutoCommand;
   }
 
-  static public void setClimbMode(){
-    climbMode=true;
-  }
+//  static public void setClimbMode(){
+//    climbMode=true;
+//  }
+
+
+
 }
