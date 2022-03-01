@@ -41,6 +41,9 @@
     - Button B: Low fender shot
     - Button X: Mid tarmac shot
     - Button Y: Long tarmac shot
+    - Button RB: Limelight Aim
+        - When held aims robot and turns limelight led's to pipeline state
+        - When released turns off leds
     - Button LB: Launches Ball
         - Runs Tower Belts Upward if there is a ball in the beam break
     - Select: Stops flywheel

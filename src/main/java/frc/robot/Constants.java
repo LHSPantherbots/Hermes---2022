@@ -146,4 +146,13 @@ public final class Constants {
         public static final double allowedErr = 0;
     }
 
+    public static final class LimeL{
+        //Leds
+        public static final int ledOFF = 1;
+        public static final int ledON = 3;
+
+        //pipelines
+
+    }
+
 }

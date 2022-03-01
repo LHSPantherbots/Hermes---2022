@@ -22,15 +22,15 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
+import frc.robot.RobotContainer;
 import frc.robot.Constants.DriveTrainConstants;
 import frc.robot.Constants.SparkMaxPidConstants;
 
 public class DriveSubsystem extends SubsystemBase {
-    /* Commented out until implmenting limelight vision
+    //limelight vision may need to be tuned
     private double kP = 0.031;
     private double kF = 0.15;
-    */
+    
 
     private double kPG = 0.0075;
     private double kDG = 0.00;
@@ -447,6 +447,16 @@ public class DriveSubsystem extends SubsystemBase {
     public CANSparkMax getRightCanSparkMax() {
       return rightLeader;
     }
+
+    public void limeLightAim()
+  {
+    double error = RobotContainer.limelight.getHorizontalOffset();
+    kF = Math.copySign(kF, error);
+    double outF = kF;             
+    double outP = kP * error;
+    double outputTurn = outF + outP;
+    teleopDrive(0, outputTurn);
+  }
 
     
 }

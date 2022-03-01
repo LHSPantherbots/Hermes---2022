@@ -52,6 +52,7 @@ public class RobotContainer {
   public final Conveyor conveyor = new Conveyor();
   public final static Climb climb = new Climb();
   public final static ClimbPivot climbPivot = new ClimbPivot();
+  public final static LimeLight limelight = new LimeLight();
   
 
   public final static Launcher launcher = new Launcher();  
@@ -64,6 +65,7 @@ public class RobotContainer {
   public final Command m_ArmUp = new ArmUp(driveTrain, climbPivot, climb); 
   public final Command m_AutoMidClimb = new AutoMidClimb(driveTrain, climbPivot, climb); 
   public final Command m_AutoHighClimb = new AutoHighClimb(driveTrain, climbPivot, climb);
+  
 
   XboxController Gamepad0 = new XboxController(0);  //Driver Controller
   XboxController Gamepad1 = new XboxController(1);  //Manipulator Controller
@@ -254,6 +256,14 @@ public class RobotContainer {
     // new JoystickButton(Gamepad0, GamePadButtons.RB)
     //   .whileHeld(ballUp)
     //   .whenReleased(ballStop);
+
+    new JoystickButton(Gamepad0, GamePadButtons.RB)
+       .whenPressed(new RunCommand(limelight::ledPipeline, limelight))
+       .whileHeld(new RunCommand(driveTrain::limeLightAim, driveTrain))
+       .whenReleased(new RunCommand(limelight::ledOff, limelight));
+    //   .whenReleased(ballStop);
+
+    
     
     //new JoystickButton(Gamepad0, GamePadButtons.Y)
     //  .whenPressed(launcher::hoodUp, launcher);
