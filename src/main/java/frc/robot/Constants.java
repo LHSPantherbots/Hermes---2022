@@ -99,8 +99,8 @@ public final class Constants {
         public static final double right_Kp = 3.4966;
         // public static final double kTrackwidthMeters = Units.inchesToMeters(24);
         public static final double kTrackwidthMeters = 0.62675;
-        public static final double kMaxSpeedMetersPerSecond = .75;
-        public static final double kMaxAccelerationMetersPerSecondSquared = .5;
+        public static final double kMaxSpeedMetersPerSecond = 2;
+        public static final double kMaxAccelerationMetersPerSecondSquared = 1.5;
         public static final double kRamseteB = 2;
         public static final double kRamseteZeta = 0.7;
         public static final double gearRatio = 10.71;
@@ -113,6 +113,20 @@ public final class Constants {
         public static final double rpmToMeterPerSec = (Math.PI * 6 * 0.0254)/10.75 / 60;
         public static final double rpmToMetersPerSec = revsToMeter/60;
         public static final DifferentialDriveKinematics kDriveKinematics = new DifferentialDriveKinematics(kTrackwidthMeters);
+    }
+    public static final class ArmPidConstants {
+        public static final double kP = 0.0000035;
+        public static final double kI = 0.0;
+        public static final double kD = 0.00002; 
+        public static final double kIz = 0;
+        public static final double kFF = 0.000165;
+        public static final double kMaxOutput = 1;
+        public static final double kMinOutput = -1;
+        public static final double maxRPM = 5700;
+        public static final double maxVel = 5700;
+        public static final double minVel = -5700;
+        public static final double maxAcc = 4000;
+        public static final double allowedErr = 0;
     }
 
     public static final class SparkMaxPidConstants {
@@ -130,6 +144,15 @@ public final class Constants {
         public static final double maxAcc = 4000;
         public static final double minVel = 0;
         public static final double allowedErr = 0;
+    }
+
+    public static final class LimeL{
+        //Leds
+        public static final int ledOFF = 1;
+        public static final int ledON = 3;
+
+        //pipelines
+
     }
 
 }

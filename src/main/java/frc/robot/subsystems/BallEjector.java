@@ -2,6 +2,7 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.commands.*;
+import frc.robot.Robot;
 import frc.robot.RobotContainer;
 
 import edu.wpi.first.wpilibj.*;
@@ -11,6 +12,7 @@ import com.revrobotics.ColorMatch;
 import com.revrobotics.ColorMatchResult;
 import com.revrobotics.ColorSensorV3;
 import com.revrobotics.RelativeEncoder;
+import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -38,7 +40,7 @@ public class BallEjector extends SubsystemBase {
 
     // private final static DriverStation ds = DriverStation;
     // private final static Alliance alliance = DriverStation.getAlliance();
-    private final static String alliance = "Red";
+    private static String alliance = "Red";
     private double decayValue = 0.0;
     private double timeToDecay = 0.5; //seconds  assumes 10 ms loop timing may not be super accurate
     BallTower ejectorBallTower;
@@ -46,6 +48,14 @@ public class BallEjector extends SubsystemBase {
 
     public BallEjector(BallTower ballTower) {
         ejectorBallTower = ballTower;
+
+        BallEject.restoreFactoryDefaults();
+        BallEject.setSmartCurrentLimit(20);
+        
+        BallEject.setIdleMode(IdleMode.kBrake);
+
+        //BallEject.setOpenLoopRampRate(.7);
+        
 
         // alliance = ds.getAlliance();
 
@@ -65,7 +75,7 @@ public class BallEjector extends SubsystemBase {
     }
 
     public void ballUp() {
-        BallEject.set(-.5);
+        BallEject.set(-0.50); // -1.0 and 1.0 apparently kills neo 550's
     }
 
     public void stop() {
@@ -73,7 +83,7 @@ public class BallEjector extends SubsystemBase {
     }
 
     public void ballOut() {
-        BallEject.set(.5);
+        BallEject.set(0.5);
     }
 
     public void autoEject(){
@@ -173,6 +183,8 @@ public class BallEjector extends SubsystemBase {
         // }
     }
 
+    
+
 
 
     // public Boolean checkBallColor()
@@ -220,6 +232,8 @@ public class BallEjector extends SubsystemBase {
         SmartDashboard.putBoolean("Red", isRed());
         SmartDashboard.putBoolean("Blue", isBlue());
         SmartDashboard.putNumber("Decay Value", decayValue);
+        alliance = RobotContainer.allianceChooser.getSelected();
+        SmartDashboard.putNumber("Eject Motor Current", BallEject.getOutputCurrent());
         //SmartDashboard.putBoolean("Ball Ejector ", value);
 
 

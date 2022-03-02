@@ -115,7 +115,7 @@ SmartDashboard.putNumber("Min Output", kMinOutput);
     hoodSolenoid.set(true);
   }
 
-  public void manualLanuch(double speed){
+  public void manualLaunch(double speed){
     launcherLeader.set(speed);
   }
 

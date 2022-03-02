@@ -7,8 +7,11 @@ package frc.robot;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.RamseteController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.commands.*;
 import frc.robot.subsystems.*;
@@ -35,8 +38,8 @@ import com.ctre.phoenix.motorcontrol.can.TalonSRX;
  * subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
-  public static boolean climbMode = false;
-
+  //public static boolean climbMode = false;
+  public static String m_alliance = "None";
   public final Trajectories trajectories = new Trajectories();
   // Talon and Pigeon needed for subsystems defined here...
   public final static TalonSRX  talon1 = new TalonSRX(4);
@@ -49,7 +52,8 @@ public class RobotContainer {
   public final Conveyor conveyor = new Conveyor();
   public final static Climb climb = new Climb();
   public final static ClimbPivot climbPivot = new ClimbPivot();
-
+  public final static LimeLight limelight = new LimeLight();
+  
 
   public final static Launcher launcher = new Launcher();  
   public final static Intake intake = new Intake(talon1);
@@ -57,8 +61,11 @@ public class RobotContainer {
   public final Leds leds = new Leds();
  // private final ClimbnHook climbnHook = new ClimbnHook();
 
-  public final AutoCommand m_AutoCommand = new AutoCommand(driveTrain);
-  public final ClimbAuto m_ClimbAuto = new ClimbAuto(driveTrain, climbPivot, climb); 
+  public final AutoCommand m_AutoCommand = new AutoCommand(driveTrain, launcher, ballTower, intake);
+  public final Command m_ArmUp = new ArmUp(driveTrain, climbPivot, climb); 
+  public final Command m_AutoMidClimb = new AutoMidClimb(driveTrain, climbPivot, climb); 
+  public final Command m_AutoHighClimb = new AutoHighClimb(driveTrain, climbPivot, climb);
+  
 
   XboxController Gamepad0 = new XboxController(0);  //Driver Controller
   XboxController Gamepad1 = new XboxController(1);  //Manipulator Controller
@@ -90,27 +97,27 @@ public class RobotContainer {
   ParallelCommandGroup ejectStop = new ParallelCommandGroup(
                 new RunCommand(() -> ballEjector.stop(), ballEjector), 
                 new RunCommand(() -> conveyor.conveyerStop(), conveyor));
-  SequentialCommandGroup test = new SequentialCommandGroup(
-    new InstantCommand(() -> System.out.println("ClimbAuto Command Triggered!")),
-    new InstantCommand(() -> Climb.setClimbMode()),
-    // add commands (numbers are arm possitions)
-    // 95
-    new InstantCommand(() -> climb.setArmPidSetPoint(95), climb),
-    new RunCommand(() -> climb.startArmSmartMotion(), climb)
-        .withTimeout(2.5),
-    // drive back short amount
-    new RunCommand(() -> driveTrain.teleopDrive(.325, 0), driveTrain)
-        .withTimeout(.3),
-    new RunCommand(() -> driveTrain.teleopDrive(0, 0), driveTrain).withTimeout(.1),
-    // 89
-    new InstantCommand(() -> climb.setArmPidSetPoint(89), climb),
-    new RunCommand(() -> climb.startArmSmartMotion(), climb)
-        .withTimeout(1.5),
-    // Check if contact??
-    // 0-1
-    new InstantCommand(() -> climb.setArmPidSetPoint(1), climb),
-    new RunCommand(() -> climb.startArmSmartMotion(), climb)
-        .withTimeout(3.5)
+  // SequentialCommandGroup test = new SequentialCommandGroup(
+  //   new InstantCommand(() -> System.out.println("ClimbAuto Command Triggered!")),
+  //   new InstantCommand(() -> Climb.setClimbMode()),
+  //   // add commands (numbers are arm possitions)
+  //   // 95
+  //   new InstantCommand(() -> climb.setArmPidSetPoint(95), climb),
+  //   new RunCommand(() -> climb.startArmSmartMotion(), climb)
+  //       .withTimeout(2.5),
+  //   // drive back short amount
+  //   new RunCommand(() -> driveTrain.teleopDrive(.325, 0), driveTrain)
+  //       .withTimeout(.3),
+  //   new RunCommand(() -> driveTrain.teleopDrive(0, 0), driveTrain).withTimeout(.1),
+  //   // 89
+  //   new InstantCommand(() -> climb.setArmPidSetPoint(89), climb),
+  //   new RunCommand(() -> climb.startArmSmartMotion(), climb)
+  //       .withTimeout(1.5),
+  //   // Check if contact??
+  //   // 0-1
+  //   new InstantCommand(() -> climb.setArmPidSetPoint(1), climb),
+  //   new RunCommand(() -> climb.startArmSmartMotion(), climb)
+  //       .withTimeout(3.5)
     // new RunCommand(() -> Timer.delay(.5)),
     // 10
     // new InstantCommand(() -> climb.setArmPidSetPoint(10), climb),
@@ -155,16 +162,24 @@ public class RobotContainer {
     // new InstantCommand(() -> climb.setArmPidSetPoint(1), climb),
     // new RunCommand(() -> climb.startArmSmartMotion(), climb)
     //     .withTimeout(.4)
-  );
+  // );
   // ParallelCommandGroup test = new ParallelCommandGroup(
   //  new InstantCommand(() -> System.out.println("ParallelCommandGroup test Triggered!")),
   //  m_AutoCommand 
   // );
+  public static SendableChooser<String> allianceChooser = new SendableChooser<>();
+
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
+
+//Populate Alliance Selection Chooser
+    Shuffleboard.getTab("Autonomous").add(allianceChooser); 
+    allianceChooser.addOption("Red", "Red");
+    allianceChooser.addOption("Blue", "Blue"); 
+    allianceChooser.addOption("Auto Sort Off", "AutoOff");
+
     // Configure the button bindings
 
-    
     configureButtonBindings();
 
 
@@ -173,7 +188,8 @@ public class RobotContainer {
     driveTrain.setDefaultCommand(
       new RunCommand(() -> driveTrain.teleopDrive(
               Gamepad0.getRawAxis(GamePadButtons.leftY)*-0.95, 
-              Gamepad0.getRawAxis(GamePadButtons.rightX)*0.65), driveTrain)
+              Gamepad0.getRawAxis(GamePadButtons.rightX)*0.65,
+              Gamepad0.getRightBumper()), driveTrain)
 
     );
     ballEjector.setDefaultCommand(
@@ -237,42 +253,54 @@ public class RobotContainer {
     //Driver Gampad0
 
    
-    new JoystickButton(Gamepad0, GamePadButtons.RB)
-      .whileHeld(ballUp)
-      .whenReleased(ballStop);
-    
-    new JoystickButton(Gamepad0, GamePadButtons.Y)
-      .whenPressed(launcher::hoodUp, launcher);
+    // new JoystickButton(Gamepad0, GamePadButtons.RB)
+    //   .whileHeld(ballUp)
+    //   .whenReleased(ballStop);
 
-    new JoystickButton(Gamepad0, GamePadButtons.B)
-      .whenPressed(launcher::hoodDown, launcher);
+    new JoystickButton(Gamepad0, GamePadButtons.RB)
+       .whenPressed(new RunCommand(limelight::ledPipeline, limelight))
+       .whileHeld(new RunCommand(driveTrain::limeLightAim, driveTrain))
+       .whenReleased(new RunCommand(limelight::ledOff, limelight));
+    //   .whenReleased(ballStop);
+
+    
+    
+    //new JoystickButton(Gamepad0, GamePadButtons.Y)
+    //  .whenPressed(launcher::hoodUp, launcher);
+
+    //new JoystickButton(Gamepad0, GamePadButtons.B)
+    //  .whenPressed(launcher::hoodDown, launcher);
     
     new JoystickButton(Gamepad0, GamePadButtons.LB)
       .whileHeld(new RunCommand(() -> ballTower.feedBallToLauncher(), ballTower))
       .whenReleased(new InstantCommand(ballTower::stopBelts));
 
-    new JoystickButton(Gamepad0, GamePadButtons.X)
-      .whenPressed(new InstantCommand(launcher::increaseRPM, launcher))
-      .whenReleased(new RunCommand(launcher::startRPM, launcher));
+    // new JoystickButton(Gamepad0, GamePadButtons.X)
+    //   .whenPressed(new InstantCommand(launcher::increaseRPM, launcher))
+    //   .whenReleased(new RunCommand(launcher::startRPM, launcher));
 
-    new JoystickButton(Gamepad0, GamePadButtons.A)
-    .whenPressed(new InstantCommand(launcher::decreaseRPM, launcher))
-    .whenReleased(new RunCommand(launcher::startRPM, launcher));
+    // new JoystickButton(Gamepad0, GamePadButtons.A)
+    // .whenPressed(new InstantCommand(launcher::decreaseRPM, launcher))
+    // .whenReleased(new RunCommand(launcher::startRPM, launcher));
 
     
-    new POVButton(Gamepad0, GamePadButtons.Up)
+    // new POVButton(Gamepad0, GamePadButtons.Up)
+    new JoystickButton(Gamepad0, GamePadButtons.Y)
       .whenPressed(new RunCommand(launcher::longTarmacShoot, launcher))
       .whenPressed(new RunCommand(leds::red, leds));
 
-      new POVButton(Gamepad0, GamePadButtons.Left)
+    // new POVButton(Gamepad0, GamePadButtons.Left)
+    new JoystickButton(Gamepad0, GamePadButtons.X)
       .whenPressed(new RunCommand(launcher::midTarmacShoot, launcher))
       .whenPressed(new RunCommand(leds::purple, leds));
 
-    new POVButton(Gamepad0, GamePadButtons.Down)
+    // new POVButton(Gamepad0, GamePadButtons.Down)
+    new JoystickButton(Gamepad0, GamePadButtons.A)
       .whenPressed(new RunCommand(launcher::fenderHighShoot, launcher))
       .whenPressed(new RunCommand(leds::green, leds));
       
-    new POVButton(Gamepad0, GamePadButtons.Right)
+    // new POVButton(Gamepad0, GamePadButtons.Right)
+    new JoystickButton(Gamepad0, GamePadButtons.B)
       .whenPressed(new RunCommand(launcher::fenderLowShoot, launcher))
       .whenPressed(new RunCommand(leds::blue, leds));
     
@@ -297,20 +325,36 @@ public class RobotContainer {
       .whenHeld(new RunCommand(intake::intakeRollersReverse, intake))
       .whenReleased(new RunCommand (intake::intakeRollersOff, intake));
     
+    
     new JoystickButton(Gamepad1, GamePadButtons.RB)
       .whenHeld(new RunCommand(climbPivot::armBack, climbPivot));
 
-    new POVButton(Gamepad1, GamePadButtons.Up)
-      .whenPressed(new InstantCommand(climb::extendArms, climb))
-      .whenReleased(new RunCommand(climb::startArmSmartMotion, climb));
-    
-    new POVButton(Gamepad1, GamePadButtons.Down)
-      .whenPressed(new InstantCommand(climb::retractArms, climb))
-      .whenReleased(new RunCommand(climb::startArmSmartMotion, climb));
+      new JoystickButton(Gamepad1, GamePadButtons.Start)
+      .whenPressed(new RunCommand(climb::setClimbModeFalse, climb))
+      .whenReleased(new RunCommand(leds::rainbow, leds));
 
-    new POVButton(Gamepad1, GamePadButtons.Left)
+      new JoystickButton(Gamepad1, GamePadButtons.B)
+      .whenPressed(new RunCommand(ballEjector::ballOut, ballEjector));
+    
+
+    // new POVButton(Gamepad1, GamePadButtons.Up)
+    //   .whenPressed(new InstantCommand(climb::extendArms, climb))
+    //   .whenReleased(new RunCommand(climb::startArmSmartMotion, climb));
+    
+    // new POVButton(Gamepad1, GamePadButtons.Down)
+    //   .whenPressed(new InstantCommand(climb::retractArms, climb))
+    //   .whenReleased(new RunCommand(climb::startArmSmartMotion, climb));
+
+    new POVButton(Gamepad1, GamePadButtons.Down)
       // .whenPressed(m_AutoCommand);
-      .whenPressed(test);
+      .whenPressed(m_AutoMidClimb);
+    
+    new POVButton(Gamepad1, GamePadButtons.Up)
+      .whenPressed(m_ArmUp)
+      .whenPressed(new RunCommand(leds::bluePulse, leds));
+    
+    new POVButton(Gamepad1, GamePadButtons.Right)
+      .whenPressed(m_AutoHighClimb);
     
     // new JoystickButton(Gamepad1, GamePadButtons.Y)
     //   .whenPressed(new InstantCommand(climb::extendArms, climb))
@@ -331,33 +375,38 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     // // An ExampleCommand will run in autonomous
 
-    var currTrajectory = trajectories.exampleTrajectory;
+    // var currTrajectory = trajectories.exampleTrajectory;
+    // var currTrajectory = trajectory;
 
-    // Set bot known position to be the same as the first position of the trajectory
-    driveTrain.resetOdometry(currTrajectory.getInitialPose());
+    // // Set bot known position to be the same as the first position of the trajectory
+    // driveTrain.resetOdometry(currTrajectory.getInitialPose());
 
-    SmartDashboard.putNumber("Trajectory Durration", currTrajectory.getTotalTimeSeconds());
+    // SmartDashboard.putNumber("Trajectory Durration", currTrajectory.getTotalTimeSeconds());
 
-    RamseteCommand ramseteCommand = new RamseteCommand(
-      currTrajectory,
-      driveTrain::getPose,
-      new RamseteController(
-        DriveTrainConstants.kRamseteB,
-        DriveTrainConstants.kRamseteZeta),
-      new SimpleMotorFeedforward(DriveTrainConstants.ksVolts, DriveTrainConstants.kvVoltSecondsPerMeter, DriveTrainConstants.kaVoltSecondsSquaredPerMeter),
-      DriveTrainConstants.kDriveKinematics,
-      driveTrain::getWheelSpeeds,
-      left_PidController,
-      right_PidController,
-      driveTrain::tankDriveVolts,
-      driveTrain
-    );
+    // RamseteCommand ramseteCommand = new RamseteCommand(
+    //   currTrajectory,
+    //   driveTrain::getPose,
+    //   new RamseteController(
+    //     DriveTrainConstants.kRamseteB,
+    //     DriveTrainConstants.kRamseteZeta),
+    //   new SimpleMotorFeedforward(DriveTrainConstants.ksVolts, DriveTrainConstants.kvVoltSecondsPerMeter, DriveTrainConstants.kaVoltSecondsSquaredPerMeter),
+    //   DriveTrainConstants.kDriveKinematics,
+    //   driveTrain::getWheelSpeeds,
+    //   left_PidController,
+    //   right_PidController,
+    //   driveTrain::tankDriveVolts,
+    //   driveTrain
+    // );
 
-    return ramseteCommand.andThen(() -> driveTrain.tankDriveVolts(0, 0));
+    // return ramseteCommand.andThen(() -> driveTrain.tankDriveVolts(0, 0));
     // return twoBallAuto;
+    return m_AutoCommand;
   }
 
-  static public void setClimbMode(){
-    climbMode=true;
-  }
+//  static public void setClimbMode(){
+//    climbMode=true;
+//  }
+
+
+
 }
