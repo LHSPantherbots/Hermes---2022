@@ -150,25 +150,27 @@ public class BallEjector extends SubsystemBase {
 
     public boolean doesAllianceMatch()
     {
-        if (alliance.toString() == "Red"){
-            if(isRed()){
-                return  true;
-            }
-            else{
-                return false;
-            }
-        }
-        else if (alliance.toString() == "Blue"){
-            if(isBlue()){
-                return true;
-            }
-            else{
-                return false;
-            }
-        }
-        else {
-            return false;
-        }
+        return true;
+        
+        // if (alliance.toString() == "Red"){
+        //     if(isRed()){
+        //         return  true;
+        //     }
+        //     else{
+        //         return false;
+        //     }
+        // }
+        // else if (alliance.toString() == "Blue"){
+        //     if(isBlue()){
+        //         return true;
+        //     }
+        //     else{
+        //         return false;
+        //     }
+        // }
+        // else {
+        //     return false;
+        // }
     }
 
 
