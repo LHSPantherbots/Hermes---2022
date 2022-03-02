@@ -114,44 +114,44 @@ public class Climb extends SubsystemBase  {
         r_pidController.setSmartMotionMaxAccel(maxAcc, smartMotionProfile);
         r_pidController.setSmartMotionAllowedClosedLoopError(allowedErr, smartMotionProfile);
 
-        SmartDashboard.putNumber("Arm P Gain", kP);
-        SmartDashboard.putNumber("Arm I Gain", kI);
-        SmartDashboard.putNumber("Arm D Gain", kD);
-        SmartDashboard.putNumber("Arm I Zone", kIz);
-        SmartDashboard.putNumber("Arm Feed Forward", kFF);
-        SmartDashboard.putNumber("Arm Max Output", kMaxOutput);
-        SmartDashboard.putNumber("Arm Min Output", kMinOutput);
+        //SmartDashboard.putNumber("Arm P Gain", kP);
+        //SmartDashboard.putNumber("Arm I Gain", kI);
+        //SmartDashboard.putNumber("Arm D Gain", kD);
+        //SmartDashboard.putNumber("Arm I Zone", kIz);
+        //SmartDashboard.putNumber("Arm Feed Forward", kFF);
+        //SmartDashboard.putNumber("Arm Max Output", kMaxOutput);
+        //SmartDashboard.putNumber("Arm Min Output", kMinOutput);
 
         // display Smart Motion coefficients
-        SmartDashboard.putNumber("Arm Max Velocity", maxVel);
-        SmartDashboard.putNumber("Arm Min Velocity", minVel);
-        SmartDashboard.putNumber("Arm Max Acceleration", maxAcc);
-        SmartDashboard.putNumber("Arm Allowed Closed Loop Error", allowedErr);
+        //SmartDashboard.putNumber("Arm Max Velocity", maxVel);
+        //SmartDashboard.putNumber("Arm Min Velocity", minVel);
+        //SmartDashboard.putNumber("Arm Max Acceleration", maxAcc);
+        //SmartDashboard.putNumber("Arm Allowed Closed Loop Error", allowedErr);
 
-        SmartDashboard.putNumber("Right Arm Pos", r_encoder.getPosition());
-        SmartDashboard.putNumber("Left Arm Pos", l_encoder.getPosition());
+        //SmartDashboard.putNumber("Right Arm Pos", r_encoder.getPosition());
+        //SmartDashboard.putNumber("Left Arm Pos", l_encoder.getPosition());
     }
     
     
     @Override
     public void periodic() {
-        SmartDashboard.putNumber("ClimbAmp", l_arm.getOutputCurrent());
-        SmartDashboard.putNumber("HookAmp", r_arm.getOutputCurrent());
-        SmartDashboard.putNumber("Right Arm Pos", r_encoder.getPosition());
-        SmartDashboard.putNumber("Right Arm Vel", r_encoder.getVelocity());
-        SmartDashboard.putNumber("Right Arm Current", r_arm.getOutputCurrent());
-        SmartDashboard.putNumber("Left Arm Pos", l_encoder.getPosition());
-        SmartDashboard.putNumber("Left Arm Vel", l_encoder.getVelocity());
-        SmartDashboard.putNumber("Left Arm Current", l_arm.getOutputCurrent());
-        SmartDashboard.putNumber("Arm Set Point", pid_setPoint);
+        //SmartDashboard.putNumber("ClimbAmp", l_arm.getOutputCurrent());
+        //SmartDashboard.putNumber("HookAmp", r_arm.getOutputCurrent());
+        //SmartDashboard.putNumber("Right Arm Pos", r_encoder.getPosition());
+        //SmartDashboard.putNumber("Right Arm Vel", r_encoder.getVelocity());
+        //SmartDashboard.putNumber("Right Arm Current", r_arm.getOutputCurrent());
+        //SmartDashboard.putNumber("Left Arm Pos", l_encoder.getPosition());
+        //SmartDashboard.putNumber("Left Arm Vel", l_encoder.getVelocity());
+        //SmartDashboard.putNumber("Left Arm Current", l_arm.getOutputCurrent());
+        //SmartDashboard.putNumber("Arm Set Point", pid_setPoint);
 
-        SmartDashboard.putNumber("Arm P Gain", l_pidController.getP(smartMotionProfile));
-        SmartDashboard.putNumber("Arm I Gain", l_pidController.getI(smartMotionProfile));
-        SmartDashboard.putNumber("Arm D Gain", l_pidController.getD(smartMotionProfile));
-        SmartDashboard.putNumber("Arm I Zone", l_pidController.getIZone(smartMotionProfile));
-        SmartDashboard.putNumber("Arm Feed Forward", l_pidController.getFF(smartMotionProfile));
-        SmartDashboard.putNumber("Arm Max Output", l_pidController.getSmartMotionMaxVelocity(smartMotionProfile));
-        SmartDashboard.putBoolean("Climb Mode", climbMode);
+        //SmartDashboard.putNumber("Arm P Gain", l_pidController.getP(smartMotionProfile));
+        //SmartDashboard.putNumber("Arm I Gain", l_pidController.getI(smartMotionProfile));
+        //SmartDashboard.putNumber("Arm D Gain", l_pidController.getD(smartMotionProfile));
+        //SmartDashboard.putNumber("Arm I Zone", l_pidController.getIZone(smartMotionProfile));
+        //SmartDashboard.putNumber("Arm Feed Forward", l_pidController.getFF(smartMotionProfile));
+        //SmartDashboard.putNumber("Arm Max Output", l_pidController.getSmartMotionMaxVelocity(smartMotionProfile));
+        //SmartDashboard.putBoolean("Climb Mode", climbMode);
         // SmartDashboard.putNumber("Arm Min Output", l_pidController.getSmartMotionMinOutputVelocity(smartMotionProfile));
         // SmartDashboard.putNumber("Arm PID SetPoint", l_pidController.)
     }

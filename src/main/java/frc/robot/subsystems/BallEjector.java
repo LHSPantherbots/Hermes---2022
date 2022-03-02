@@ -29,7 +29,7 @@ public class BallEjector extends SubsystemBase {
     //Color Sensor Values
     DigitalInput redInput = new DigitalInput(RIO_Channels_DIO.COLOR_SENSOR_RED);
     DigitalInput blueInput = new DigitalInput(RIO_Channels_DIO.COLOR_SENSOR_BLUE);
-
+    DigitalInput ejectorBeamBreak = new DigitalInput(1);
     
   
 
@@ -50,7 +50,7 @@ public class BallEjector extends SubsystemBase {
         ejectorBallTower = ballTower;
 
         BallEject.restoreFactoryDefaults();
-        BallEject.setSmartCurrentLimit(20);
+        BallEject.setSmartCurrentLimit(40);
         
         BallEject.setIdleMode(IdleMode.kBrake);
 
@@ -141,21 +141,22 @@ public class BallEjector extends SubsystemBase {
         return blueInput.get();
     }
 
-    public boolean isBallDetected()
-    {
-        return (isBlue() || isRed());
+    // public boolean isBallDetected()
+    // {
+    //     return (isBlue() || isRed());
+    // }
+
+    public boolean isBallDetected(){
+        return !ejectorBeamBreak.get();
     }
 
     public boolean hasTwoBalls() {
-        if (isBallDetected()) {
-            if (doesAllianceMatch() && ejectorBallTower.isBallDetected()) {
+        if (isBallDetected() && ejectorBallTower.isBallDetected()) {
                 return true;
             } else {
                 return false;
             }
-        } else {
-            return false;
-        }
+        
     }
 
     public boolean doesAllianceMatch()
@@ -226,14 +227,14 @@ public class BallEjector extends SubsystemBase {
 
     @Override
     public void periodic() {
-        SmartDashboard.putString("Alliance Color", alliance.toString());
-        SmartDashboard.putBoolean("Alliance Match", doesAllianceMatch());
-        SmartDashboard.putBoolean("Ball Detected", isBallDetected());
-        SmartDashboard.putBoolean("Red", isRed());
-        SmartDashboard.putBoolean("Blue", isBlue());
-        SmartDashboard.putNumber("Decay Value", decayValue);
-        alliance = RobotContainer.allianceChooser.getSelected();
-        SmartDashboard.putNumber("Eject Motor Current", BallEject.getOutputCurrent());
+        //SmartDashboard.putString("Alliance Color", alliance.toString());
+        //SmartDashboard.putBoolean("Alliance Match", doesAllianceMatch());
+        //SmartDashboard.putBoolean("Ball Detected", isBallDetected());
+        //SmartDashboard.putBoolean("Red", isRed());
+        //SmartDashboard.putBoolean("Blue", isBlue());
+        //SmartDashboard.putNumber("Decay Value", decayValue);
+        // alliance = RobotContainer.allianceChooser.getSelected();
+        //SmartDashboard.putNumber("Eject Motor Current", BallEject.getOutputCurrent());
         //SmartDashboard.putBoolean("Ball Ejector ", value);
 
 

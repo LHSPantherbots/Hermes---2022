@@ -16,6 +16,9 @@ public class BallTower extends SubsystemBase {
     CANSparkMax towerBelts = new CANSparkMax(12, MotorType.kBrushless);
     DigitalInput beamBreak = new DigitalInput(RIO_Channels_DIO.TOWER_BEAM_BREAK);
     boolean launcherAtSpeed;
+    public double towerRollerDelaySetpoint = 0.1;
+    public double towerRollerDelayValue = 0.0;
+
     // DigitalInput Colorsense = new DigitalInput(4); 
 
     public BallTower() {
@@ -25,7 +28,7 @@ public class BallTower extends SubsystemBase {
         towerBelts.setOpenLoopRampRate(.7);
         towerRoller.setOpenLoopRampRate(.7);
 
-        towerRoller.setSmartCurrentLimit(30);
+        towerRoller.setSmartCurrentLimit(20);
         towerBelts.setSmartCurrentLimit(30);
         towerBelts.setInverted(true);
         towerRoller.setInverted(false);
@@ -33,10 +36,10 @@ public class BallTower extends SubsystemBase {
 
     public void liftBall() {
         towerRoller.set(.8);
-        if (beamBreak.get()) {
-            towerBelts.set(.2);
-        } else {
+        if (isBallDetected()) {
             towerBelts.set(0);
+        } else {
+            towerBelts.set(0.4);
         }
         
     }
@@ -49,8 +52,9 @@ public class BallTower extends SubsystemBase {
 
     @Override
     public void periodic() {
-        launcherAtSpeed = SmartDashboard.getBoolean("At Set Velocity", false);
-        SmartDashboard.putBoolean("BeamBreak", isBallDetected());
+        //launcherAtSpeed = SmartDashboard.getBoolean("At Set Velocity", false);
+        //SmartDashboard.putBoolean("BeamBreak", isBallDetected());
+        //SmartDashboard.putNumber("Tower Roller Delay", towerRollerDelayValue);
     }
 
     public void feedBallToLauncher() {
@@ -78,9 +82,19 @@ public class BallTower extends SubsystemBase {
         return !beamBreak.get();
     }
 
+    public boolean twoBallsDetected(){
+        if(isBallDetected() && RobotContainer.ballEjector.isBallDetected()){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
     public void autoTower(){
 
-        if (!isBallDetected() && !Climb.climbMode){
+
+
+        if (!twoBallsDetected()   && !Climb.climbMode){
             liftBall();
         }
         else{

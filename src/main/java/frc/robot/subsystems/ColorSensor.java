@@ -69,8 +69,8 @@ public class ColorSensor extends SubsystemBase{
     @Override
     public void periodic() {
         //SmartDashboard.putBoolean("Ball Ejector ", value);
-        SmartDashboard.putBoolean("Red", isRed());
-        SmartDashboard.putBoolean("Blue", isBlue());
+        //SmartDashboard.putBoolean("Red", isRed());
+        //SmartDashboard.putBoolean("Blue", isBlue());
     
 
 

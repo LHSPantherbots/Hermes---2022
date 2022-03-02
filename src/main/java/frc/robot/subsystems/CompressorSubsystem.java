@@ -21,11 +21,11 @@ public class CompressorSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-        enabled = compressor.enabled();
-        current = compressor.getCurrent();
-        pressure = compressor.getPressure();
-        SmartDashboard.putBoolean("Compressor Running", enabled);
-        SmartDashboard.putNumber("Compressor Current", current);
-        SmartDashboard.putNumber("Pneumatics Pressure", pressure);
+        //enabled = compressor.enabled();
+        //current = compressor.getCurrent();
+        //pressure = compressor.getPressure();
+        //SmartDashboard.putBoolean("Compressor Running", enabled);
+        //SmartDashboard.putNumber("Compressor Current", current);
+        //SmartDashboard.putNumber("Pneumatics Pressure", pressure);
     }
 }

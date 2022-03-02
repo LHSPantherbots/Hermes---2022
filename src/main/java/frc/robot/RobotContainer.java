@@ -334,8 +334,10 @@ public class RobotContainer {
       .whenReleased(new RunCommand(leds::rainbow, leds));
 
       new JoystickButton(Gamepad1, GamePadButtons.B)
-      .whenPressed(new RunCommand(ballEjector::ballOut, ballEjector));
-    
+      .whenHeld(new RunCommand(ballEjector::ballOut, ballEjector))
+      .whenHeld(new RunCommand(ballTower::liftBall, ballTower))
+      .whenReleased(new RunCommand(ballEjector::autoEject, ballEjector))
+      .whenReleased(new RunCommand(ballTower::autoTower, ballTower));    
 
     // new POVButton(Gamepad1, GamePadButtons.Up)
     //   .whenPressed(new InstantCommand(climb::extendArms, climb))
