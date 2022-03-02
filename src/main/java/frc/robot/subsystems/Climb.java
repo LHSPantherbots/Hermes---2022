@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.RobotContainer;
 import frc.robot.Constants.CAN_ID;
 import frc.robot.Constants.SparkMaxPidConstants;
+import frc.robot.Constants.ArmPidConstants;
 
 
 public class Climb extends SubsystemBase  {
@@ -58,36 +59,18 @@ public class Climb extends SubsystemBase  {
         r_pidController = r_arm.getPIDController();
 
         // PID coefficients these will need to be tuned
-        // kP = SparkMaxPidConstants.kPP;
-        kP = 0.0000035; 
-        // kI =  SparkMaxPidConstants.kI;
-        kI = 0.0;
-        // kD = SparkMaxPidConstants.kD;
-        kD = 0.00002;
-        kIz = SparkMaxPidConstants.kIz;
-        // kFF = SparkMaxPidConstants.kFF;
-        kFF = 0.000165;
-        kMaxOutput = SparkMaxPidConstants.kMaxOutput;
-        // kMinOutput = SparkMaxPidConstants.kMinOutput;
-        kMinOutput = SparkMaxPidConstants.kMaxOutput*-1;
-        maxRPM = SparkMaxPidConstants.maxRPM;
-        maxVel = SparkMaxPidConstants.maxVel;
-        // minVel = SparkMaxPidConstants.minVel;
-        minVel = SparkMaxPidConstants.maxVel*-1;
-        maxAcc = SparkMaxPidConstants.maxAcc;
-        allowedErr = SparkMaxPidConstants.allowedErr;
-        // kP = 5e-5; 
-        // kI = 1e-6;
-        // kD = 0; 
-        // kIz = 0; 
-        // kFF = 0.000156; 
-        // kMaxOutput = 1; 
-        // kMinOutput = -1;
-        // maxRPM = 5700;
-
-        // Smart Motion Coefficients
-        // maxVel = 2000; // rpm
-        // maxAcc = 1500;
+        kP = ArmPidConstants.kP;
+        kI = ArmPidConstants.kI;
+        kD = ArmPidConstants.kD;
+        kIz = ArmPidConstants.kIz;
+        kFF = ArmPidConstants.kFF;
+        kMaxOutput = ArmPidConstants.kMaxOutput;
+        kMinOutput = ArmPidConstants.kMinOutput;
+        maxRPM = ArmPidConstants.maxRPM;
+        maxVel = ArmPidConstants.maxVel;
+        minVel = ArmPidConstants.minVel;
+        maxAcc = ArmPidConstants.maxAcc;
+        allowedErr = ArmPidConstants.allowedErr;
         
         l_pidController.setP(kP, smartMotionProfile);
         l_pidController.setI(kI, smartMotionProfile);
@@ -105,7 +88,7 @@ public class Climb extends SubsystemBase  {
 
 
         l_pidController.setSmartMotionMaxVelocity(maxVel, smartMotionProfile);
-        // l_pidController.setSmartMotionMinOutputVelocity(minVel, smartMotionProfile);
+        l_pidController.setSmartMotionMinOutputVelocity(minVel, smartMotionProfile);
         l_pidController.setSmartMotionMaxAccel(maxAcc, smartMotionProfile);
         l_pidController.setSmartMotionAllowedClosedLoopError(allowedErr, smartMotionProfile);
 
