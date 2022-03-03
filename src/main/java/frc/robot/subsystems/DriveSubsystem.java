@@ -435,7 +435,11 @@ public class DriveSubsystem extends SubsystemBase {
     double outF = kF;             
     double outP = kP * error;
     double outputTurn = outF + outP;
-    teleopDrive(0, outputTurn);
+    if (RobotContainer.limelight.isTargetValid()){
+      teleopDrive(0, outputTurn);
+    }else{
+      teleopDrive(0, 0);
+    }
   }
 
     

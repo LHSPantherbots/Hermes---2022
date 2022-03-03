@@ -41,6 +41,7 @@ public final class Constants {
 
     public static final class RIO_Channels_DIO{
         public static final int TOWER_BEAM_BREAK = 0;
+        public static final int EJECTOR_BEAM_BREAK = 1;
         public static final int COLOR_SENSOR_RED = 8;
         public static final int COLOR_SENSOR_BLUE = 9;
     }

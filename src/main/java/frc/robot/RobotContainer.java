@@ -177,6 +177,7 @@ public class RobotContainer {
     allianceChooser.addOption("Red", "Red");
     allianceChooser.addOption("Blue", "Blue"); 
     allianceChooser.addOption("Auto Sort Off", "AutoOff");
+    allianceChooser.setDefaultOption("Auto Sort Off", "AutoOff");
 
     // Configure the button bindings
 
@@ -258,8 +259,12 @@ public class RobotContainer {
     //   .whenReleased(ballStop);
 
     new JoystickButton(Gamepad0, GamePadButtons.RB)
-       .whenPressed(new RunCommand(limelight::ledPipeline, limelight))
+       .whenPressed(new InstantCommand(limelight::ledPipeline, limelight))
+       .whenPressed(new InstantCommand(()->limelight.setPipeline(1), limelight))
+       .whenPressed(new RunCommand(limelight::startTakingSnapshots, limelight))
        .whileHeld(new RunCommand(driveTrain::limeLightAim, driveTrain))
+       .whenReleased(new InstantCommand(limelight::stopTakingSnapshots, limelight))
+       .whenReleased(new InstantCommand(()->limelight.setPipeline(0), limelight))
        .whenReleased(new RunCommand(limelight::ledOff, limelight));
     //   .whenReleased(ballStop);
 
@@ -314,14 +319,13 @@ public class RobotContainer {
     
 
     new JoystickButton(Gamepad1, GamePadButtons.LB)
-      .whenPressed(new RunCommand(conveyor::conveyerForward, conveyor))
       .whenHeld(new RunCommand(intake::intakeDown, intake))
-      .whenHeld(new RunCommand(ballTower::runTowerRoller, ballTower))
       .whenReleased(new RunCommand(intake::intakeUp, intake));
     
     new JoystickButton(Gamepad1, GamePadButtons.X)
-      .whenHeld(new RunCommand(intake::intakeRollersForward, intake))
-      .whenReleased(new RunCommand (intake::intakeRollersOff, intake));
+      .whileHeld(new RunCommand(intake::intakeRollersForward, intake))
+      .whileHeld(new RunCommand(ballTower::runTowerRoller, ballTower))
+      .whileHeld(new RunCommand(conveyor::conveyerForward, conveyor));
 
     new JoystickButton(Gamepad1, GamePadButtons.A)
       .whenHeld(new RunCommand(intake::intakeRollersReverse, intake))
