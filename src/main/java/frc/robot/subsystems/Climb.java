@@ -166,7 +166,7 @@ public class Climb extends SubsystemBase  {
     }
 
     public void manualClimb(double lift, double trim){
-        if (!climbMode){
+        if (!climbMode || (lift > 0.2 || trim > 0.2)){
             lift = deadBand(lift);
             trim = deadBand(trim);
             l_arm.set(lift + trim);
