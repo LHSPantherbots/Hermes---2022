@@ -18,6 +18,7 @@ public class BallTower extends SubsystemBase {
     boolean launcherAtSpeed;
     public double towerRollerDelaySetpoint = 0.1;
     public double towerRollerDelayValue = 0.0;
+    public boolean isworkautobelts = false;
 
     // DigitalInput Colorsense = new DigitalInput(4); 
 
@@ -43,6 +44,10 @@ public class BallTower extends SubsystemBase {
         }
         
     }
+    public void runTowerRoller(){
+        towerRoller.set(.5);
+    }
+
 
     /*
     public void checkBallColor(){
@@ -92,14 +97,49 @@ public class BallTower extends SubsystemBase {
 
     public void autoTower(){
 
+    // if (!isBallDetected() || ejectorBallTower.isBallDetected()){
+        // liftball();
+        // 
+    // else{
+        // stopTower();
+    // }
 
+    // }
+    /*
+        somebool false <- in class constructor
+        if bottom_beam is broken and top_beam is not broken {
+            somebool = true
+        } else if top_beam is broken {
+            somebool = false
+        }
+        if somebool is true {
+            run belts
+        } else {
+            stop belts
+        }
 
-        if (!twoBallsDetected()   && !Climb.climbMode){
+    */
+
+        if (RobotContainer.ballEjector.isBallDetected() && !isBallDetected()){
+            isworkautobelts = true;
+        }
+        else if (isBallDetected()){
+            isworkautobelts = false;
+        }
+        if (isworkautobelts){
             liftBall();
         }
         else{
             stopTower();
         }
+
+
+        // if (!twoBallsDetected()   && !Climb.climbMode){
+            // liftBall();
+        // }
+        // else{
+            // stopTower();
+        // }
     }
 
 

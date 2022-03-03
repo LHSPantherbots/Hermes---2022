@@ -97,10 +97,10 @@ SmartDashboard.putNumber("Min Output", kMinOutput);
     public void periodic(){
 
     //Smart Dashboard Items
-    //SmartDashboard.putNumber("Launcher Velocity", getLauncherVelocity());
-    //SmartDashboard.putBoolean("At Set Velocity", isAtVelocity());
-    //SmartDashboard.putNumber("Launcher Setpoint", getVelocitySetpoint());
-    //SmartDashboard.putBoolean("Hood State", hoodSolenoid.get());
+    SmartDashboard.putNumber("Launcher Velocity", getLauncherVelocity());
+    SmartDashboard.putBoolean("At Set Velocity", isAtVelocity());
+    SmartDashboard.putNumber("Launcher Setpoint", getVelocitySetpoint());
+    SmartDashboard.putBoolean("Hood State", hoodSolenoid.get());
   }
 
   public void toggleHood(){

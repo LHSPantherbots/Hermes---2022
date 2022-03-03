@@ -206,7 +206,7 @@ public class RobotContainer {
     );
 
     conveyor.setDefaultCommand(
-      new RunCommand(conveyor::conveyerForward, conveyor)
+      new RunCommand(conveyor::conveyerStop, conveyor)
     );
 
     climb.setDefaultCommand(
@@ -314,7 +314,9 @@ public class RobotContainer {
     
 
     new JoystickButton(Gamepad1, GamePadButtons.LB)
+      .whenPressed(new RunCommand(conveyor::conveyerForward, conveyor))
       .whenHeld(new RunCommand(intake::intakeDown, intake))
+      .whenHeld(new RunCommand(ballTower::runTowerRoller, ballTower))
       .whenReleased(new RunCommand(intake::intakeUp, intake));
     
     new JoystickButton(Gamepad1, GamePadButtons.X)
@@ -330,6 +332,7 @@ public class RobotContainer {
       .whenHeld(new RunCommand(climbPivot::armBack, climbPivot));
 
       new JoystickButton(Gamepad1, GamePadButtons.Start)
+      .whenPressed(new RunCommand(conveyor::conveyerStop, conveyor))
       .whenPressed(new RunCommand(climb::setClimbModeFalse, climb))
       .whenReleased(new RunCommand(leds::rainbow, leds));
 

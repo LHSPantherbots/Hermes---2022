@@ -65,21 +65,8 @@ public class Conveyor extends SubsystemBase{
     
 
     public void conveyerForward() {
-        timerDelayValue = timerDelayValue - 0.01;
-
-        if(!wasBallDetected){ //if there is not ball detected reset the delay timer
-            timerDelayValue = timerDelaySetpoint;
-        }
-        
-        if(RobotContainer.ballEjector.isBallDetected()){
-            wasBallDetected = true;
-        }
-        else{
-            wasBallDetected = false;
-        }
-        
-
-        if (Climb.climbMode || (RobotContainer.ballEjector.hasTwoBalls() && (timerDelaySetpoint<0) )){ // stops conveyer if climbMode is enabled
+    
+        if (Climb.climbMode || RobotContainer.ballEjector.hasTwoBalls() ){ // stops conveyer if climbMode is enabled
             Conveyer.stopMotor();
         } else {
             Conveyer.set(.2);
