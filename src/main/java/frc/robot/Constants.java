@@ -88,6 +88,9 @@ public final class Constants {
         public static final double ksVolts = 0.21074;
         public static final double kvVoltSecondsPerMeter = 2.8111;
         public static final double kaVoltSecondsSquaredPerMeter = 0.58838;
+        public static final double angular_ksVolts = 0.16242;
+        public static final double angular_kvVoltSecondsPerMeter = 3.1275;
+        public static final double angular_kaVoltSecondsSquaredPerMeter = 0.10085;
         public static final double kPDriveVel = 3.899;
         public static final double left_Ks = 0.14208;
         public static final double left_Kv = 3.2143;

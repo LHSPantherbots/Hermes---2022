@@ -1,30 +1,15 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import com.revrobotics.ColorMatch;
-import com.revrobotics.ColorMatchResult;
-import com.revrobotics.ColorSensorV3;
-import frc.robot.commands.*;
-
-import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.DigitalInput;
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.RelativeEncoder;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 
 public class ColorSensor extends SubsystemBase{
-    
-    private final I2C.Port i2cPort = I2C.Port.kMXP;
-
-    private final ColorSensorV3 m_colorSensor = new ColorSensorV3(i2cPort);
-    private final ColorMatch m_colorMatcher = new ColorMatch();
-  
-    private final static Alliance alliance = DriverStation.getAlliance();
+      
+    // private final static Alliance alliance = DriverStation.getAlliance();
 
 
     DigitalInput redInput = new DigitalInput(8);
@@ -32,9 +17,6 @@ public class ColorSensor extends SubsystemBase{
 
 
     public ColorSensor(){
-
-        m_colorMatcher.addColorMatch(Color.kBlue);
-        m_colorMatcher.addColorMatch(Color.kRed);
 
 
     }

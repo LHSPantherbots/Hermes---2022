@@ -49,12 +49,6 @@ public class BallTower extends SubsystemBase {
     }
 
 
-    /*
-    public void checkBallColor(){
-        
-    }
-    */
-
     @Override
     public void periodic() {
         //launcherAtSpeed = SmartDashboard.getBoolean("At Set Velocity", false);
