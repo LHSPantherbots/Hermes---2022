@@ -169,6 +169,7 @@ public class RobotContainer {
   //  m_AutoCommand 
   // );
   public static SendableChooser<String> allianceChooser = new SendableChooser<>();
+  public static SendableChooser<Command> autoChoice = new SendableChooser<>();
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -176,9 +177,14 @@ public class RobotContainer {
 //Populate Alliance Selection Chooser
     Shuffleboard.getTab("Autonomous").add(allianceChooser); 
     allianceChooser.addOption("Red", "Red");
-    allianceChooser.addOption("Blue", "Blue"); 
+    allianceChooser.addOption("Blue", "Blue");  
     allianceChooser.addOption("Auto Sort Off", "AutoOff");
     allianceChooser.setDefaultOption("Auto Sort Off", "AutoOff");
+
+    Shuffleboard.getTab("Autonomous").add(autoChoice);
+    autoChoice.addOption("Do Nothing", new RunCommand(()->driveTrain.teleopDrive(0, 0)));
+    autoChoice.addOption("Two Ball Auto", m_AutoCommand);
+    autoChoice.addOption("Three Ball Auto", m_ThreeBallAuto);
 
     // Configure the button bindings
 
@@ -413,7 +419,7 @@ public class RobotContainer {
 
     // return ramseteCommand.andThen(() -> driveTrain.tankDriveVolts(0, 0));
     // return twoBallAuto;
-    return m_ThreeBallAuto;
+    return autoChoice.getSelected();
   }
 
 //  static public void setClimbMode(){
