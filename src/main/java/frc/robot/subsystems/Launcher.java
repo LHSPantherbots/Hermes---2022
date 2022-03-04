@@ -168,13 +168,13 @@ SmartDashboard.putNumber("Min Output", kMinOutput);
     
       public void longTarmacShoot(){
           hoodDown();
-          velocitySetpoint = 4800;
+          velocitySetpoint = 5000;//4800
           velocityClosedLoopLaunch();
       }
 
       public void midTarmacShoot(){
         hoodDown();
-        velocitySetpoint = 3500;
+        velocitySetpoint = 3700;//3500
         velocityClosedLoopLaunch();
     }
     

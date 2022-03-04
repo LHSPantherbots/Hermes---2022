@@ -62,6 +62,7 @@ public class RobotContainer {
  // private final ClimbnHook climbnHook = new ClimbnHook();
 
   public final AutoCommand m_AutoCommand = new AutoCommand(driveTrain, launcher, ballTower, intake);
+  public final Command m_ThreeBallAuto = new ThreeBallAuto(driveTrain, launcher, ballTower, intake, conveyor);
   public final Command m_ArmUp = new ArmUp(driveTrain, climbPivot, climb); 
   public final Command m_AutoMidClimb = new AutoMidClimb(driveTrain, climbPivot, climb); 
   public final Command m_AutoHighClimb = new AutoHighClimb(driveTrain, climbPivot, climb);
@@ -196,7 +197,7 @@ public class RobotContainer {
     ballEjector.setDefaultCommand(
       new RunCommand(ballEjector::autoEject, ballEjector)
     );
-    //intake.setDefaultCommand(new RunCommand(intake::intakeUp, intake));
+    // intake.setDefaultCommand(new RunCommand(intake::stop, intake));
 
     leds.setDefaultCommand(
       new RunCommand(() -> leds.rainbow(), leds)
@@ -260,11 +261,11 @@ public class RobotContainer {
 
     new JoystickButton(Gamepad0, GamePadButtons.RB)
        .whenPressed(new InstantCommand(limelight::ledPipeline, limelight))
-       .whenPressed(new InstantCommand(()->limelight.setPipeline(1), limelight))
+       .whenPressed(new InstantCommand(()->limelight.setPipeline(0), limelight))
        .whenPressed(new RunCommand(limelight::startTakingSnapshots, limelight))
        .whileHeld(new RunCommand(driveTrain::limeLightAim, driveTrain))
        .whenReleased(new InstantCommand(limelight::stopTakingSnapshots, limelight))
-       .whenReleased(new InstantCommand(()->limelight.setPipeline(0), limelight))
+      //  .whenReleased(new InstantCommand(()->limelight.setPipeline(0), limelight))
        .whenReleased(new RunCommand(limelight::ledOff, limelight));
     //   .whenReleased(ballStop);
 
@@ -323,9 +324,12 @@ public class RobotContainer {
       .whenReleased(new RunCommand(intake::intakeUp, intake));
     
     new JoystickButton(Gamepad1, GamePadButtons.X)
-      .whileHeld(new RunCommand(intake::intakeRollersForward, intake))
-      .whileHeld(new RunCommand(ballTower::runTowerRoller, ballTower))
-      .whileHeld(new RunCommand(conveyor::conveyerForward, conveyor));
+      .whenHeld(new RunCommand(intake::intakeRollersForward, intake))
+      .whenHeld(new RunCommand(ballTower::runTowerRoller, ballTower))
+      .whenHeld(new RunCommand(conveyor::conveyerForward, conveyor))
+      .whenReleased(new InstantCommand(intake::stop, intake))
+      .whenReleased(new InstantCommand(ballTower::stopTower, ballTower))
+      .whenReleased(new InstantCommand(conveyor::stop, conveyor));
 
     new JoystickButton(Gamepad1, GamePadButtons.A)
       .whenHeld(new RunCommand(intake::intakeRollersReverse, intake))
@@ -409,7 +413,7 @@ public class RobotContainer {
 
     // return ramseteCommand.andThen(() -> driveTrain.tankDriveVolts(0, 0));
     // return twoBallAuto;
-    return m_AutoCommand;
+    return m_ThreeBallAuto;
   }
 
 //  static public void setClimbMode(){

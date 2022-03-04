@@ -80,7 +80,7 @@ public class BallEjector extends SubsystemBase {
     }
 
     public void ballOut() {
-        BallEject.set(0.5);
+        BallEject.set(0.75);
     }
 
     public void autoEject(){

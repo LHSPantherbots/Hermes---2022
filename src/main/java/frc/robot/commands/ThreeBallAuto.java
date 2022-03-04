@@ -57,7 +57,7 @@ public class ThreeBallAuto  extends SequentialCommandGroup {
     public MaxVelocityConstraint maxVelocityConstraint = new MaxVelocityConstraint(DriveTrainConstants.kMaxSpeedMetersPerSecond);
     
     
-    public ThreeBallAuto(DriveSubsystem driveTrain, Launcher launcher, BallTower ballTower, Intake intake) {
+    public ThreeBallAuto(DriveSubsystem driveTrain, Launcher launcher, BallTower ballTower, Intake intake, Conveyor conveyor) {
         
 
 
@@ -81,8 +81,7 @@ public class ThreeBallAuto  extends SequentialCommandGroup {
     second_Pickup_trajectory = TrajectoryGenerator.generateTrajectory(
             new Pose2d(0,0, new Rotation2d()),
             List.of(
-                new Translation2d(-0.43, 0.93),
-                new Translation2d(-0.15, 2.06)
+                new Translation2d(-0.43, 0.93)
             ), 
             new Pose2d(-0.5, 2.75, new Rotation2d(-0.7853)), trajectoryConfig_rev);
     
@@ -161,6 +160,7 @@ public class ThreeBallAuto  extends SequentialCommandGroup {
     addCommands(
         new InstantCommand(() -> driveTrain.resetOdometry(first_Pickup_trajectory.getInitialPose()), driveTrain),
         new InstantCommand(() -> intake.intakeDownnRoll(), intake),
+        new InstantCommand(() -> conveyor.conveyerForward(), conveyor),
         ramseteCommand_first_pickup.andThen(() -> driveTrain.tankDriveVolts(0, 0)),
         new InstantCommand(() -> intake.intakeRollersOff(), intake),
         new InstantCommand(() -> intake.intakeUp(), intake),
@@ -171,7 +171,7 @@ public class ThreeBallAuto  extends SequentialCommandGroup {
         new InstantCommand(() -> ballTower.liftBall(), ballTower),
         waitForBeamBreak,
         waitForLauncher2,
-        new InstantCommand(() -> ballTower.feedBallToLauncher(), ballTower),
+        new RunCommand(() -> ballTower.feedBallToLauncher(), ballTower).withTimeout(2),
 
         new InstantCommand(() -> intake.intakeDownnRoll(), intake),
         ramseteCommand_second_pickup.andThen(() -> driveTrain.tankDriveVolts(0, 0)),
@@ -180,7 +180,7 @@ public class ThreeBallAuto  extends SequentialCommandGroup {
         new InstantCommand(() -> ballTower.liftBall(), ballTower),
         ramseteCommand_second_shoot.andThen(() -> driveTrain.tankDriveVolts(0, 0)),
         new InstantCommand(() -> ballTower.feedBallToLauncher(), ballTower).withTimeout(1),
-       
+        new InstantCommand(() -> conveyor.stop(), conveyor),
         new InstantCommand(() -> launcher.setVelocitySetpoint(0), launcher),
         waitForLauncher3
         );

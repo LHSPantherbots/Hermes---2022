@@ -27,8 +27,8 @@ import frc.robot.Constants.SparkMaxPidConstants;
 
 public class DriveSubsystem extends SubsystemBase {
     //limelight vision may need to be tuned
-    private double kP = 0.031;
-    private double kF = 0.15;
+    private double kP = 0.012;
+    private double kF = 0.2;
     
 
     private double kPG = 0.0075;
