@@ -252,14 +252,20 @@ public class RobotContainer {
       .whenReleased(new RunCommand(ballTower::autoTower, ballTower));    
 
     new POVButton(Gamepad1, GamePadButtons.Down)
-      .whenPressed(m_AutoMidClimb);
+      .whenPressed(m_AutoMidClimb)
+      .whenPressed(new RunCommand(launcher::stopFlyWheel, launcher))
+      .whenPressed(new RunCommand(leds::bluePulse, leds));
     
     new POVButton(Gamepad1, GamePadButtons.Up)
       .whenPressed(m_ArmUp)
+      .whenPressed(new RunCommand(launcher::stopFlyWheel, launcher))
       .whenPressed(new RunCommand(leds::bluePulse, leds));
+
     
     new POVButton(Gamepad1, GamePadButtons.Right)
-      .whenPressed(m_AutoHighClimb);
+      .whenPressed(m_AutoHighClimb)
+      .whenPressed(new RunCommand(launcher::stopFlyWheel, launcher))
+      .whenPressed(new RunCommand(leds::bluePulse, leds));
 
 
     new ManualClimbOverride()
