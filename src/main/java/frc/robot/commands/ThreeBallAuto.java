@@ -2,6 +2,7 @@ package frc.robot.commands;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.time.Instant;
 import java.util.List;
 
 import edu.wpi.first.math.controller.PIDController;
@@ -23,6 +24,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj2.command.*;
 import frc.robot.Constants.DriveTrainConstants;
+import frc.robot.Constants.LimeL;
 import frc.robot.subsystems.*;
 import frc.robot.commands.*;
 
@@ -57,7 +59,7 @@ public class ThreeBallAuto  extends SequentialCommandGroup {
     public MaxVelocityConstraint maxVelocityConstraint = new MaxVelocityConstraint(DriveTrainConstants.kMaxSpeedMetersPerSecond);
     
     
-    public ThreeBallAuto(DriveSubsystem driveTrain, Launcher launcher, BallTower ballTower, Intake intake, Conveyor conveyor) {
+    public ThreeBallAuto(DriveSubsystem driveTrain, Launcher launcher, BallTower ballTower, Intake intake, Conveyor conveyor, LimeLight limelight) {
         
 
 
@@ -81,16 +83,16 @@ public class ThreeBallAuto  extends SequentialCommandGroup {
     second_Pickup_trajectory = TrajectoryGenerator.generateTrajectory(
             new Pose2d(0,0, new Rotation2d()),
             List.of(
-                new Translation2d(-0.43, 0.93)
+                new Translation2d(-0.66, 1.32)
             ), 
-            new Pose2d(-0.5, 2.75, new Rotation2d(-0.7853)), trajectoryConfig_rev);
+            new Pose2d(-0.83, 2.75, new Rotation2d(-0.15)), trajectoryConfig_rev);
     
     second_Shoot_trajectory = TrajectoryGenerator.generateTrajectory(
-                new Pose2d(-0.5, 2.75, new Rotation2d(-0.7853)),
+                new Pose2d(-0.83, 2.75, new Rotation2d(-0.15)),
                 List.of(
-                    new Translation2d(0.2, 2.0)
+                    new Translation2d(-0.43, 2.4)
                 ), 
-                new Pose2d(0.6, 1.6, new Rotation2d(-0.7853)), trajectoryConfig);
+                new Pose2d(0.4, 0.91, new Rotation2d(-0.54)), trajectoryConfig);
 
     Command waitForLauncher1 = new WaitForLauncherAtSpeed(launcher);
     Command waitForLauncher2 = new WaitForLauncherAtSpeed(launcher);
@@ -169,7 +171,7 @@ public class ThreeBallAuto  extends SequentialCommandGroup {
         waitForLauncher1,
         new InstantCommand(() -> ballTower.feedBallToLauncher(), ballTower),
         new InstantCommand(() -> ballTower.liftBall(), ballTower),
-        waitForBeamBreak,
+        waitForBeamBreak.raceWith(new InstantCommand(() -> driveTrain. tankDriveVolts(0,0), driveTrain).withTimeout(4)),
         waitForLauncher2,
         new RunCommand(() -> ballTower.feedBallToLauncher(), ballTower).withTimeout(2),
 
@@ -179,10 +181,16 @@ public class ThreeBallAuto  extends SequentialCommandGroup {
         new InstantCommand(() -> intake.intakeUp(), intake),
         new InstantCommand(() -> ballTower.liftBall(), ballTower),
         ramseteCommand_second_shoot.andThen(() -> driveTrain.tankDriveVolts(0, 0)),
+        new InstantCommand(limelight::ledPipeline, limelight),
+        new InstantCommand(() -> limelight.setPipeline(0), limelight),
+        new RunCommand(limelight::startTakingSnapshots, limelight),
+        new RunCommand(driveTrain::limeLightAim, driveTrain).withTimeout(2),
         new InstantCommand(() -> ballTower.feedBallToLauncher(), ballTower).withTimeout(1),
+        new InstantCommand(limelight::stopTakingSnapshots, limelight),
         new InstantCommand(() -> conveyor.stop(), conveyor),
         new InstantCommand(() -> launcher.setVelocitySetpoint(0), launcher),
         waitForLauncher3
         );
     }
 }
+

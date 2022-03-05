@@ -62,14 +62,14 @@ public class RobotContainer {
  // private final ClimbnHook climbnHook = new ClimbnHook();
 
   public final AutoCommand m_AutoCommand = new AutoCommand(driveTrain, launcher, ballTower, intake);
-  public final Command m_ThreeBallAuto = new ThreeBallAuto(driveTrain, launcher, ballTower, intake, conveyor);
+  public final Command m_ThreeBallAuto = new ThreeBallAuto(driveTrain, launcher, ballTower, intake, conveyor, limelight);
   public final Command m_ArmUp = new ArmUp(driveTrain, climbPivot, climb); 
   public final Command m_AutoMidClimb = new AutoMidClimb(driveTrain, climbPivot, climb); 
   public final Command m_AutoHighClimb = new AutoHighClimb(driveTrain, climbPivot, climb);
   
 
   XboxController Gamepad0 = new XboxController(0);  //Driver Controller
-  XboxController Gamepad1 = new XboxController(1);  //Manipulator Controller
+  static XboxController Gamepad1 = new XboxController(1);  //Manipulator Controller
 
 
   // PIDControllers for Path Following defined here to avoid new PIDControlers being created each time auto is enabled in testing
@@ -98,76 +98,7 @@ public class RobotContainer {
   ParallelCommandGroup ejectStop = new ParallelCommandGroup(
                 new RunCommand(() -> ballEjector.stop(), ballEjector), 
                 new RunCommand(() -> conveyor.conveyerStop(), conveyor));
-  // SequentialCommandGroup test = new SequentialCommandGroup(
-  //   new InstantCommand(() -> System.out.println("ClimbAuto Command Triggered!")),
-  //   new InstantCommand(() -> Climb.setClimbMode()),
-  //   // add commands (numbers are arm possitions)
-  //   // 95
-  //   new InstantCommand(() -> climb.setArmPidSetPoint(95), climb),
-  //   new RunCommand(() -> climb.startArmSmartMotion(), climb)
-  //       .withTimeout(2.5),
-  //   // drive back short amount
-  //   new RunCommand(() -> driveTrain.teleopDrive(.325, 0), driveTrain)
-  //       .withTimeout(.3),
-  //   new RunCommand(() -> driveTrain.teleopDrive(0, 0), driveTrain).withTimeout(.1),
-  //   // 89
-  //   new InstantCommand(() -> climb.setArmPidSetPoint(89), climb),
-  //   new RunCommand(() -> climb.startArmSmartMotion(), climb)
-  //       .withTimeout(1.5),
-  //   // Check if contact??
-  //   // 0-1
-  //   new InstantCommand(() -> climb.setArmPidSetPoint(1), climb),
-  //   new RunCommand(() -> climb.startArmSmartMotion(), climb)
-  //       .withTimeout(3.5)
-    // new RunCommand(() -> Timer.delay(.5)),
-    // 10
-    // new InstantCommand(() -> climb.setArmPidSetPoint(10), climb),
-    // new RunCommand(() -> climb.startArmSmartMotion(), climb)
-    //     .withTimeout(.5),
-    // // ClimbPivot
-    // new RunCommand(climbPivot::armBack, climbPivot)
-    //     .withTimeout(1.5),
-    // // 116
-    // new InstantCommand(() -> climb.setArmPidSetPoint(116), climb),
-    // new RunCommand(() -> climb.startArmSmartMotion(), climb)
-    //     .withTimeout(2.5),
-    // // ClimbPivot
-    // new RunCommand(climbPivot::armForward, climbPivot)
-    //   .withTimeout(1.5),
-    // // Check if contact??
-    // // 0-1
-    // new InstantCommand(() -> climb.setArmPidSetPoint(1), climb),
-    // new RunCommand(() -> climb.startArmSmartMotion(), climb)
-    // .withTimeout(2.5),
-    // // new RunCommand(() -> Timer.delay(.5)),
-    // // 10
-    // new InstantCommand(() -> climb.setArmPidSetPoint(10), climb),
-    // new RunCommand(() -> climb.startArmSmartMotion(), climb)
-    //     .withTimeout(.5),
-    // // ClimbPivot
-    // new RunCommand(climbPivot::armBack, climbPivot)
-    //   .withTimeout(1.5),
-    // // 110
-    // new InstantCommand(() -> climb.setArmPidSetPoint(110), climb),
-    // new RunCommand(() -> climb.startArmSmartMotion(), climb)
-    // .withTimeout(2.6),
-    // // ClimbPivot
-    // new RunCommand(climbPivot::armForward, climbPivot)
-    //   .withTimeout(1.5),
-    // // 0
-    // new InstantCommand(() -> climb.setArmPidSetPoint(0), climb),
-    // new RunCommand(() -> climb.startArmSmartMotion(), climb)
-    //   .withTimeout(2.5),
-    // // new RunCommand(() -> Timer.delay(.5)),
-    // // 1 (is this needed?)
-    // new InstantCommand(() -> climb.setArmPidSetPoint(1), climb),
-    // new RunCommand(() -> climb.startArmSmartMotion(), climb)
-    //     .withTimeout(.4)
-  // );
-  // ParallelCommandGroup test = new ParallelCommandGroup(
-  //  new InstantCommand(() -> System.out.println("ParallelCommandGroup test Triggered!")),
-  //  m_AutoCommand 
-  // );
+
   public static SendableChooser<String> allianceChooser = new SendableChooser<>();
   public static SendableChooser<Command> autoChoice = new SendableChooser<>();
 
@@ -248,70 +179,36 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-    // Combining whileHeld and whenReleased into one button object
-    // new JoystickButton(Gamepad0, GamePadButtons.A)
-    //   .whileHeld(new RunCommand(() -> launcher.slowFlyWheel(), launcher))
-    //   .whenReleased(new RunCommand(() -> launcher.stopFlyWheel(), launcher));
-    
-    
-    // new JoystickButton(Gamepad0, GamePadButtons.B)
-    //   .whileHeld(new RunCommand(() -> launcher.fastFlyWheel(), launcher))
-    //   .whenReleased(new RunCommand(() -> launcher.stopFlyWheel(), launcher));
     
     //Driver Gampad0
 
    
-    // new JoystickButton(Gamepad0, GamePadButtons.RB)
-    //   .whileHeld(ballUp)
-    //   .whenReleased(ballStop);
-
-    new JoystickButton(Gamepad0, GamePadButtons.RB)
-       .whenPressed(new InstantCommand(limelight::ledPipeline, limelight))
-       .whenPressed(new InstantCommand(()->limelight.setPipeline(0), limelight))
-       .whenPressed(new RunCommand(limelight::startTakingSnapshots, limelight))
-       .whileHeld(new RunCommand(driveTrain::limeLightAim, driveTrain))
-       .whenReleased(new InstantCommand(limelight::stopTakingSnapshots, limelight))
-      //  .whenReleased(new InstantCommand(()->limelight.setPipeline(0), limelight))
-       .whenReleased(new RunCommand(limelight::ledOff, limelight));
-    //   .whenReleased(ballStop);
-
-    
-    
-    //new JoystickButton(Gamepad0, GamePadButtons.Y)
-    //  .whenPressed(launcher::hoodUp, launcher);
-
-    //new JoystickButton(Gamepad0, GamePadButtons.B)
-    //  .whenPressed(launcher::hoodDown, launcher);
+  new JoystickButton(Gamepad0, GamePadButtons.RB)
+      .whenPressed(new InstantCommand(limelight::ledPipeline, limelight))
+      .whenPressed(new InstantCommand(()->limelight.setPipeline(0), limelight))
+      .whenPressed(new RunCommand(limelight::startTakingSnapshots, limelight))
+      .whileHeld(new RunCommand(driveTrain::limeLightAim, driveTrain))
+      .whenReleased(new InstantCommand(limelight::stopTakingSnapshots, limelight))
+      .whenReleased(new RunCommand(limelight::ledOff, limelight));
     
     new JoystickButton(Gamepad0, GamePadButtons.LB)
       .whileHeld(new RunCommand(() -> ballTower.feedBallToLauncher(), ballTower))
       .whenReleased(new InstantCommand(ballTower::stopBelts));
 
-    // new JoystickButton(Gamepad0, GamePadButtons.X)
-    //   .whenPressed(new InstantCommand(launcher::increaseRPM, launcher))
-    //   .whenReleased(new RunCommand(launcher::startRPM, launcher));
-
-    // new JoystickButton(Gamepad0, GamePadButtons.A)
-    // .whenPressed(new InstantCommand(launcher::decreaseRPM, launcher))
-    // .whenReleased(new RunCommand(launcher::startRPM, launcher));
-
-    
-    // new POVButton(Gamepad0, GamePadButtons.Up)
+        
     new JoystickButton(Gamepad0, GamePadButtons.Y)
       .whenPressed(new RunCommand(launcher::longTarmacShoot, launcher))
       .whenPressed(new RunCommand(leds::red, leds));
 
-    // new POVButton(Gamepad0, GamePadButtons.Left)
+    
     new JoystickButton(Gamepad0, GamePadButtons.X)
       .whenPressed(new RunCommand(launcher::midTarmacShoot, launcher))
       .whenPressed(new RunCommand(leds::purple, leds));
 
-    // new POVButton(Gamepad0, GamePadButtons.Down)
     new JoystickButton(Gamepad0, GamePadButtons.A)
       .whenPressed(new RunCommand(launcher::fenderHighShoot, launcher))
       .whenPressed(new RunCommand(leds::green, leds));
       
-    // new POVButton(Gamepad0, GamePadButtons.Right)
     new JoystickButton(Gamepad0, GamePadButtons.B)
       .whenPressed(new RunCommand(launcher::fenderLowShoot, launcher))
       .whenPressed(new RunCommand(leds::blue, leds));
@@ -322,9 +219,8 @@ public class RobotContainer {
 
 
 
-    //Manipulator Gamepad
+    //Manipulator Gamepad 1
     
-
     new JoystickButton(Gamepad1, GamePadButtons.LB)
       .whenHeld(new RunCommand(intake::intakeDown, intake))
       .whenReleased(new RunCommand(intake::intakeUp, intake));
@@ -341,31 +237,21 @@ public class RobotContainer {
       .whenHeld(new RunCommand(intake::intakeRollersReverse, intake))
       .whenReleased(new RunCommand (intake::intakeRollersOff, intake));
     
-    
     new JoystickButton(Gamepad1, GamePadButtons.RB)
       .whenHeld(new RunCommand(climbPivot::armBack, climbPivot));
 
-      new JoystickButton(Gamepad1, GamePadButtons.Start)
+    new JoystickButton(Gamepad1, GamePadButtons.Start)
       .whenPressed(new RunCommand(conveyor::conveyerStop, conveyor))
       .whenPressed(new RunCommand(climb::setClimbModeFalse, climb))
       .whenReleased(new RunCommand(leds::rainbow, leds));
 
-      new JoystickButton(Gamepad1, GamePadButtons.B)
+    new JoystickButton(Gamepad1, GamePadButtons.B)
       .whenHeld(new RunCommand(ballEjector::ballOut, ballEjector))
       .whenHeld(new RunCommand(ballTower::liftBall, ballTower))
       .whenReleased(new RunCommand(ballEjector::autoEject, ballEjector))
       .whenReleased(new RunCommand(ballTower::autoTower, ballTower));    
 
-    // new POVButton(Gamepad1, GamePadButtons.Up)
-    //   .whenPressed(new InstantCommand(climb::extendArms, climb))
-    //   .whenReleased(new RunCommand(climb::startArmSmartMotion, climb));
-    
-    // new POVButton(Gamepad1, GamePadButtons.Down)
-    //   .whenPressed(new InstantCommand(climb::retractArms, climb))
-    //   .whenReleased(new RunCommand(climb::startArmSmartMotion, climb));
-
     new POVButton(Gamepad1, GamePadButtons.Down)
-      // .whenPressed(m_AutoCommand);
       .whenPressed(m_AutoMidClimb);
     
     new POVButton(Gamepad1, GamePadButtons.Up)
@@ -374,16 +260,19 @@ public class RobotContainer {
     
     new POVButton(Gamepad1, GamePadButtons.Right)
       .whenPressed(m_AutoHighClimb);
+
+
+    new ManualClimbOverride()
+      .whenActive(
+        new RunCommand(() -> climb.manualClimb(
+              Gamepad1.getRawAxis(GamePadButtons.leftY)*-0.95, 
+              Gamepad1.getRawAxis(GamePadButtons.rightX)*0.65), climb))
+      .whenActive(climb::setClimbModeFalse, climb)
+      .whenActive(new RunCommand(leds::greenPulse, leds));
+  
     
-    // new JoystickButton(Gamepad1, GamePadButtons.Y)
-    //   .whenPressed(new InstantCommand(climb::extendArms, climb))
-    //   .whenReleased(new RunCommand(climb::startArmSmartMotion, climb));
     
-    // new JoystickButton(Gamepad1, GamePadButtons.B)
-    //   .whenPressed(new InstantCommand(climb::retractArms, climb))
-    //   .whenReleased(new RunCommand(climb::startArmSmartMotion, climb));
-    
-    }
+  }
   
 
   /**
