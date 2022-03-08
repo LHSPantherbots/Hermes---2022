@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.commands.*;
 import frc.robot.Robot;
@@ -116,6 +117,7 @@ public class BallEjector extends SubsystemBase {
             else if (!doesAllianceMatch())
             {
                 ballOut();
+                // new RunCommand(RobotContainer.leds::white, RobotContainer.leds).withTimeout(0.5);
             }
             else if (doesAllianceMatch() && ejectorBallTower.isBallDetected()){
                 stop();

@@ -174,9 +174,15 @@ SmartDashboard.putNumber("Min Output", kMinOutput);
 
       public void midTarmacShoot(){
         hoodDown();
-        velocitySetpoint = 3700;//3500
+        velocitySetpoint = 3500;//3500 ---- 3600 3/5/22
         velocityClosedLoopLaunch();
     }
+
+    public void autoMidTarmacShoot(){
+      hoodDown();
+      velocitySetpoint = 3450;//3500 ---- 3600 3/5/22
+      velocityClosedLoopLaunch();
+  }
     
       public void fenderLowShoot(){
           hoodDown();

@@ -47,7 +47,7 @@ public class AutoCommand  extends SequentialCommandGroup {
     public DifferentialDriveKinematicsConstraint ddKinematicConstraint = new DifferentialDriveKinematicsConstraint(DriveTrainConstants.kDriveKinematics, DriveTrainConstants.kMaxSpeedMetersPerSecond);
 
     public MaxVelocityConstraint maxVelocityConstraint = new MaxVelocityConstraint(DriveTrainConstants.kMaxSpeedMetersPerSecond);
-    public AutoCommand(DriveSubsystem driveTrain, Launcher launcher, BallTower ballTower, Intake intake) {
+    public AutoCommand(DriveSubsystem driveTrain, Launcher launcher, BallTower ballTower, Intake intake, Conveyor conveyor) {
         
     // try {
     //     Path trajectoryPath = Filesystem.getDeployDirectory().toPath().resolve(redPickup_trajectoryJSON);
@@ -118,12 +118,14 @@ public class AutoCommand  extends SequentialCommandGroup {
 
     addCommands(
         new InstantCommand(() -> driveTrain.resetOdometry(redPickup_trajectory.getInitialPose()), driveTrain),
-        new InstantCommand(() -> intake.intakeDownnRoll(), intake),
+        new InstantCommand(() -> intake.intakeDownnRoll(), intake).alongWith(new InstantCommand(ballTower::runTowerRoller, ballTower)),
+        new InstantCommand(conveyor::conveyerForward, conveyor),
         ramseteCommand1.andThen(() -> driveTrain.tankDriveVolts(0, 0)),
         new InstantCommand(() -> intake.intakeRollersOff(), intake),
         new InstantCommand(() -> intake.intakeUp(), intake),
         ramseteCommand2.andThen(() -> driveTrain.tankDriveVolts(0, 0)),
-        new InstantCommand(() -> launcher.midTarmacShoot(), launcher),
+        new InstantCommand(ballTower::autoTower, ballTower),
+        new InstantCommand(() -> launcher.autoMidTarmacShoot(), launcher),
         waitForLauncher1,
         new InstantCommand(() -> ballTower.feedBallToLauncher(), ballTower),
         new InstantCommand(() -> ballTower.liftBall(), ballTower),
@@ -134,5 +136,6 @@ public class AutoCommand  extends SequentialCommandGroup {
         new InstantCommand(() -> launcher.setVelocitySetpoint(0), launcher),
         waitForLauncher3
         );
+        
     }
 }

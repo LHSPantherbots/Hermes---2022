@@ -18,7 +18,7 @@ public class ArmUp extends SequentialCommandGroup {
         
         // add commands (numbers are arm possitions)
         // 95
-        new InstantCommand(() -> climb.setArmPidSetPoint(95), climb),
+        new InstantCommand(() -> climb.setArmPidSetPoint(116), climb),  //95
         new RunCommand(() -> climb.startArmSmartMotion(), climb)
             .withTimeout(2.5)
         

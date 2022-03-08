@@ -58,10 +58,10 @@ public class RobotContainer {
   public final static Launcher launcher = new Launcher();  
   public final static Intake intake = new Intake(talon1);
   public final CompressorSubsystem compressorSubsystem = new CompressorSubsystem();
-  public final Leds leds = new Leds();
+  public final static Leds leds = new Leds();
  // private final ClimbnHook climbnHook = new ClimbnHook();
 
-  public final AutoCommand m_AutoCommand = new AutoCommand(driveTrain, launcher, ballTower, intake);
+  public final AutoCommand m_AutoCommand = new AutoCommand(driveTrain, launcher, ballTower, intake, conveyor);
   public final Command m_ThreeBallAuto = new ThreeBallAuto(driveTrain, launcher, ballTower, intake, conveyor, limelight);
   public final Command m_ArmUp = new ArmUp(driveTrain, climbPivot, climb); 
   public final Command m_AutoMidClimb = new AutoMidClimb(driveTrain, climbPivot, climb); 
@@ -183,7 +183,7 @@ public class RobotContainer {
     //Driver Gampad0
 
    
-  new JoystickButton(Gamepad0, GamePadButtons.RB)
+  new JoystickButton(Gamepad0, GamePadButtons.Y)
       .whenPressed(new InstantCommand(limelight::ledPipeline, limelight))
       .whenPressed(new InstantCommand(()->limelight.setPipeline(0), limelight))
       .whenPressed(new RunCommand(limelight::startTakingSnapshots, limelight))
@@ -196,7 +196,7 @@ public class RobotContainer {
       .whenReleased(new InstantCommand(ballTower::stopBelts));
 
         
-    new JoystickButton(Gamepad0, GamePadButtons.Y)
+    new POVButton(Gamepad0, GamePadButtons.Up)
       .whenPressed(new RunCommand(launcher::longTarmacShoot, launcher))
       .whenPressed(new RunCommand(leds::red, leds));
 

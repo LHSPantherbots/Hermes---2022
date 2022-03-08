@@ -39,9 +39,9 @@ public class ClimbPivot extends SubsystemBase  {
     }
 
     public void defaultArmState() {
-        if (!Climb.climbMode){
+        //if (!Climb.climbMode){
             armSolenoid.set(DoubleSolenoid.Value.kForward);
-        }
+        //}
     }
 
     public void armForward() {
