@@ -13,6 +13,7 @@ public class WaitForBeamBreak extends CommandBase {
     @Override
     public boolean isFinished() {
         if (m_BallTower.isBallDetected()){
+            m_BallTower.stopTower();
             return true;
         } else {
             return false;

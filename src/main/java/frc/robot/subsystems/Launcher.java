@@ -1,20 +1,12 @@
 package frc.robot.subsystems;
 
-import frc.robot.commands.*;
-import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import com.revrobotics.*;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-import com.revrobotics.CANSparkMax.ControlType;
 import com.revrobotics.CANSparkMax.IdleMode;
-
-import edu.wpi.first.wpilibj.CounterBase.EncodingType;
-import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
-import edu.wpi.first.wpilibj.motorcontrol.MotorController;
-import edu.wpi.first.wpilibj.motorcontrol.Spark;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.PH_Channel;
 
@@ -49,8 +41,8 @@ launcherLeader.setSmartCurrentLimit(60);
 
 launcherFollower.setSmartCurrentLimit(60);
 
-launcherLeader.setClosedLoopRampRate(2);
-launcherFollower.setClosedLoopRampRate(2);
+launcherLeader.setClosedLoopRampRate(.25);
+launcherFollower.setClosedLoopRampRate(.25);
 
 launcherLeader.setIdleMode(IdleMode.kCoast);
 launcherFollower.setIdleMode(IdleMode.kCoast);
@@ -68,11 +60,11 @@ launcherFollower.follow(launcherLeader, true);
  kI =  0;//1e-6;
  kD = 0.0004; 
  kIz = 0; 
- kFF = 0.00018; 
+ kFF = 0.00019; // increased from 0.00018 to see if ramps to speed more quickly and stays at it  
  kMaxOutput = 1; 
  kMinOutput = -1;
  maxRPM = 5700;
- allowableError = 100; //Lets the system known when the velocity is close enough to launch
+ allowableError = 50; //Lets the system known when the velocity is close enough to launch
 
  // set PID coefficients
  pidController.setP(kP);

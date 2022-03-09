@@ -1,7 +1,5 @@
 package frc.robot.commands;
 
-import java.io.IOException;
-import java.nio.file.Path;
 import java.util.List;
 
 import edu.wpi.first.math.controller.PIDController;
@@ -13,18 +11,13 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
-import edu.wpi.first.math.trajectory.TrajectoryUtil;
 import edu.wpi.first.math.trajectory.constraint.CentripetalAccelerationConstraint;
 import edu.wpi.first.math.trajectory.constraint.DifferentialDriveKinematicsConstraint;
 import edu.wpi.first.math.trajectory.constraint.DifferentialDriveVoltageConstraint;
 import edu.wpi.first.math.trajectory.constraint.MaxVelocityConstraint;
-import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj2.command.*;
 import frc.robot.Constants.DriveTrainConstants;
 import frc.robot.subsystems.*;
-import frc.robot.commands.*;
 
 public class AutoCommand  extends SequentialCommandGroup {
     String redPickup_trajectoryJSON = "paths/Red_Pickup.wpilib.json";
@@ -117,6 +110,8 @@ public class AutoCommand  extends SequentialCommandGroup {
     );
 
     addCommands(
+        new InstantCommand(() -> driveTrain.resetEncoders(), driveTrain),
+        new InstantCommand(() -> driveTrain.zeroHeading(), driveTrain),
         new InstantCommand(() -> driveTrain.resetOdometry(redPickup_trajectory.getInitialPose()), driveTrain),
         new InstantCommand(() -> intake.intakeDownnRoll(), intake).alongWith(new InstantCommand(ballTower::runTowerRoller, ballTower)),
         new InstantCommand(conveyor::conveyerForward, conveyor),

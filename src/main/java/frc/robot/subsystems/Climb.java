@@ -121,12 +121,25 @@ public class Climb extends SubsystemBase  {
     }
 
     public void manualClimb(double lift, double trim){
-        if (!climbMode || (lift > 0.2 || trim > 0.2)){
-            lift = deadBand(lift);
-            trim = deadBand(trim);
-            l_arm.set(lift + trim);
-            r_arm.set(lift - trim);
-        }
+        lift = deadBand(lift);
+        trim = deadBand(trim);
+        r_arm.set(lift - trim);
+        l_arm.set(lift + trim);
+        // if (!climbMode || (lift > 0.2 || trim > 0.2)){
+        //     lift = deadBand(lift);
+        //     trim = deadBand(trim);
+        //     l_pidController.setReference(lift + trim, ControlType.kDutyCycle, smartMotionProfile);
+        //     // l_arm.set(lift + trim);
+        //     r_pidController.setReference(lift - trim, ControlType.kDutyCycle, smartMotionProfile);
+        //     // r_arm.set(lift - trim);
+        // }
+        // } if (!climbMode && (lift < 0.2 && trim < 0.2 )) {
+        //     lift = deadBand(lift);
+        //     trim = deadBand(trim);
+        //     l_pidController.setReference(lift + trim, ControlType.kDutyCycle, smartMotionProfile);
+        //     // l_arm.set(lift + trim);
+        //     r_pidController.setReference(lift - trim, ControlType.kDutyCycle, smartMotionProfile);
+        // }
     }
 
 

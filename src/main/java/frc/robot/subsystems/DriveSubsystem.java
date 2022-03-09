@@ -9,7 +9,6 @@ import com.revrobotics.SparkMaxPIDController;
 // import com.revrobotics.CANSparkMax.ControlType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.RobotController;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -30,36 +29,6 @@ public class DriveSubsystem extends SubsystemBase {
     private double kP = 0.012;
     private double kF = 0.2;
     
-
-    private double kPG = 0.0075;
-    private double kDG = 0.00;
-    private double kIG = 0.01;
-    private double kFG = 0.15;
-
-    private double kPA = 0.0045;
-    private double kDA = 0.00;
-    private double kIA = 0.001;
-
-    private double kPD = 1.5;
-    private double kDD = 0.00;
-    private double kID = 0.00;
-
-    /* Commented out until implmenting limelight vision 
-    private double kPDlimey = .3;
-    private double kDDlimey = 0.00;
-    private double kIDlimey = 0.00;
-    */
-    
-    private double lastTimestamp = Timer.getFPGATimestamp();
-    private double lastTimestampDist = Timer.getFPGATimestamp();
-    private double errorSum = 0;
-    private double errorSumDist = 0;
-    private double lastError = 0;
-    private double lastErrorDist = 0;
-    private double iZone =  5.0;
-    private double iZoneDist = 0.5;
-
-    private double gyroKP = 0.03;
 
     CANSparkMax leftLeader = new CANSparkMax(3, MotorType.kBrushless);
     CANSparkMax leftFollower = new CANSparkMax(15, MotorType.kBrushless);

@@ -4,22 +4,15 @@
 
 package frc.robot;
 
-import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.controller.RamseteController;
-import edu.wpi.first.math.controller.SimpleMotorFeedforward;
-import edu.wpi.first.math.trajectory.Trajectory;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.commands.*;
 import frc.robot.subsystems.*;
 import frc.robot.Constants.*;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import edu.wpi.first.wpilibj2.command.RamseteCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -27,7 +20,6 @@ import edu.wpi.first.wpilibj2.command.button.POVButton;
 
 import com.ctre.phoenix.sensors.PigeonIMU;
 import com.revrobotics.CANSparkMax;
-import com.ctre.phoenix.Util;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 // import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
@@ -70,12 +62,6 @@ public class RobotContainer {
 
   XboxController Gamepad0 = new XboxController(0);  //Driver Controller
   static XboxController Gamepad1 = new XboxController(1);  //Manipulator Controller
-
-
-  // PIDControllers for Path Following defined here to avoid new PIDControlers being created each time auto is enabled in testing
-  private final PIDController left_PidController = new PIDController(DriveTrainConstants.kPDriveVel, 0, 0);
-  private final PIDController right_PidController =new PIDController(DriveTrainConstants.kPDriveVel, 0, 0);
-  private final Command twoBallAuto = new TwoBallAuto();
   
   SequentialCommandGroup stopIntake = new SequentialCommandGroup(
                 new RunCommand(() -> intake.stop(), intake), 

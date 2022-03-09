@@ -1,8 +1,5 @@
 package frc.robot.commands;
 
-import java.io.IOException;
-import java.nio.file.Path;
-import java.time.Instant;
 import java.util.List;
 
 import edu.wpi.first.math.controller.PIDController;
@@ -14,19 +11,13 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
-import edu.wpi.first.math.trajectory.TrajectoryUtil;
 import edu.wpi.first.math.trajectory.constraint.CentripetalAccelerationConstraint;
 import edu.wpi.first.math.trajectory.constraint.DifferentialDriveKinematicsConstraint;
 import edu.wpi.first.math.trajectory.constraint.DifferentialDriveVoltageConstraint;
 import edu.wpi.first.math.trajectory.constraint.MaxVelocityConstraint;
-import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj2.command.*;
 import frc.robot.Constants.DriveTrainConstants;
-import frc.robot.Constants.LimeL;
 import frc.robot.subsystems.*;
-import frc.robot.commands.*;
 
 
 //Untested
@@ -47,6 +38,9 @@ public class ThreeBallAuto  extends SequentialCommandGroup {
     Command waitForLauncher2; 
     Command waitForLauncher3;
     Command waitForBeamBreak;
+    Command waitForShot1;
+    Command waitForShot2;
+    Command waitForShot3;
     private final PIDController left_PidController = new PIDController(DriveTrainConstants.kPDriveVel, 0, 0);
     private final PIDController right_PidController =new PIDController(DriveTrainConstants.kPDriveVel, 0, 0);
     public DifferentialDriveVoltageConstraint autoVoltageConstraint = new DifferentialDriveVoltageConstraint(
@@ -98,6 +92,9 @@ public class ThreeBallAuto  extends SequentialCommandGroup {
     Command waitForLauncher2 = new WaitForLauncherAtSpeed(launcher);
     Command waitForLauncher3 = new WaitForLauncherAtSpeed(launcher);
     Command waitForBeamBreak = new WaitForBeamBreak(ballTower);
+    Command waitForShot1 = new WaitForShot(launcher, ballTower);
+    Command waitForShot2 = new WaitForShot(launcher, ballTower);
+    Command waitForShot3 = new WaitForShot(launcher, ballTower);
 
     RamseteCommand ramseteCommand_first_pickup = new RamseteCommand(
         first_Pickup_trajectory,
@@ -160,6 +157,8 @@ public class ThreeBallAuto  extends SequentialCommandGroup {
     );
 
     addCommands(
+        new InstantCommand(() -> driveTrain.resetEncoders(), driveTrain),
+        new InstantCommand(() -> driveTrain.zeroHeading(), driveTrain),
         new InstantCommand(() -> driveTrain.resetOdometry(first_Pickup_trajectory.getInitialPose()), driveTrain),
         new InstantCommand(() -> intake.intakeDownnRoll(), intake),
         new InstantCommand(() -> conveyor.conveyerForward(), conveyor),
@@ -174,11 +173,12 @@ public class ThreeBallAuto  extends SequentialCommandGroup {
         new InstantCommand(() -> launcher.midTarmacShoot(), launcher),
         waitForLauncher1,
         new InstantCommand(() -> ballTower.feedBallToLauncher(), ballTower),
+        waitForShot1,
         new InstantCommand(() -> ballTower.liftBall(), ballTower),
         waitForBeamBreak.raceWith(new InstantCommand(() -> driveTrain. tankDriveVolts(0,0), driveTrain).withTimeout(4)),
         waitForLauncher2,
         new RunCommand(() -> ballTower.feedBallToLauncher(), ballTower).withTimeout(2),
-
+        waitForShot2,
         new InstantCommand(() -> intake.intakeDownnRoll(), intake),
         ramseteCommand_second_pickup.andThen(() -> driveTrain.tankDriveVolts(0, 0)),
         new InstantCommand(() -> intake.intakeRollersOff(), intake),
@@ -190,6 +190,7 @@ public class ThreeBallAuto  extends SequentialCommandGroup {
         new RunCommand(limelight::startTakingSnapshots, limelight),
         new RunCommand(driveTrain::limeLightAim, driveTrain).withTimeout(2),
         new InstantCommand(() -> ballTower.feedBallToLauncher(), ballTower).withTimeout(1),
+        waitForShot3,
         new InstantCommand(limelight::stopTakingSnapshots, limelight),
         new InstantCommand(() -> conveyor.stop(), conveyor),
         new InstantCommand(() -> launcher.setVelocitySetpoint(0), launcher),
