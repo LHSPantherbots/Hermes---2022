@@ -20,9 +20,7 @@ import frc.robot.Constants.DriveTrainConstants;
 import frc.robot.subsystems.*;
 
 public class AutoCommand  extends SequentialCommandGroup {
-    String redPickup_trajectoryJSON = "paths/Red_Pickup.wpilib.json";
     Trajectory redPickup_trajectory = new Trajectory();
-    String redShoot_trajectoryJSON = "paths/Red_Shoot.wpilib.json";
     Trajectory redShoot_trajectory = new Trajectory();
     RamseteCommand ramseteCommand1;
     RamseteCommand ramseteCommand2; 
@@ -30,6 +28,8 @@ public class AutoCommand  extends SequentialCommandGroup {
     Command waitForLauncher2; 
     Command waitForLauncher3;
     Command waitForBeamBreak;
+    Command waitForShot1;
+    Command waitForShot2;
     private final PIDController left_PidController = new PIDController(DriveTrainConstants.kPDriveVel, 0, 0);
     private final PIDController right_PidController =new PIDController(DriveTrainConstants.kPDriveVel, 0, 0);
     public DifferentialDriveVoltageConstraint autoVoltageConstraint = new DifferentialDriveVoltageConstraint(
@@ -41,26 +41,15 @@ public class AutoCommand  extends SequentialCommandGroup {
 
     public MaxVelocityConstraint maxVelocityConstraint = new MaxVelocityConstraint(DriveTrainConstants.kMaxSpeedMetersPerSecond);
     public AutoCommand(DriveSubsystem driveTrain, Launcher launcher, BallTower ballTower, Intake intake, Conveyor conveyor) {
-        
-    // try {
-    //     Path trajectoryPath = Filesystem.getDeployDirectory().toPath().resolve(redPickup_trajectoryJSON);
-    //     redPickup_trajectory = TrajectoryUtil.fromPathweaverJson(trajectoryPath);
-        
-    // } catch (IOException ex) {
-    //     DriverStation.reportError("Unable to open trajectory: " + redPickup_trajectoryJSON, ex.getStackTrace());
-    // }
-
-    // try {
-    //     Path trajectoryPath = Filesystem.getDeployDirectory().toPath().resolve(redShoot_trajectoryJSON);
-    //     redShoot_trajectory = TrajectoryUtil.fromPathweaverJson(trajectoryPath);
-    // } catch (IOException ex) {
-    //     DriverStation.reportError("Unable to open trajectory: " + redShoot_trajectoryJSON, ex.getStackTrace());
-    // }
 
     TrajectoryConfig trajectoryConfig_rev = new TrajectoryConfig(DriveTrainConstants.kMaxSpeedMetersPerSecond,
-        DriveTrainConstants.kMaxAccelerationMetersPerSecondSquared).setKinematics(DriveTrainConstants.kDriveKinematics).addConstraint(autoVoltageConstraint).addConstraint(centripetalAccelerationConstraint).addConstraint(ddKinematicConstraint).addConstraint(maxVelocityConstraint).setReversed(true);
+    DriveTrainConstants.kMaxAccelerationMetersPerSecondSquared).setKinematics(DriveTrainConstants.kDriveKinematics)
+        .addConstraint(autoVoltageConstraint).addConstraint(centripetalAccelerationConstraint)
+        .addConstraint(ddKinematicConstraint).addConstraint(maxVelocityConstraint).setReversed(true);
     TrajectoryConfig trajectoryConfig = new TrajectoryConfig(DriveTrainConstants.kMaxSpeedMetersPerSecond,
-        DriveTrainConstants.kMaxAccelerationMetersPerSecondSquared).setKinematics(DriveTrainConstants.kDriveKinematics).addConstraint(autoVoltageConstraint).addConstraint(centripetalAccelerationConstraint).addConstraint(ddKinematicConstraint).addConstraint(maxVelocityConstraint);    
+    DriveTrainConstants.kMaxAccelerationMetersPerSecondSquared).setKinematics(DriveTrainConstants.kDriveKinematics)
+        .addConstraint(autoVoltageConstraint).addConstraint(centripetalAccelerationConstraint)
+        .addConstraint(ddKinematicConstraint).addConstraint(maxVelocityConstraint);
     redPickup_trajectory = TrajectoryGenerator.generateTrajectory(
             new Pose2d(),
             List.of(
@@ -78,6 +67,8 @@ public class AutoCommand  extends SequentialCommandGroup {
     Command waitForLauncher2 = new WaitForLauncherAtSpeed(launcher);
     Command waitForLauncher3 = new WaitForLauncherAtSpeed(launcher);
     Command waitForBeamBreak = new WaitForBeamBreak(ballTower);
+    Command waitForShot1 = new WaitForShot(launcher, ballTower);
+    Command waitForShot2 = new WaitForShot(launcher, ballTower);
 
     RamseteCommand ramseteCommand1 = new RamseteCommand(
         redPickup_trajectory,
@@ -123,11 +114,13 @@ public class AutoCommand  extends SequentialCommandGroup {
         new InstantCommand(() -> launcher.autoMidTarmacShoot(), launcher),
         waitForLauncher1,
         new InstantCommand(() -> ballTower.feedBallToLauncher(), ballTower),
+        waitForShot1,
         new InstantCommand(() -> ballTower.liftBall(), ballTower),
         waitForBeamBreak.raceWith(new InstantCommand(() -> driveTrain. tankDriveVolts(0,0), driveTrain).withTimeout(4)),
         //waitForBeamBreak,
         waitForLauncher2,
         new InstantCommand(() -> ballTower.feedBallToLauncher(), ballTower),
+        waitForShot2,
         new InstantCommand(() -> launcher.setVelocitySetpoint(0), launcher),
         waitForLauncher3
         );
