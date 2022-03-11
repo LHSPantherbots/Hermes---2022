@@ -82,6 +82,14 @@ public class LimeLight extends SubsystemBase {
     table.getEntry("pipeline").setNumber(pipeline);
   }
 
+  public void setPipelineZero(){
+    table.getEntry("pipeline").setNumber(0);
+  }
+
+  public void setPipelineOne(){
+    table.getEntry("pipeline").setNumber(1);
+  }
+
   public void startTakingSnapshots(){
     table.getEntry("snapshot").setNumber(1);
   }

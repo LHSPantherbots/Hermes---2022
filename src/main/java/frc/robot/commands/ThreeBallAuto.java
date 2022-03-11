@@ -72,10 +72,10 @@ public class ThreeBallAuto  extends SequentialCommandGroup {
         List.of(
             new Translation2d(-0.75, 0)
         ), 
-        new Pose2d(), trajectoryConfig);
+        new Pose2d(-0.05, 0, new Rotation2d()), trajectoryConfig);
 
     second_Pickup_trajectory = TrajectoryGenerator.generateTrajectory(
-            new Pose2d(0,0, new Rotation2d()),
+            new Pose2d(-0.05, 0, new Rotation2d()),
             List.of(
                 new Translation2d(-0.66, 1.32)
             ), 
@@ -160,25 +160,27 @@ public class ThreeBallAuto  extends SequentialCommandGroup {
         new InstantCommand(() -> driveTrain.resetEncoders(), driveTrain),
         new InstantCommand(() -> driveTrain.zeroHeading(), driveTrain),
         new InstantCommand(() -> driveTrain.resetOdometry(first_Pickup_trajectory.getInitialPose()), driveTrain),
-        new InstantCommand(() -> intake.intakeDownnRoll(), intake),
+        new InstantCommand(() -> intake.intakeDownnRoll(), intake).alongWith(new InstantCommand(ballTower::runTowerRoller, ballTower)),
         new InstantCommand(() -> conveyor.conveyerForward(), conveyor),
         ramseteCommand_first_pickup.andThen(() -> driveTrain.tankDriveVolts(0, 0)),
         new InstantCommand(() -> intake.intakeRollersOff(), intake),
         new InstantCommand(() -> intake.intakeUp(), intake),
         ramseteCommand_first_shoot.andThen(() -> driveTrain.tankDriveVolts(0, 0)),
-        new InstantCommand(() -> limelight.ledOn(), limelight),
-        new InstantCommand(() -> limelight.setPipeline(1), limelight),
-        new InstantCommand(() -> driveTrain.limeLightAim(), driveTrain).withTimeout(3),
-        
+        // new InstantCommand(() -> limelight.ledOn(), limelight),
+        new InstantCommand(limelight::ledPipeline, limelight),
+        new RunCommand(() -> limelight.setPipeline(1), limelight).withTimeout(.1),
+        new RunCommand(() -> driveTrain.limeLightAim(), driveTrain).withTimeout(2).andThen(() -> driveTrain.tankDriveVolts(0, 0)),
+        new RunCommand(() -> limelight.setPipeline(0), limelight).withTimeout(.1),
         new InstantCommand(() -> launcher.midTarmacShoot(), launcher),
         waitForLauncher1,
-        new InstantCommand(() -> ballTower.feedBallToLauncher(), ballTower),
-        waitForShot1,
-        new InstantCommand(() -> ballTower.liftBall(), ballTower),
-        waitForBeamBreak.raceWith(new InstantCommand(() -> driveTrain. tankDriveVolts(0,0), driveTrain).withTimeout(4)),
-        waitForLauncher2,
-        new RunCommand(() -> ballTower.feedBallToLauncher(), ballTower).withTimeout(2),
-        waitForShot2,
+        new RunCommand(() -> ballTower.feedBallToLauncher(), ballTower).withTimeout(1),
+        new InstantCommand(() -> ballTower.stopTower(), ballTower),
+        // waitForShot1,
+        new RunCommand(() -> ballTower.liftBall(), ballTower).withTimeout(2),
+        // waitForBeamBreak.raceWith(new InstantCommand(() -> driveTrain. tankDriveVolts(0,0), driveTrain).withTimeout(4)),
+        waitForLauncher2.withTimeout(.2),
+        new RunCommand(() -> ballTower.feedBallToLauncher(), ballTower).withTimeout(1),
+        // waitForShot2,
         new InstantCommand(() -> intake.intakeDownnRoll(), intake),
         ramseteCommand_second_pickup.andThen(() -> driveTrain.tankDriveVolts(0, 0)),
         new InstantCommand(() -> intake.intakeRollersOff(), intake),
