@@ -53,7 +53,7 @@ public class RobotContainer {
   public final static Leds leds = new Leds();
  // private final ClimbnHook climbnHook = new ClimbnHook();
 
-  public final AutoCommand m_AutoCommand = new AutoCommand(driveTrain, launcher, ballTower, intake, conveyor);
+  public final AutoCommand m_AutoCommand = new AutoCommand(driveTrain, launcher, ballTower, intake, conveyor, limelight);
   public final Command m_ThreeBallAuto = new ThreeBallAuto(driveTrain, launcher, ballTower, intake, conveyor, limelight);
   public final Command m_ArmUp = new ArmUp(driveTrain, climbPivot, climb); 
   public final Command m_AutoMidClimb = new AutoMidClimb(driveTrain, climbPivot, climb); 
@@ -171,7 +171,7 @@ public class RobotContainer {
    
   new JoystickButton(Gamepad0, GamePadButtons.Y)
       .whenPressed(new InstantCommand(limelight::ledPipeline, limelight))
-      .whenPressed(new InstantCommand(()->limelight.setPipeline(0), limelight))
+      .whenPressed(new InstantCommand(()->limelight.setPipeline(1), limelight))
       .whenPressed(new RunCommand(limelight::startTakingSnapshots, limelight))
       .whileHeld(new RunCommand(driveTrain::limeLightAim, driveTrain))
       .whenReleased(new InstantCommand(limelight::stopTakingSnapshots, limelight))

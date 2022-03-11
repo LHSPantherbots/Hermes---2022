@@ -40,7 +40,7 @@ public class AutoCommand  extends SequentialCommandGroup {
     public DifferentialDriveKinematicsConstraint ddKinematicConstraint = new DifferentialDriveKinematicsConstraint(DriveTrainConstants.kDriveKinematics, DriveTrainConstants.kMaxSpeedMetersPerSecond);
 
     public MaxVelocityConstraint maxVelocityConstraint = new MaxVelocityConstraint(DriveTrainConstants.kMaxSpeedMetersPerSecond);
-    public AutoCommand(DriveSubsystem driveTrain, Launcher launcher, BallTower ballTower, Intake intake, Conveyor conveyor) {
+    public AutoCommand(DriveSubsystem driveTrain, Launcher launcher, BallTower ballTower, Intake intake, Conveyor conveyor, LimeLight limelight) {
 
     TrajectoryConfig trajectoryConfig_rev = new TrajectoryConfig(DriveTrainConstants.kMaxSpeedMetersPerSecond,
     DriveTrainConstants.kMaxAccelerationMetersPerSecondSquared).setKinematics(DriveTrainConstants.kDriveKinematics)
@@ -61,7 +61,7 @@ public class AutoCommand  extends SequentialCommandGroup {
         List.of(
             new Translation2d(-0.75, 0)
         ), 
-        new Pose2d(), trajectoryConfig);
+        new Pose2d(-0.05, 0, new Rotation2d()), trajectoryConfig);
     
     Command waitForLauncher1 = new WaitForLauncherAtSpeed(launcher);
     Command waitForLauncher2 = new WaitForLauncherAtSpeed(launcher);
@@ -110,18 +110,30 @@ public class AutoCommand  extends SequentialCommandGroup {
         new InstantCommand(() -> intake.intakeRollersOff(), intake),
         new InstantCommand(() -> intake.intakeUp(), intake),
         ramseteCommand2.andThen(() -> driveTrain.tankDriveVolts(0, 0)),
-        new InstantCommand(ballTower::autoTower, ballTower),
-        new InstantCommand(() -> launcher.autoMidTarmacShoot(), launcher),
-        waitForLauncher1,
-        new InstantCommand(() -> ballTower.feedBallToLauncher(), ballTower),
-        waitForShot1,
+        // new InstantCommand(() -> limelight.ledOn(), limelight),
+        new RunCommand(() -> limelight.ledPipeline(), limelight).withTimeout(.1),
+        new RunCommand(() -> limelight.setPipeline(1), limelight).withTimeout(.1),
+        new RunCommand(() -> driveTrain.limeLightAim(), driveTrain).withTimeout(2).andThen(() -> driveTrain.tankDriveVolts(0, 0)),
+        // new InstantCommand(() -> limelight.ledOff(), limelight),
+        new RunCommand(() -> limelight.setPipeline(0), limelight).withTimeout(.1),
         new InstantCommand(() -> ballTower.liftBall(), ballTower),
-        waitForBeamBreak.raceWith(new InstantCommand(() -> driveTrain. tankDriveVolts(0,0), driveTrain).withTimeout(4)),
+        new InstantCommand(() -> launcher.autoMidTarmacShoot(), launcher),
+        waitForLauncher1.withTimeout(.2),
+        new RunCommand(() -> ballTower.feedBallToLauncher(), ballTower).withTimeout(1),
+        new InstantCommand(() -> ballTower.stopTower(), ballTower),
+        // new InstantCommand(() -> ballTower.feedBallToLauncher(), ballTower),
+        // waitForShot1.withTimeout(1),
+        new RunCommand(() -> ballTower.liftBall(), ballTower).withTimeout(2),
+        // new InstantCommand(() -> ballTower.liftBall(), ballTower),
+        // waitForBeamBreak.withTimeout(4),
+        new InstantCommand(() -> ballTower.stopTower(), ballTower),
         //waitForBeamBreak,
-        waitForLauncher2,
-        new InstantCommand(() -> ballTower.feedBallToLauncher(), ballTower),
-        waitForShot2,
-        new InstantCommand(() -> launcher.setVelocitySetpoint(0), launcher),
+        waitForLauncher2.withTimeout(.2),
+        new RunCommand(() -> ballTower.feedBallToLauncher(), ballTower).withTimeout(1),
+        // new InstantCommand(() -> ballTower.feedBallToLauncher(), ballTower),
+        // waitForShot2.withTimeout(1),
+        new InstantCommand(conveyor::stop, conveyor),
+        new RunCommand(() -> launcher.setVelocitySetpoint(0), launcher).withTimeout(.1),
         waitForLauncher3
         );
         
