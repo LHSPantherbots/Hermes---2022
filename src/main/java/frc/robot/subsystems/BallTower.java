@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -32,6 +33,8 @@ public class BallTower extends SubsystemBase {
         towerBelts.setSmartCurrentLimit(30);
         towerBelts.setInverted(true);
         towerRoller.setInverted(false);
+
+        towerBelts.setIdleMode(IdleMode.kBrake);
     }
 
     public void liftBall() {
