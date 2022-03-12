@@ -42,7 +42,7 @@ public class BallTower extends SubsystemBase {
         if (isBallDetected()) {
             towerBelts.set(0);
         } else {
-            towerBelts.set(0.3);
+            towerBelts.set(0.5);
         }
         
     }

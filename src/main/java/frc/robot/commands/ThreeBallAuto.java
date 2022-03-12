@@ -167,7 +167,7 @@ public class ThreeBallAuto  extends SequentialCommandGroup {
         new InstantCommand(() -> intake.intakeUp(), intake),
         ramseteCommand_first_shoot.andThen(() -> driveTrain.tankDriveVolts(0, 0)),
         new InstantCommand(() -> limelight.ledOn(), limelight),
-        new InstantCommand(() -> limelight.setPipeline(0), limelight),
+        new InstantCommand(() -> limelight.setPipeline(1), limelight),
         new InstantCommand(() -> driveTrain.limeLightAim(), driveTrain).withTimeout(3),
         
         new InstantCommand(() -> launcher.midTarmacShoot(), launcher),
