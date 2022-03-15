@@ -58,9 +58,9 @@ public class AutoCommand  extends SequentialCommandGroup {
     redShoot_trajectory = TrajectoryGenerator.generateTrajectory(
         new Pose2d(-1.5, 0, new Rotation2d()),
         List.of(
-            new Translation2d(-0.75, 0)
+            new Translation2d(-1.0, 0)
         ), 
-        new Pose2d(-0.05, 0, new Rotation2d()), trajectoryConfig);
+        new Pose2d(-0.75, 0, new Rotation2d()), trajectoryConfig);
     
     Command waitForLauncher1 = new WaitForLauncherAtSpeed(launcher);
     Command waitForLauncher2 = new WaitForLauncherAtSpeed(launcher);
@@ -110,11 +110,12 @@ public class AutoCommand  extends SequentialCommandGroup {
         new InstantCommand(() -> intake.intakeUp(), intake),
         ramseteCommand2.andThen(() -> driveTrain.tankDriveVolts(0, 0)),
         // new InstantCommand(() -> limelight.ledOn(), limelight),
-        new RunCommand(() -> limelight.ledPipeline(), limelight).withTimeout(.1),
-        new RunCommand(() -> limelight.setPipeline(1), limelight).withTimeout(.1),
+        // new RunCommand(() -> limelight.ledPipeline(), limelight).withTimeout(.1),
+        new InstantCommand(limelight::ledPipeline, limelight),
+        new InstantCommand(() -> limelight.setPipeline(1), limelight),
         new RunCommand(() -> driveTrain.limeLightAim(), driveTrain).withTimeout(2).andThen(() -> driveTrain.tankDriveVolts(0, 0)),
         // new InstantCommand(() -> limelight.ledOff(), limelight),
-        new RunCommand(() -> limelight.setPipeline(0), limelight).withTimeout(.1),
+        // new RunCommand(() -> limelight.setPipeline(0), limelight).withTimeout(.1),
         new InstantCommand(() -> ballTower.liftBall(), ballTower),
         new InstantCommand(() -> launcher.autoMidTarmacShoot(), launcher),
         waitForLauncher1.withTimeout(.2),
@@ -133,7 +134,8 @@ public class AutoCommand  extends SequentialCommandGroup {
         // waitForShot2.withTimeout(1),
         new InstantCommand(conveyor::stop, conveyor),
         new RunCommand(() -> launcher.setVelocitySetpoint(0), launcher).withTimeout(.1),
-        waitForLauncher3
+        // waitForLauncher3,
+        new RunCommand(() -> limelight.setPipeline(0), limelight).withTimeout(.1)
         );
         
     }

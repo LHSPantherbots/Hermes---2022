@@ -179,7 +179,7 @@ public class RobotContainer {
       .whenPressed(new RunCommand(limelight::startTakingSnapshots, limelight))
       .whileHeld(new RunCommand(driveTrain::limeLightAim, driveTrain))
       .whenReleased(new InstantCommand(limelight::stopTakingSnapshots, limelight))
-      .whenReleased(new RunCommand(limelight::ledOff, limelight));
+      .whenReleased(new InstantCommand(() -> limelight.setPipeline(0), limelight));
     
     new JoystickButton(Gamepad0, GamePadButtons.LB)
       .whileHeld(new RunCommand(() -> ballTower.feedBallToLauncher(), ballTower))

@@ -90,9 +90,6 @@ public class ThreeBallAuto  extends SequentialCommandGroup {
     Command waitForLauncher1 = new WaitForLauncherAtSpeed(launcher);
     Command waitForLauncher2 = new WaitForLauncherAtSpeed(launcher);
     Command waitForLauncher3 = new WaitForLauncherAtSpeed(launcher);
-    Command waitForBeamBreak = new WaitForBeamBreak(ballTower);
-    Command waitForShot1 = new WaitForShot(launcher, ballTower);
-    Command waitForShot2 = new WaitForShot(launcher, ballTower);
     Command waitForShot3 = new WaitForShot(launcher, ballTower);
 
     RamseteCommand ramseteCommand_first_pickup = new RamseteCommand(
@@ -159,11 +156,15 @@ public class ThreeBallAuto  extends SequentialCommandGroup {
         new InstantCommand(() -> driveTrain.resetEncoders(), driveTrain),
         new InstantCommand(() -> driveTrain.zeroHeading(), driveTrain),
         new InstantCommand(() -> driveTrain.resetOdometry(first_Pickup_trajectory.getInitialPose()), driveTrain),
-        new InstantCommand(() -> intake.intakeDownnRoll(), intake).alongWith(new InstantCommand(ballTower::runTowerRoller, ballTower)),
-        new InstantCommand(() -> conveyor.conveyerForward(), conveyor),
+        // new InstantCommand(() -> intake.intakeDownnRoll(), intake).alongWith(new InstantCommand(ballTower::runTowerRoller, ballTower)),
+        // new InstantCommand(() -> conveyor.conveyerForward(), conveyor),
+        new InstantCommand(() -> intake.intakeDownnRoll(), intake),
+        new InstantCommand(conveyor::conveyerForward, conveyor),
+        // new InstantCommand(() -> ballTower.runTowerRoller(), ballTower).withTimeout(0.5),
         ramseteCommand_first_pickup.andThen(() -> driveTrain.tankDriveVolts(0, 0)),
         new InstantCommand(() -> intake.intakeRollersOff(), intake),
         new InstantCommand(() -> intake.intakeUp(), intake),
+        // new InstantCommand(() -> ballTower.autoTower(), ballTower),
         ramseteCommand_first_shoot.andThen(() -> driveTrain.tankDriveVolts(0, 0)),
         // new InstantCommand(() -> limelight.ledOn(), limelight),
         new InstantCommand(limelight::ledPipeline, limelight),
@@ -182,16 +183,17 @@ public class ThreeBallAuto  extends SequentialCommandGroup {
         // waitForShot2,
         new InstantCommand(() -> intake.intakeDownnRoll(), intake),
         ramseteCommand_second_pickup.andThen(() -> driveTrain.tankDriveVolts(0, 0)),
-        new InstantCommand(() -> intake.intakeRollersOff(), intake),
+        new InstantCommand(() -> ballTower.runTowerRoller(), ballTower),
         new InstantCommand(() -> intake.intakeUp(), intake),
+        new InstantCommand(() -> intake.intakeRollersOff(), intake),
+        new InstantCommand (() -> ballTower.stopRollers(), ballTower),
         new InstantCommand(() -> ballTower.liftBall(), ballTower),
         ramseteCommand_second_shoot.andThen(() -> driveTrain.tankDriveVolts(0, 0)),
-        new InstantCommand(limelight::ledPipeline, limelight),
         new InstantCommand(() -> limelight.setPipeline(0), limelight),
         new RunCommand(limelight::startTakingSnapshots, limelight),
         new RunCommand(driveTrain::limeLightAim, driveTrain).withTimeout(2),
         new InstantCommand(() -> ballTower.feedBallToLauncher(), ballTower).withTimeout(1),
-        waitForShot3,
+        waitForShot3.withTimeout(1),
         new InstantCommand(limelight::stopTakingSnapshots, limelight),
         new InstantCommand(() -> conveyor.stop(), conveyor),
         new InstantCommand(() -> launcher.setVelocitySetpoint(0), launcher),
