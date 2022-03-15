@@ -173,17 +173,23 @@ public class RobotContainer {
     //Driver Gampad0
 
    
-  new JoystickButton(Gamepad0, GamePadButtons.Y)
-      .whenPressed(new InstantCommand(limelight::ledPipeline, limelight))
-      .whenPressed(new InstantCommand(()->limelight.setPipeline(1), limelight))
-      .whenPressed(new RunCommand(limelight::startTakingSnapshots, limelight))
-      .whileHeld(new RunCommand(driveTrain::limeLightAim, driveTrain))
-      .whenReleased(new InstantCommand(limelight::stopTakingSnapshots, limelight))
-      .whenReleased(new InstantCommand(() -> limelight.setPipeline(0), limelight));
+  // new JoystickButton(Gamepad0, GamePadButtons.Y)
+  //     .whenPressed(new InstantCommand(limelight::ledPipeline, limelight))
+  //     .whenPressed(new InstantCommand(()->limelight.setPipeline(1), limelight))
+  //     .whenPressed(new RunCommand(limelight::startTakingSnapshots, limelight))
+  //     .whileHeld(new RunCommand(driveTrain::limeLightAim, driveTrain))
+  //     .whenReleased(new InstantCommand(limelight::stopTakingSnapshots, limelight))
+  //     .whenReleased(new InstantCommand(() -> limelight.setPipeline(0), limelight));
     
     new JoystickButton(Gamepad0, GamePadButtons.LB)
       .whileHeld(new RunCommand(() -> ballTower.feedBallToLauncher(), ballTower))
       .whenReleased(new InstantCommand(ballTower::stopBelts));
+
+    new JoystickButton(Gamepad0, GamePadButtons.Y)
+      .whenPressed(new InstantCommand(limelight::ledPipeline, limelight))
+      .whenPressed(new InstantCommand(limelight::setPipelineOne, limelight))
+      .whileHeld(new RunCommand(driveTrain::limeLightAim, driveTrain))
+      .whenReleased(new InstantCommand(limelight::setPipelineZero, limelight));
 
         
     new POVButton(Gamepad0, GamePadButtons.Up)
