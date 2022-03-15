@@ -4,16 +4,18 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+import edu.wpi.first.wpilibj.CAN;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.CAN_ID;
 import frc.robot.RobotContainer;
 import frc.robot.Constants.RIO_Channels_DIO;
 
 
 
 public class BallTower extends SubsystemBase {
-    CANSparkMax towerRoller = new CANSparkMax(7, MotorType.kBrushless);
-    CANSparkMax towerBelts = new CANSparkMax(12, MotorType.kBrushless);
+    CANSparkMax towerRoller = new CANSparkMax(CAN_ID.BALL_TOWER_ROLLER, MotorType.kBrushless);
+    CANSparkMax towerBelts = new CANSparkMax(CAN_ID.BALL_TOWER_BELTS, MotorType.kBrushless);
     DigitalInput beamBreak = new DigitalInput(RIO_Channels_DIO.TOWER_BEAM_BREAK);
     boolean launcherAtSpeed;
     public double towerRollerDelaySetpoint = 0.1;
@@ -42,7 +44,7 @@ public class BallTower extends SubsystemBase {
         if (isBallDetected()) {
             towerBelts.set(0);
         } else {
-            towerBelts.set(0.5);
+            towerBelts.set(0.3);
         }
         
     }
@@ -72,6 +74,10 @@ public class BallTower extends SubsystemBase {
 
     public void stopBelts() {
         towerBelts.stopMotor();
+    }
+
+    public void stopRollers(){
+        towerRoller.stopMotor();
     }
 
     public void lowerBall() {

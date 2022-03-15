@@ -37,6 +37,16 @@ public final class Constants {
         //Climber
         public static final int CLIMB_LEFT = 13;
         public static final int CLIMB_RIGHT = 14;
+
+
+        // Launcher
+        public static final int LAUNCH_LEADER = 9;
+
+        public static final int LAUNCH_FOLLOWER = 10;
+
+        public static final int LAUNCH_TOPROLLER = 17;
+    
+    
     }
 
     public static final class RIO_Channels_DIO{
