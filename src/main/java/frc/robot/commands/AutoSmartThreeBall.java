@@ -11,10 +11,10 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
-import edu.wpi.first.math.trajectory.constraint.CentripetalAccelerationConstraint;
 import edu.wpi.first.math.trajectory.constraint.DifferentialDriveKinematicsConstraint;
 import edu.wpi.first.math.trajectory.constraint.DifferentialDriveVoltageConstraint;
 import edu.wpi.first.math.trajectory.constraint.MaxVelocityConstraint;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.*;
 import frc.robot.Constants.DriveTrainConstants;
 import frc.robot.subsystems.*;
@@ -51,29 +51,28 @@ public class AutoSmartThreeBall  extends SequentialCommandGroup {
         first_Pickup_trajectory = TrajectoryGenerator.generateTrajectory(
             new Pose2d(),
             List.of(
-                new Translation2d(-0.75, 0)
+                new Translation2d(Units.inchesToMeters(-12.75), 0)
             ), 
-            new Pose2d(-1.5, 0, new Rotation2d()), trajectoryConfig_rev);
+            new Pose2d(Units.inchesToMeters(-43), 0, new Rotation2d()), trajectoryConfig_rev);
         first_Shoot_trajectory = TrajectoryGenerator.generateTrajectory(
-            new Pose2d(-1.5, 0, new Rotation2d()),
+            new Pose2d(Units.inchesToMeters(-43), 0, new Rotation2d()),
             List.of(
-                new Translation2d(-0.75, 0)
+                new Translation2d(Units.inchesToMeters(-30.25), Units.inchesToMeters(-1.113))
             ), 
-            new Pose2d(-0.05, 0, new Rotation2d()), trajectoryConfig);
-
+            new Pose2d(Units.inchesToMeters(-20), Units.inchesToMeters(-3), new Rotation2d(Units.degreesToRadians(-8))), trajectoryConfig);
         second_Pickup_trajectory = TrajectoryGenerator.generateTrajectory(
-            new Pose2d(-0.05, 0, new Rotation2d()),
+            new Pose2d(Units.inchesToMeters(-20), Units.inchesToMeters(-3), new Rotation2d(Units.degreesToRadians(-8))),
             List.of(
-                new Translation2d(-0.66, 1.32)
+                new Translation2d(Units.inchesToMeters(-35), Units.inchesToMeters(28.5))
             ), 
-            new Pose2d(-0.83, 2.75, new Rotation2d(-0.15)), trajectoryConfig_rev);
+            new Pose2d(Units.inchesToMeters(-5), Units.inchesToMeters(80), new Rotation2d(Units.degreesToRadians(-110))), trajectoryConfig_rev);
     
         second_Shoot_trajectory = TrajectoryGenerator.generateTrajectory(
-            new Pose2d(-0.83, 2.75, new Rotation2d(-0.15)),
+            new Pose2d(Units.inchesToMeters(-5), Units.inchesToMeters(80), new Rotation2d(Units.degreesToRadians(-110))),
             List.of(
-                new Translation2d(-0.43, 2.4)
+                new Translation2d(Units.inchesToMeters(-13.625), Units.inchesToMeters(50))
             ), 
-            new Pose2d(0.4, 0.91, new Rotation2d(-0.54)), trajectoryConfig);
+            new Pose2d(Units.inchesToMeters(0), Units.inchesToMeters(30), new Rotation2d(Units.degreesToRadians(-35))), trajectoryConfig);
         
         Command autoSmartTower1 = new AutoSmartTower(ballTower);
         Command autoSmartTower2 = new AutoSmartTower(ballTower);

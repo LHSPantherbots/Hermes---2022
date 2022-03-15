@@ -11,10 +11,10 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
-import edu.wpi.first.math.trajectory.constraint.CentripetalAccelerationConstraint;
 import edu.wpi.first.math.trajectory.constraint.DifferentialDriveKinematicsConstraint;
 import edu.wpi.first.math.trajectory.constraint.DifferentialDriveVoltageConstraint;
 import edu.wpi.first.math.trajectory.constraint.MaxVelocityConstraint;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.*;
 import frc.robot.Constants.DriveTrainConstants;
 import frc.robot.subsystems.*;
@@ -50,24 +50,20 @@ public class AutoCommand  extends SequentialCommandGroup {
         .addConstraint(autoVoltageConstraint).addConstraint(DriveTrainConstants.centripetalAccelerationConstraint)
         .addConstraint(ddKinematicConstraint).addConstraint(maxVelocityConstraint);
     redPickup_trajectory = TrajectoryGenerator.generateTrajectory(
-            new Pose2d(),
-            List.of(
-                new Translation2d(-0.75, 0)
-            ), 
-            new Pose2d(-1.5, 0, new Rotation2d()), trajectoryConfig_rev);
-    redShoot_trajectory = TrajectoryGenerator.generateTrajectory(
-        new Pose2d(-1.5, 0, new Rotation2d()),
+        new Pose2d(),
         List.of(
-            new Translation2d(-1.0, 0)
+            new Translation2d(Units.inchesToMeters(-12.75), 0)
         ), 
-        new Pose2d(-0.75, 0, new Rotation2d()), trajectoryConfig);
+        new Pose2d(Units.inchesToMeters(-43), 0, new Rotation2d()), trajectoryConfig_rev);
+    redShoot_trajectory = TrajectoryGenerator.generateTrajectory(
+        new Pose2d(Units.inchesToMeters(-43), 0, new Rotation2d()),
+        List.of(
+            new Translation2d(Units.inchesToMeters(-30.25), Units.inchesToMeters(-1.113))
+        ), 
+        new Pose2d(Units.inchesToMeters(-20), Units.inchesToMeters(-3), new Rotation2d(Units.degreesToRadians(-8))), trajectoryConfig);
     
     Command waitForLauncher1 = new WaitForLauncherAtSpeed(launcher);
     Command waitForLauncher2 = new WaitForLauncherAtSpeed(launcher);
-    Command waitForLauncher3 = new WaitForLauncherAtSpeed(launcher);
-    Command waitForBeamBreak = new WaitForBeamBreak(ballTower);
-    Command waitForShot1 = new WaitForShot(launcher, ballTower);
-    Command waitForShot2 = new WaitForShot(launcher, ballTower);
 
     RamseteCommand ramseteCommand1 = new RamseteCommand(
         redPickup_trajectory,
