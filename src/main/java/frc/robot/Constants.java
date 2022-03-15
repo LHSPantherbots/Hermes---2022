@@ -5,6 +5,7 @@
 package frc.robot;
 
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
+import edu.wpi.first.math.trajectory.constraint.CentripetalAccelerationConstraint;
 import edu.wpi.first.math.util.Units;
 
 /**
@@ -117,6 +118,7 @@ public final class Constants {
         public static final double rpmToMeterPerSec = (Math.PI * 6 * 0.0254)/10.75 / 60;
         public static final double rpmToMetersPerSec = revsToMeter/60;
         public static final DifferentialDriveKinematics kDriveKinematics = new DifferentialDriveKinematics(kTrackwidthMeters);
+        public static final CentripetalAccelerationConstraint centripetalAccelerationConstraint = new CentripetalAccelerationConstraint(1);
     }
     public static final class ArmPidConstants {
         public static final double kP = 0.0000035;
