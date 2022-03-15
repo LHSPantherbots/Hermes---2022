@@ -77,22 +77,22 @@ topRoller.setInverted(true);
  pidControllerTop = topRoller.getPIDController();
 
  // PID coefficients these will need to be tuned
- kP = 0.00025; //5e-5; 
+ kP = 0.00015;//0.00025; //5e-5; 
  kI =  0;//1e-6;
- kD = 0.0004; 
- kIz = 0; 
- kFF = 0.00019; // increased from 0.00018 to see if ramps to speed more quickly and stays at it  
+ kD = 0.0008;//0.0004; 
+ kIz = 0;
+ kFF = 0.00017;//0.00019;
  kMaxOutput = 1; 
  kMinOutput = -1;
  maxRPM = 5700;
  allowableError = 50; //Lets the system known when the velocity is close enough to launch
 
 //  Top Roller PID coefficients these will need to be tuned 
-kPtop = 0.00025; //5e-5; 
+kPtop = 0.0001;//0.00025; //5e-5; 
 kItop =  0;//1e-6;
-kDtop = 0.0004; 
+kDtop = 0.0;//0.0004; 
 kIztop = 0; 
-kFFtop = 0.00019; // increased from 0.00018 to see if ramps to speed more quickly and stays at it  
+kFFtop = 0.00018;//0.00019
 kMaxOutputTop = 1; 
 kMinOutputTop = -1;
 maxRPMtop = 5700;
