@@ -1,22 +1,14 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.commands.*;
+import frc.robot.Robot;
 
-import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.DigitalInput;
 import com.revrobotics.CANSparkMax;
-import com.revrobotics.ColorMatch;
-import com.revrobotics.ColorMatchResult;
-import com.revrobotics.ColorSensorV3;
 import com.revrobotics.RelativeEncoder;
+import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.util.Color;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import frc.robot.RobotContainer;
 import frc.robot.Constants.RIO_Channels_DIO;
 
 public class BallEjector extends SubsystemBase {
@@ -26,8 +18,8 @@ public class BallEjector extends SubsystemBase {
     //Color Sensor Values
     DigitalInput redInput = new DigitalInput(RIO_Channels_DIO.COLOR_SENSOR_RED);
     DigitalInput blueInput = new DigitalInput(RIO_Channels_DIO.COLOR_SENSOR_BLUE);
-
-    
+    DigitalInput ejectorBeamBreak = new DigitalInput(RIO_Channels_DIO.EJECTOR_BEAM_BREAK);
+    public String detectedBallColor = "None";
   
 
     CANSparkMax BallEject = new CANSparkMax(11, MotorType.kBrushless);
@@ -37,7 +29,7 @@ public class BallEjector extends SubsystemBase {
 
     // private final static DriverStation ds = DriverStation;
     // private final static Alliance alliance = DriverStation.getAlliance();
-    private final static String alliance = "Red";
+    private static String alliance = "Not set";
     private double decayValue = 0.0;
     private double timeToDecay = 0.5; //seconds  assumes 10 ms loop timing may not be super accurate
     BallTower ejectorBallTower;
@@ -45,6 +37,14 @@ public class BallEjector extends SubsystemBase {
 
     public BallEjector(BallTower ballTower) {
         ejectorBallTower = ballTower;
+
+        BallEject.restoreFactoryDefaults();
+        BallEject.setSmartCurrentLimit(40);
+        
+        BallEject.setIdleMode(IdleMode.kBrake);
+
+        //BallEject.setOpenLoopRampRate(.7);
+        
 
         // alliance = ds.getAlliance();
 
@@ -64,7 +64,7 @@ public class BallEjector extends SubsystemBase {
     }
 
     public void ballUp() {
-        BallEject.set(-.5);
+        BallEject.set(-0.50); // -1.0 and 1.0 apparently kills neo 550's
     }
 
     public void stop() {
@@ -72,7 +72,7 @@ public class BallEjector extends SubsystemBase {
     }
 
     public void ballOut() {
-        BallEject.set(.5);
+        BallEject.set(0.75);
     }
 
     public void autoEject(){
@@ -85,8 +85,7 @@ public class BallEjector extends SubsystemBase {
         }
 
         //ball detected
-        if(isBallDetected() || (decayValue > 0.0 ) )
-        
+        if((isBallDetected() || (decayValue > 0.0 )) && !Climb.climbMode )
         {
         
             //correct color
@@ -109,6 +108,7 @@ public class BallEjector extends SubsystemBase {
             else if (!doesAllianceMatch())
             {
                 ballOut();
+                // new RunCommand(RobotContainer.leds::white, RobotContainer.leds).withTimeout(0.5);
             }
             else if (doesAllianceMatch() && ejectorBallTower.isBallDetected()){
                 stop();
@@ -131,25 +131,54 @@ public class BallEjector extends SubsystemBase {
         return blueInput.get();
     }
 
-    public boolean isBallDetected()
+    public boolean isBallDetectedColorSensor() //shows if a ball is detected by the color sensor
     {
-        return (isBlue() || isRed());
+         return (isBlue() || isRed());
+    }
+
+    public boolean isBallDetected(){  //shows if a ball is detected by the beam break
+        return !ejectorBeamBreak.get();
+    }
+
+    public void determineBallColor(){
+        if(isBallDetected() && isBallDetectedColorSensor()) //when both the color sensor and beam break detect a ball the color is determined
+        {
+            if(isBlue()){
+                detectedBallColor = "Blue";
+            }else if (isRed()){
+                detectedBallColor = "Red";
+            }else{
+                detectedBallColor = "None";
+            }
+        }
+
+        if(!isBallDetected()){
+            detectedBallColor = "None";
+        }
     }
 
     public boolean hasTwoBalls() {
-        if (isBallDetected()) {
-            if (doesAllianceMatch() && ejectorBallTower.isBallDetected()) {
+        if (isBallDetected() && ejectorBallTower.isBallDetected()) {
                 return true;
             } else {
                 return false;
             }
-        } else {
-            return false;
-        }
+        
     }
 
     public boolean doesAllianceMatch()
-    {   return true;
+    {
+        determineBallColor();
+        if (alliance == "AutoOff"){
+            return true;
+        }
+        else if (alliance == detectedBallColor){
+            return true;
+        }
+        else{
+            return false;
+        }
+    
         // if (alliance.toString() == "Red"){
         //     if(isRed()){
         //         return  true;
@@ -170,6 +199,8 @@ public class BallEjector extends SubsystemBase {
         //     return false;
         // }
     }
+
+    
 
 
 
@@ -214,10 +245,13 @@ public class BallEjector extends SubsystemBase {
     public void periodic() {
         SmartDashboard.putString("Alliance Color", alliance.toString());
         SmartDashboard.putBoolean("Alliance Match", doesAllianceMatch());
-        SmartDashboard.putBoolean("Ball Detected", isBallDetected());
+        SmartDashboard.putBoolean("Ball Detected Beam Break", isBallDetected());
         SmartDashboard.putBoolean("Red", isRed());
         SmartDashboard.putBoolean("Blue", isBlue());
-        SmartDashboard.putNumber("Decay Value", decayValue);
+        SmartDashboard.putString("Detected Ball Color", detectedBallColor);
+        //SmartDashboard.putNumber("Decay Value", decayValue);
+        alliance = Robot.m_alliance;
+        //SmartDashboard.putNumber("Eject Motor Current", BallEject.getOutputCurrent());
         //SmartDashboard.putBoolean("Ball Ejector ", value);
 
 

@@ -10,6 +10,7 @@ import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -22,6 +23,9 @@ public class Robot extends TimedRobot {
 
   private RobotContainer m_robotContainer;
 
+  public static String m_alliance = "None Selected";
+  
+
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
@@ -30,7 +34,9 @@ public class Robot extends TimedRobot {
   public void robotInit() {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
+    
     m_robotContainer = new RobotContainer();
+    // RobotContainer.limelight.ledOff();
   }
 
   /**
@@ -47,11 +53,15 @@ public class Robot extends TimedRobot {
     // and running subsystem periodic() methods.  This must be called from the robot's periodic
     // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run();
+    m_alliance = RobotContainer.allianceChooser.getSelected();
   }
 
   /** This function is called once each time the robot enters Disabled mode. */
   @Override
-  public void disabledInit() {}
+  public void disabledInit() {
+    // RobotContainer.limelight.ledOff();
+    // new InstantCommand(() -> m_robotContainer.limelight.setPipeline(0), m_robotContainer.limelight);
+  }
 
   @Override
   public void disabledPeriodic() {}
@@ -65,6 +75,8 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
     }
+
+  
   }
 
   /** This function is called periodically during autonomous. */
@@ -80,6 +92,8 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
+    
+  
   }
 
   /** This function is called periodically during operator control. */
@@ -90,6 +104,7 @@ public class Robot extends TimedRobot {
   public void testInit() {
     // Cancels all running commands at the start of test mode.
     CommandScheduler.getInstance().cancelAll();
+    
   }
 
   /** This function is called periodically during test mode. */
@@ -108,4 +123,6 @@ public class Robot extends TimedRobot {
   public void simulationPeriodic() {
     REVPhysicsSim.getInstance().run();
   }
+
+
 }

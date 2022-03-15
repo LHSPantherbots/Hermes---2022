@@ -5,6 +5,7 @@
 package frc.robot;
 
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
+import edu.wpi.first.math.trajectory.constraint.CentripetalAccelerationConstraint;
 import edu.wpi.first.math.util.Units;
 
 /**
@@ -37,10 +38,21 @@ public final class Constants {
         //Climber
         public static final int CLIMB_LEFT = 13;
         public static final int CLIMB_RIGHT = 14;
+
+
+        // Launcher
+        public static final int LAUNCH_LEADER = 9;
+
+        public static final int LAUNCH_FOLLOWER = 10;
+
+        public static final int LAUNCH_TOPROLLER = 17;
+    
+    
     }
 
     public static final class RIO_Channels_DIO{
         public static final int TOWER_BEAM_BREAK = 0;
+        public static final int EJECTOR_BEAM_BREAK = 1;
         public static final int COLOR_SENSOR_RED = 8;
         public static final int COLOR_SENSOR_BLUE = 9;
     }
@@ -85,10 +97,13 @@ public final class Constants {
     }
 
     public static final class DriveTrainConstants {
-        public static final double ksVolts = 0.099818;
-        public static final double kvVoltSecondsPerMeter = 3.4037;
-        public static final double kaVoltSecondsSquaredPerMeter = 0.25988;
-        public static final double kPDriveVel = 3.5864;
+        public static final double ksVolts = 0.21074;
+        public static final double kvVoltSecondsPerMeter = 2.8111;
+        public static final double kaVoltSecondsSquaredPerMeter = 0.58838;
+        public static final double angular_ksVolts = 0.16242;
+        public static final double angular_kvVoltSecondsPerMeter = 3.1275;
+        public static final double angular_kaVoltSecondsSquaredPerMeter = 0.10085;
+        public static final double kPDriveVel = 3.899;
         public static final double left_Ks = 0.14208;
         public static final double left_Kv = 3.2143;
         public static final double left_Ka = 0.16964;
@@ -97,9 +112,10 @@ public final class Constants {
         public static final double right_Kv = 3.4427;
         public static final double right_Ka = 0.24607;
         public static final double right_Kp = 3.4966;
-        public static final double kTrackwidthMeters = Units.inchesToMeters(24);
-        public static final double kMaxSpeedMetersPerSecond = .75;
-        public static final double kMaxAccelerationMetersPerSecondSquared = .5;
+        // public static final double kTrackwidthMeters = Units.inchesToMeters(24);
+        public static final double kTrackwidthMeters = 0.62675;
+        public static final double kMaxSpeedMetersPerSecond = 1.5;
+        public static final double kMaxAccelerationMetersPerSecondSquared = 1;
         public static final double kRamseteB = 2;
         public static final double kRamseteZeta = 0.7;
         public static final double gearRatio = 10.71;
@@ -112,6 +128,21 @@ public final class Constants {
         public static final double rpmToMeterPerSec = (Math.PI * 6 * 0.0254)/10.75 / 60;
         public static final double rpmToMetersPerSec = revsToMeter/60;
         public static final DifferentialDriveKinematics kDriveKinematics = new DifferentialDriveKinematics(kTrackwidthMeters);
+        public static final CentripetalAccelerationConstraint centripetalAccelerationConstraint = new CentripetalAccelerationConstraint(1);
+    }
+    public static final class ArmPidConstants {
+        public static final double kP = 0.0000035;
+        public static final double kI = 0.0;
+        public static final double kD = 0.00002; 
+        public static final double kIz = 0;
+        public static final double kFF = 0.000165;
+        public static final double kMaxOutput = 1;
+        public static final double kMinOutput = -1;
+        public static final double maxRPM = 5700;
+        public static final double maxVel = 5700;
+        public static final double minVel = -5700;
+        public static final double maxAcc = 4000;
+        public static final double allowedErr = 0;
     }
 
     public static final class SparkMaxPidConstants {
@@ -126,9 +157,18 @@ public final class Constants {
         public static final double maxRPM = 5700;
         // Smart Motion Coefficients
         public static final double maxVel = 5700; // Same as RPM
-        public static final double maxAcc = 3000;
+        public static final double maxAcc = 4000;
         public static final double minVel = 0;
         public static final double allowedErr = 0;
+    }
+
+    public static final class LimeL{
+        //Leds
+        public static final int ledOFF = 1;
+        public static final int ledON = 3;
+
+        //pipelines
+
     }
 
 }

@@ -2,20 +2,9 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.fasterxml.jackson.annotation.JsonTypeInfo.Id;
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.RelativeEncoder;
-import com.revrobotics.SparkMaxPIDController;
-import com.revrobotics.CANSparkMax.IdleMode;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-import com.revrobotics.CANSparkMax.ControlType;
-
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.PH_Channel;
-import frc.robot.Constants.CAN_ID;
 
 
 public class ClimbPivot extends SubsystemBase  {
@@ -37,7 +26,11 @@ public class ClimbPivot extends SubsystemBase  {
         
     }
 
-
+    public void defaultArmState() {
+        //if (!Climb.climbMode){
+            armSolenoid.set(DoubleSolenoid.Value.kForward);
+        //}
+    }
 
     public void armForward() {
         armSolenoid.set(DoubleSolenoid.Value.kForward);

@@ -15,6 +15,7 @@ public class Leds extends SubsystemBase{
     private int m_rainbowFirstPixelHue;
 
     private int bluePulseBrightness = 0;
+    private int greenPulseBrightness = 0;
     private int blueStreakLED = 0;
     private int numLoops = 0;
 
@@ -102,6 +103,15 @@ public class Leds extends SubsystemBase{
    m_led.setData(m_ledBuffer);
   }
 
+  public void white() {
+    for (var i = 0; i < m_ledBuffer.getLength(); i++) {
+      // Sets the specified LED to the RGB values for purple
+      m_ledBuffer.setRGB(i, 255, 255, 255);
+   }
+   
+   m_led.setData(m_ledBuffer);
+  }
+
 
 
 
@@ -116,6 +126,23 @@ public class Leds extends SubsystemBase{
 
    //Check bounds
    bluePulseBrightness %= 255;
+
+   m_led.setData(m_ledBuffer);
+
+  }
+
+
+  public void greenPulse(){
+    for (var i = 0; i < m_ledBuffer.getLength(); i++) {
+      // Sets the specified LED to the RGB values for blue
+      m_ledBuffer.setRGB(i, 0, greenPulseBrightness, 0);
+   }
+
+   //increase brightness
+   greenPulseBrightness += 5;
+
+   //Check bounds
+   greenPulseBrightness %= 255;
 
    m_led.setData(m_ledBuffer);
 

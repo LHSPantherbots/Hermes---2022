@@ -19,17 +19,14 @@ import edu.wpi.first.wpilibj2.command.*;
 import frc.robot.Constants.DriveTrainConstants;
 import frc.robot.subsystems.*;
 
-public class AutoCommand  extends SequentialCommandGroup {
+public class AutoSmartTwoBall extends SequentialCommandGroup {
     Trajectory redPickup_trajectory = new Trajectory();
     Trajectory redShoot_trajectory = new Trajectory();
     RamseteCommand ramseteCommand1;
     RamseteCommand ramseteCommand2; 
-    Command waitForLauncher1; 
-    Command waitForLauncher2; 
-    Command waitForLauncher3;
-    Command waitForBeamBreak;
-    Command waitForShot1;
-    Command waitForShot2;
+    Command autoSmartShot1; 
+    Command autoSmartShot2; 
+    Command autoSmartTower;
     private final PIDController left_PidController = new PIDController(DriveTrainConstants.kPDriveVel, 0, 0);
     private final PIDController right_PidController =new PIDController(DriveTrainConstants.kPDriveVel, 0, 0);
     public DifferentialDriveVoltageConstraint autoVoltageConstraint = new DifferentialDriveVoltageConstraint(
@@ -39,8 +36,9 @@ public class AutoCommand  extends SequentialCommandGroup {
     public DifferentialDriveKinematicsConstraint ddKinematicConstraint = new DifferentialDriveKinematicsConstraint(DriveTrainConstants.kDriveKinematics, DriveTrainConstants.kMaxSpeedMetersPerSecond);
 
     public MaxVelocityConstraint maxVelocityConstraint = new MaxVelocityConstraint(DriveTrainConstants.kMaxSpeedMetersPerSecond);
-    public AutoCommand(DriveSubsystem driveTrain, Launcher launcher, BallTower ballTower, Intake intake, Conveyor conveyor, LimeLight limelight) {
 
+    public AutoSmartTwoBall(DriveSubsystem driveTrain, Launcher launcher, BallTower ballTower, Intake intake, Conveyor conveyor, LimeLight limelight) {
+        
     TrajectoryConfig trajectoryConfig_rev = new TrajectoryConfig(DriveTrainConstants.kMaxSpeedMetersPerSecond,
     DriveTrainConstants.kMaxAccelerationMetersPerSecondSquared).setKinematics(DriveTrainConstants.kDriveKinematics)
         .addConstraint(autoVoltageConstraint).addConstraint(DriveTrainConstants.centripetalAccelerationConstraint)
@@ -58,16 +56,13 @@ public class AutoCommand  extends SequentialCommandGroup {
     redShoot_trajectory = TrajectoryGenerator.generateTrajectory(
         new Pose2d(-1.5, 0, new Rotation2d()),
         List.of(
-            new Translation2d(-1.0, 0)
+            new Translation2d(-0.75, 0)
         ), 
-        new Pose2d(-0.75, 0, new Rotation2d()), trajectoryConfig);
+        new Pose2d(-0.05, 0, new Rotation2d()), trajectoryConfig);
     
-    Command waitForLauncher1 = new WaitForLauncherAtSpeed(launcher);
-    Command waitForLauncher2 = new WaitForLauncherAtSpeed(launcher);
-    Command waitForLauncher3 = new WaitForLauncherAtSpeed(launcher);
-    Command waitForBeamBreak = new WaitForBeamBreak(ballTower);
-    Command waitForShot1 = new WaitForShot(launcher, ballTower);
-    Command waitForShot2 = new WaitForShot(launcher, ballTower);
+    Command autoSmartTower = new AutoSmartTower(ballTower);
+    Command autoSmartShot1 = new AutoSmartShot(launcher, ballTower);
+    Command autoSmartShot2 = new AutoSmartShot(launcher, ballTower);
 
     RamseteCommand ramseteCommand1 = new RamseteCommand(
         redPickup_trajectory,
@@ -106,37 +101,22 @@ public class AutoCommand  extends SequentialCommandGroup {
         new InstantCommand(() -> intake.intakeDownnRoll(), intake).alongWith(new InstantCommand(ballTower::runTowerRoller, ballTower)),
         new InstantCommand(conveyor::conveyerForward, conveyor),
         ramseteCommand1.andThen(() -> driveTrain.tankDriveVolts(0, 0)),
-        new InstantCommand(() -> intake.intakeRollersOff(), intake),
-        new InstantCommand(() -> intake.intakeUp(), intake),
+        // new InstantCommand(() -> intake.intakeRollersOff(), intake),
+        new InstantCommand(intake::intakeRollersOff, intake),
+        // new InstantCommand(() -> intake.intakeUp(), intake),
+        new InstantCommand(intake::intakeUp, intake),
         ramseteCommand2.andThen(() -> driveTrain.tankDriveVolts(0, 0)),
-        // new InstantCommand(() -> limelight.ledOn(), limelight),
-        // new RunCommand(() -> limelight.ledPipeline(), limelight).withTimeout(.1),
         new InstantCommand(limelight::ledPipeline, limelight),
-        new InstantCommand(() -> limelight.setPipeline(1), limelight),
+        // new RunCommand(() -> limelight.ledPipeline(), limelight).withTimeout(.1),
+        // new RunCommand(() -> limelight.setPipeline(1), limelight).withTimeout(.1),
+        new InstantCommand(limelight::setPipelineOne, limelight),
         new RunCommand(() -> driveTrain.limeLightAim(), driveTrain).withTimeout(2).andThen(() -> driveTrain.tankDriveVolts(0, 0)),
-        // new InstantCommand(() -> limelight.ledOff(), limelight),
         // new RunCommand(() -> limelight.setPipeline(0), limelight).withTimeout(.1),
-        new InstantCommand(() -> ballTower.liftBall(), ballTower),
-        new InstantCommand(() -> launcher.autoMidTarmacShoot(), launcher),
-        waitForLauncher1.withTimeout(.2),
-        new RunCommand(() -> ballTower.feedBallToLauncher(), ballTower).withTimeout(1),
-        new InstantCommand(() -> ballTower.stopTower(), ballTower),
-        // new InstantCommand(() -> ballTower.feedBallToLauncher(), ballTower),
-        // waitForShot1.withTimeout(1),
-        new RunCommand(() -> ballTower.liftBall(), ballTower).withTimeout(2),
-        // new InstantCommand(() -> ballTower.liftBall(), ballTower),
-        // waitForBeamBreak.withTimeout(4),
-        new InstantCommand(() -> ballTower.stopTower(), ballTower),
-        //waitForBeamBreak,
-        waitForLauncher2.withTimeout(.2),
-        new RunCommand(() -> ballTower.feedBallToLauncher(), ballTower).withTimeout(1),
-        // new InstantCommand(() -> ballTower.feedBallToLauncher(), ballTower),
-        // waitForShot2.withTimeout(1),
-        new InstantCommand(conveyor::stop, conveyor),
-        new RunCommand(() -> launcher.setVelocitySetpoint(0), launcher).withTimeout(.1),
-        // waitForLauncher3,
-        new RunCommand(() -> limelight.setPipeline(0), limelight).withTimeout(.1)
+        new InstantCommand(limelight::setPipelineZero),
+        autoSmartShot1.withTimeout(.5),
+        autoSmartTower.withTimeout(2),
+        autoSmartShot2.withTimeout(.5),
+        new InstantCommand(conveyor::stop, conveyor)
         );
-        
     }
 }

@@ -11,10 +11,12 @@ import com.revrobotics.CANSparkMax.ControlType;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.CAN_ID;
-import frc.robot.Constants.SparkMaxPidConstants;
+import frc.robot.Constants.ArmPidConstants;
 
 
 public class Climb extends SubsystemBase  {
+
+    public static boolean climbMode = false;
     
     CANSparkMax l_arm = new CANSparkMax(CAN_ID.CLIMB_LEFT, MotorType.kBrushless);
     CANSparkMax r_arm = new CANSparkMax(CAN_ID.CLIMB_RIGHT, MotorType.kBrushless);
@@ -39,8 +41,8 @@ public class Climb extends SubsystemBase  {
         r_arm.setInverted(true);
         l_arm.setSmartCurrentLimit(40);
         r_arm.setSmartCurrentLimit(40);
-        l_arm.setClosedLoopRampRate(2);
-        r_arm.setClosedLoopRampRate(2);
+        l_arm.setClosedLoopRampRate(1);
+        r_arm.setClosedLoopRampRate(1);
 
         l_arm.setIdleMode(IdleMode.kBrake);
         r_arm.setIdleMode(IdleMode.kBrake);
@@ -55,44 +57,32 @@ public class Climb extends SubsystemBase  {
         r_pidController = r_arm.getPIDController();
 
         // PID coefficients these will need to be tuned
-        kP = SparkMaxPidConstants.kPP; 
-        kI =  SparkMaxPidConstants.kI;
-        kD = SparkMaxPidConstants.kD;
-        kIz = SparkMaxPidConstants.kIz;
-        kFF = SparkMaxPidConstants.kFF;
-        kMaxOutput = SparkMaxPidConstants.kMaxOutput;
-        kMinOutput = SparkMaxPidConstants.kMinOutput;
-        maxRPM = SparkMaxPidConstants.maxRPM;
-        maxVel = SparkMaxPidConstants.maxVel;
-        minVel = SparkMaxPidConstants.minVel;
-        maxAcc = SparkMaxPidConstants.maxAcc;
-        allowedErr = SparkMaxPidConstants.allowedErr;
-        // kP = 5e-5; 
-        // kI = 1e-6;
-        // kD = 0; 
-        // kIz = 0; 
-        // kFF = 0.000156; 
-        // kMaxOutput = 1; 
-        // kMinOutput = -1;
-        // maxRPM = 5700;
-
-        // Smart Motion Coefficients
-        // maxVel = 2000; // rpm
-        // maxAcc = 1500;
+        kP = ArmPidConstants.kP;
+        kI = ArmPidConstants.kI;
+        kD = ArmPidConstants.kD;
+        kIz = ArmPidConstants.kIz;
+        kFF = ArmPidConstants.kFF;
+        kMaxOutput = ArmPidConstants.kMaxOutput;
+        kMinOutput = ArmPidConstants.kMinOutput;
+        maxRPM = ArmPidConstants.maxRPM;
+        maxVel = ArmPidConstants.maxVel;
+        minVel = ArmPidConstants.minVel;
+        maxAcc = ArmPidConstants.maxAcc;
+        allowedErr = ArmPidConstants.allowedErr;
         
-        l_pidController.setP(kP);
-        l_pidController.setI(kI);
-        l_pidController.setD(kD);
-        l_pidController.setIZone(kIz);
-        l_pidController.setFF(kFF);
-        l_pidController.setOutputRange(kMinOutput, kMaxOutput);
+        l_pidController.setP(kP, smartMotionProfile);
+        l_pidController.setI(kI, smartMotionProfile);
+        l_pidController.setD(kD, smartMotionProfile);
+        l_pidController.setIZone(kIz, smartMotionProfile);
+        l_pidController.setFF(kFF, smartMotionProfile);
+        l_pidController.setOutputRange(kMinOutput, kMaxOutput, smartMotionProfile);
 
-        r_pidController.setP(kP);
-        r_pidController.setI(kI);
-        r_pidController.setD(kD);
-        r_pidController.setIZone(kIz);
-        r_pidController.setFF(kFF);
-        r_pidController.setOutputRange(kMinOutput, kMaxOutput);
+        r_pidController.setP(kP, smartMotionProfile);
+        r_pidController.setI(kI, smartMotionProfile);
+        r_pidController.setD(kD, smartMotionProfile);
+        r_pidController.setIZone(kIz, smartMotionProfile);
+        r_pidController.setFF(kFF, smartMotionProfile);
+        r_pidController.setOutputRange(kMinOutput, kMaxOutput, smartMotionProfile);
 
 
         l_pidController.setSmartMotionMaxVelocity(maxVel, smartMotionProfile);
@@ -104,23 +94,6 @@ public class Climb extends SubsystemBase  {
         r_pidController.setSmartMotionMinOutputVelocity(minVel, smartMotionProfile);
         r_pidController.setSmartMotionMaxAccel(maxAcc, smartMotionProfile);
         r_pidController.setSmartMotionAllowedClosedLoopError(allowedErr, smartMotionProfile);
-
-        SmartDashboard.putNumber("Arm P Gain", kP);
-        SmartDashboard.putNumber("Arm I Gain", kI);
-        SmartDashboard.putNumber("Arm D Gain", kD);
-        SmartDashboard.putNumber("Arm I Zone", kIz);
-        SmartDashboard.putNumber("Arm Feed Forward", kFF);
-        SmartDashboard.putNumber("Arm Max Output", kMaxOutput);
-        SmartDashboard.putNumber("Arm Min Output", kMinOutput);
-
-        // display Smart Motion coefficients
-        SmartDashboard.putNumber("Arm Max Velocity", maxVel);
-        SmartDashboard.putNumber("Arm Min Velocity", minVel);
-        SmartDashboard.putNumber("Arm Max Acceleration", maxAcc);
-        SmartDashboard.putNumber("Arm Allowed Closed Loop Error", allowedErr);
-
-        SmartDashboard.putNumber("Right Arm Pos", r_encoder.getPosition());
-        SmartDashboard.putNumber("Left Arm Pos", l_encoder.getPosition());
     }
     
     
@@ -129,8 +102,13 @@ public class Climb extends SubsystemBase  {
         SmartDashboard.putNumber("ClimbAmp", l_arm.getOutputCurrent());
         SmartDashboard.putNumber("HookAmp", r_arm.getOutputCurrent());
         SmartDashboard.putNumber("Right Arm Pos", r_encoder.getPosition());
+        SmartDashboard.putNumber("Right Arm Vel", r_encoder.getVelocity());
+        SmartDashboard.putNumber("Right Arm Current", r_arm.getOutputCurrent());
         SmartDashboard.putNumber("Left Arm Pos", l_encoder.getPosition());
+        SmartDashboard.putNumber("Left Arm Vel", l_encoder.getVelocity());
+        SmartDashboard.putNumber("Left Arm Current", l_arm.getOutputCurrent());
         SmartDashboard.putNumber("Arm Set Point", pid_setPoint);
+        SmartDashboard.putBoolean("Climb Mode", climbMode);
     }
 
 
@@ -145,42 +123,29 @@ public class Climb extends SubsystemBase  {
     public void manualClimb(double lift, double trim){
         lift = deadBand(lift);
         trim = deadBand(trim);
-        l_arm.set(lift + trim);
         r_arm.set(lift - trim);
+        l_arm.set(lift + trim);
+        // if (!climbMode || (lift > 0.2 || trim > 0.2)){
+        //     lift = deadBand(lift);
+        //     trim = deadBand(trim);
+        //     l_pidController.setReference(lift + trim, ControlType.kDutyCycle, smartMotionProfile);
+        //     // l_arm.set(lift + trim);
+        //     r_pidController.setReference(lift - trim, ControlType.kDutyCycle, smartMotionProfile);
+        //     // r_arm.set(lift - trim);
+        // }
+        // } if (!climbMode && (lift < 0.2 && trim < 0.2 )) {
+        //     lift = deadBand(lift);
+        //     trim = deadBand(trim);
+        //     l_pidController.setReference(lift + trim, ControlType.kDutyCycle, smartMotionProfile);
+        //     // l_arm.set(lift + trim);
+        //     r_pidController.setReference(lift - trim, ControlType.kDutyCycle, smartMotionProfile);
+        // }
     }
 
 
     public void startArmSmartMotion() {
-        double p = SmartDashboard.getNumber("Arm P Gain", 0);
-        double i = SmartDashboard.getNumber("Arm I Gain", 0);
-        double d = SmartDashboard.getNumber("Arm D Gain", 0);
-        double iz = SmartDashboard.getNumber("Arm I Zone", 0);
-        double ff = SmartDashboard.getNumber("Arm Feed Forward", 0);
-        double max = SmartDashboard.getNumber("Arm Max Output", 0);
-        double min = SmartDashboard.getNumber("Arm Min Output", 0);
-        double maxV = SmartDashboard.getNumber("Arm Max Velocity", 0);
-        double minV = SmartDashboard.getNumber("Arm Min Velocity", 0);
-        double maxA = SmartDashboard.getNumber("Arm Max Acceleration", 0);
-        double allE = SmartDashboard.getNumber("Arm Allowed Closed Loop Error", 0);
-
-        // if PID coefficients on SmartDashboard have changed, write new values to controller
-        if((p != kP)) { l_pidController.setP(p); r_pidController.setP(p); kP = p; }
-        if((i != kI)) { l_pidController.setI(i); r_pidController.setI(i); kI = i; }
-        if((d != kD)) { l_pidController.setD(d); r_pidController.setD(d); kD = d; }
-        if((iz != kIz)) { l_pidController.setIZone(iz); r_pidController.setIZone(iz); kIz = iz; }
-        if((ff != kFF)) { l_pidController.setFF(ff); r_pidController.setFF(ff); kFF = ff; }
-        if((max != kMaxOutput) || (min != kMinOutput)) { 
-            l_pidController.setOutputRange(min, max); 
-            r_pidController.setOutputRange(min, max); 
-            kMinOutput = min; kMaxOutput = max;
-        }
-        if((maxV != maxVel)) { l_pidController.setSmartMotionMaxVelocity(maxV,0); r_pidController.setSmartMotionMaxVelocity(maxV,0); maxVel = maxV; }
-        if((minV != minVel)) { l_pidController.setSmartMotionMinOutputVelocity(minV,0); r_pidController.setSmartMotionMinOutputVelocity(minV,0); minVel = minV; }
-        if((maxA != maxAcc)) { l_pidController.setSmartMotionMaxAccel(maxA,0); r_pidController.setSmartMotionMaxAccel(maxA,0); maxAcc = maxA; }
-        if((allE != allowedErr)) { l_pidController.setSmartMotionAllowedClosedLoopError(allE,0); r_pidController.setSmartMotionAllowedClosedLoopError(allE,0); allowedErr = allE; }
-        
-        l_pidController.setReference(pid_setPoint, ControlType.kSmartMotion);
-        r_pidController.setReference(pid_setPoint, ControlType.kSmartMotion);
+        l_pidController.setReference(pid_setPoint, ControlType.kSmartMotion, smartMotionProfile);
+        r_pidController.setReference(pid_setPoint, ControlType.kSmartMotion, smartMotionProfile);
     }
    
 
@@ -196,18 +161,27 @@ public class Climb extends SubsystemBase  {
         
     }
 
+    public void setArmPidSetPoint(double setPoint){
+        pid_setPoint=setPoint;
+    }
+
 
 
     public double deadBand(double raw){
-        if (Math.abs(raw) > 0.1){
+        if (Math.abs(raw) > 0.2){
             return raw;
         }
         else{
             return 0.0;
         }
     }
+
+    public void setClimbModeTrue(){
+        climbMode = true;
+    }
+
+    public void setClimbModeFalse(){
+        climbMode = false;
+
+    }
 }
-
-
-
-

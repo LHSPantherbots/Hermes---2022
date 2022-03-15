@@ -8,8 +8,6 @@ import edu.wpi.first.math.trajectory.constraint.DifferentialDriveKinematicsConst
 import edu.wpi.first.math.trajectory.constraint.DifferentialDriveVoltageConstraint;
 import edu.wpi.first.math.trajectory.constraint.MaxVelocityConstraint;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj2.command.RamseteCommand;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 
 import java.util.List;
 

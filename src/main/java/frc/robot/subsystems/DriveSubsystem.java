@@ -9,7 +9,6 @@ import com.revrobotics.SparkMaxPIDController;
 // import com.revrobotics.CANSparkMax.ControlType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.RobotController;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -17,50 +16,19 @@ import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
-import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
+import frc.robot.RobotContainer;
 import frc.robot.Constants.DriveTrainConstants;
 import frc.robot.Constants.SparkMaxPidConstants;
 
 public class DriveSubsystem extends SubsystemBase {
-    /* Commented out until implmenting limelight vision
-    private double kP = 0.031;
-    private double kF = 0.15;
-    */
-
-    private double kPG = 0.0075;
-    private double kDG = 0.00;
-    private double kIG = 0.01;
-    private double kFG = 0.15;
-
-    private double kPA = 0.0045;
-    private double kDA = 0.00;
-    private double kIA = 0.001;
-
-    private double kPD = 1.5;
-    private double kDD = 0.00;
-    private double kID = 0.00;
-
-    /* Commented out until implmenting limelight vision 
-    private double kPDlimey = .3;
-    private double kDDlimey = 0.00;
-    private double kIDlimey = 0.00;
-    */
+    //limelight vision may need to be tuned
+    private double kP = 0.012;
+    private double kF = 0.2;
     
-    private double lastTimestamp = Timer.getFPGATimestamp();
-    private double lastTimestampDist = Timer.getFPGATimestamp();
-    private double errorSum = 0;
-    private double errorSumDist = 0;
-    private double lastError = 0;
-    private double lastErrorDist = 0;
-    private double iZone =  5.0;
-    private double iZoneDist = 0.5;
-
-    private double gyroKP = 0.03;
 
     CANSparkMax leftLeader = new CANSparkMax(3, MotorType.kBrushless);
     CANSparkMax leftFollower = new CANSparkMax(15, MotorType.kBrushless);
@@ -114,7 +82,6 @@ public class DriveSubsystem extends SubsystemBase {
       //Sets up endcoders
       leftEncoder = leftLeader.getEncoder();
       rightEncoder = rightLeader.getEncoder();
-      // rightEncoder.setInverted(true);
 
       leftPidController = leftLeader.getPIDController();
       rightPidController = rightLeader.getPIDController();
@@ -131,19 +98,6 @@ public class DriveSubsystem extends SubsystemBase {
       rightPidController.setIZone(SparkMaxPidConstants.kIz);
       leftPidController.setFF(SparkMaxPidConstants.kFF);
       rightPidController.setFF(SparkMaxPidConstants.kFF);
-      
-      /*
-      leftPidController.setP(DriveTrainConstants.kPDriveVel);
-      rightPidController.setP(DriveTrainConstants.kPDriveVel);
-      leftPidController.setI(SparkMaxPidConstants.kI);
-      rightPidController.setI(SparkMaxPidConstants.kI);
-      leftPidController.setD(SparkMaxPidConstants.kD);
-      rightPidController.setD(SparkMaxPidConstants.kD);
-      leftPidController.setIZone(SparkMaxPidConstants.kIz);
-      rightPidController.setIZone(SparkMaxPidConstants.kIz);
-      leftPidController.setFF(SparkMaxPidConstants.kFF);
-      rightPidController.setFF(SparkMaxPidConstants.kFF);
-      */
       
       leftPidController.setOutputRange(SparkMaxPidConstants.kMinOutput, SparkMaxPidConstants.kMaxOutput);
       rightPidController.setOutputRange(SparkMaxPidConstants.kMinOutput, SparkMaxPidConstants.kMaxOutput);
@@ -177,10 +131,9 @@ public class DriveSubsystem extends SubsystemBase {
 
       zeroHeading();
 
-      // m_simDifDrive = new DifferentialDrivetrainSim(LinearSystemId.identifyDrivetrainSystem(DriveTrainConstants.kvVoltSecondsPerMeter, DriveTrainConstants.kaVoltSecondsSquaredPerMeter, DriveTrainConstants.kvVoltSecondsPerMeter, DriveTrainConstants.kaVoltSecondsSquaredPerMeter), DCMotor.getNEO(1), 12.0, Units.inchesToMeters(6), 0.69, VecBuilder.fill(0.001, 0.001, 0.001, 0.1, 0.1, 0.005, 0.005));
-
-      m_simDifDrive = new DifferentialDrivetrainSim(DCMotor.getNEO(1), DriveTrainConstants.gearRatio,
-       3, 10, DriveTrainConstants.wheelDiameter/2, DriveTrainConstants.kTrackwidthMeters, null);
+      m_simDifDrive = new DifferentialDrivetrainSim(
+        LinearSystemId.identifyDrivetrainSystem(DriveTrainConstants.kvVoltSecondsPerMeter, DriveTrainConstants.kaVoltSecondsSquaredPerMeter, DriveTrainConstants.angular_kvVoltSecondsPerMeter, DriveTrainConstants.angular_kaVoltSecondsSquaredPerMeter),
+        DCMotor.getNEO(2), 10.71, DriveTrainConstants.kTrackwidthMeters, Units.inchesToMeters(3), VecBuilder.fill(0.001, 0.001, 0.001, 0.1, 0.1, 0.005, 0.005));
 
       SmartDashboard.putData("Field", m_field);
     }
@@ -199,33 +152,29 @@ public class DriveSubsystem extends SubsystemBase {
   
   
       //Smart Dashboard Items
-      SmartDashboard.putNumber("Left Drive Encoder Position", getLeftEncoderPositionMeter());
-      SmartDashboard.putNumber("Right Drive Encoder Position", getRightEncoderPositionMeter());
-      SmartDashboard.putNumber("Drive Angle", getHeading());
-      SmartDashboard.putNumber("Right Velocity", getRightEncoderVelocityMeterPerSec());
-      SmartDashboard.putNumber("Left Velocity", getLeftEncoderVelocityMeterPerSec());
-      SmartDashboard.putNumber("Left Drive Applied Voltage", leftLeader.getAppliedOutput());
-      SmartDashboard.putNumber("Right Drive Applied Voltage", rightLeader.getAppliedOutput());
+      //SmartDashboard.putNumber("Left Drive Encoder Position", getLeftEncoderPositionMeter());
+      //SmartDashboard.putNumber("Right Drive Encoder Position", getRightEncoderPositionMeter());
+      //SmartDashboard.putNumber("Drive Angle", getHeading());
+      //SmartDashboard.putNumber("Right Velocity", getRightEncoderVelocityMeterPerSec());
+      //SmartDashboard.putNumber("Left Velocity", getLeftEncoderVelocityMeterPerSec());
+      //SmartDashboard.putNumber("Left Drive Applied Voltage", leftLeader.getAppliedOutput());
+      //SmartDashboard.putNumber("Right Drive Applied Voltage", rightLeader.getAppliedOutput());
       // SmartDashboard.putNumber("left value", leftLeader.get()*RobotController.getInputVoltage());
       // m_field.setRobotPose(odometry.getPoseMeters());
       m_field.setRobotPose(m_pose);
 
-      SmartDashboard.updateValues();
+      //SmartDashboard.updateValues();
     }
 
     @Override
     public void simulationPeriodic() {
       m_simDifDrive.setInputs(leftLeader.get() * RobotController.getInputVoltage(),
         rightLeader.get() * RobotController.getInputVoltage());
-      // m_simDifDrive.setInputs(leftLeader.getAppliedOutput(),
-      //   rightLeader.getAppliedOutput());
       
       m_simDifDrive.update(0.02);
 
       leftEncoder.setPosition(m_simDifDrive.getLeftPositionMeters());
       rightEncoder.setPosition(m_simDifDrive.getRightPositionMeters());
-      // leftLeader.set(m_simDifDrive.getLeftVelocityMetersPerSecond()/DriveTrainConstants.kMaxSpeedMetersPerSecond);
-      // rightLeader.set(m_simDifDrive.getRightVelocityMetersPerSecond()/DriveTrainConstants.kMaxSpeedMetersPerSecond);
       m_imuSubsystem.setAngle(m_simDifDrive.getHeading().getDegrees());
     }
 
@@ -447,6 +396,20 @@ public class DriveSubsystem extends SubsystemBase {
     public CANSparkMax getRightCanSparkMax() {
       return rightLeader;
     }
+
+    public void limeLightAim()
+  {
+    double error = RobotContainer.limelight.getHorizontalOffset();
+    kF = Math.copySign(kF, error);
+    double outF = kF;             
+    double outP = kP * error;
+    double outputTurn = outF + outP;
+    if (RobotContainer.limelight.isTargetValid()){
+      teleopDrive(0, outputTurn);
+    }else{
+      teleopDrive(0, 0);
+    }
+  }
 
     
 }
