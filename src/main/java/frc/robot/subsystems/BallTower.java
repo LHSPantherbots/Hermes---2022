@@ -4,6 +4,7 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.CAN_ID;
 import frc.robot.RobotContainer;
@@ -47,15 +48,18 @@ public class BallTower extends SubsystemBase {
         
     }
     public void runTowerRoller(){
-        towerRoller.set(.5);
+        towerRoller.set(.8);
     }
 
+    public void runTowerBelts() {
+        towerBelts.set(0.3);
+    }
 
     @Override
     public void periodic() {
         //launcherAtSpeed = SmartDashboard.getBoolean("At Set Velocity", false);
-        //SmartDashboard.putBoolean("BeamBreak", isBallDetected());
-        //SmartDashboard.putNumber("Tower Roller Delay", towerRollerDelayValue);
+        SmartDashboard.putBoolean("BeamBreak", isBallDetected());
+        // SmartDashboard.putNumber("Tower Roller Delay", towerRollerDelayValue);
     }
 
     public void feedBallToLauncher() {

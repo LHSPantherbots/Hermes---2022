@@ -23,7 +23,9 @@ public class AutoSmartTower extends CommandBase {
             m_BallTower.stopTower();
             hasBallReachedTopBeamBreak = true;
         } else {
-            m_BallTower.liftBall();
+            // m_BallTower.liftBall();
+            m_BallTower.runTowerRoller();
+            m_BallTower.runTowerBelts();
         }
     }
 

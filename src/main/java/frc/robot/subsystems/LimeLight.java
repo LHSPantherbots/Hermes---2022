@@ -70,12 +70,12 @@ public class LimeLight extends SubsystemBase {
 
   //forces LED's On
   public void ledOn(){
-      table.getEntry("letMode").setNumber(LimeL.ledON);
+      table.getEntry("ledMode").setNumber(LimeL.ledON);
   }
 
   //Sets LED's to be in the state of the current pipeline
   public void ledPipeline(){
-    table.getEntry("ledMode").setNumber(1);
+    table.getEntry("ledMode").setNumber(0);
   }
 
   public void setPipeline(int pipeline){

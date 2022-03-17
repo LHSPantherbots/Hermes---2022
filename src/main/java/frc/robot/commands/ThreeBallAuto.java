@@ -150,8 +150,10 @@ public class ThreeBallAuto  extends SequentialCommandGroup {
         );
 
         addCommands(
-            new InstantCommand(() -> driveTrain.resetEncoders(), driveTrain),
-            new InstantCommand(() -> driveTrain.zeroHeading(), driveTrain),
+            // new InstantCommand(() -> driveTrain.resetEncoders(), driveTrain),
+            new InstantCommand(driveTrain::resetEncoders, driveTrain),
+            // new InstantCommand(() -> driveTrain.zeroHeading(), driveTrain),
+            new InstantCommand(driveTrain::zeroHeading, driveTrain),
             new InstantCommand(() -> driveTrain.resetOdometry(first_Pickup_trajectory.getInitialPose()), driveTrain),
             // new InstantCommand(() -> intake.intakeDownnRoll(), intake).alongWith(new InstantCommand(ballTower::runTowerRoller, ballTower)),
             // new InstantCommand(() -> conveyor.conveyerForward(), conveyor),

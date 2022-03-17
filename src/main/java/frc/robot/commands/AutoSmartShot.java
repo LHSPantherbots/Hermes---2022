@@ -7,7 +7,6 @@ import frc.robot.subsystems.BallTower;
 public class AutoSmartShot extends CommandBase {
     private final Launcher m_Launcher;
     private final BallTower m_BallTower;
-    private boolean hasLauncherReachedSpeed = false;
     private boolean hasBallLaunched = false;
 
     public AutoSmartShot(Launcher launcher, BallTower ballTower) {
@@ -24,13 +23,15 @@ public class AutoSmartShot extends CommandBase {
 
     @Override
     public void execute() {
-        if (m_Launcher.isAtVelocity() && !hasBallLaunched) {
-            hasLauncherReachedSpeed = true;
-            m_BallTower.feedBallToLauncher();
-        } else if (hasLauncherReachedSpeed && !m_Launcher.isAtVelocity()) {
+        if (m_BallTower.isBallDetected()) {
+            hasBallLaunched = false;
+        } else {
             m_BallTower.stopTower();
             m_Launcher.StopShoot();
             hasBallLaunched = true;
+        }
+        if (m_Launcher.isAtVelocity()) {
+            m_BallTower.feedBallToLauncher();
         }
     }
 

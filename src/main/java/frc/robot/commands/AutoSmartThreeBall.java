@@ -30,9 +30,11 @@ public class AutoSmartThreeBall  extends SequentialCommandGroup {
     RamseteCommand ramseteCommand_second_shoot;
     Command autoSmartShot1; 
     Command autoSmartShot2; 
-    Command autoSmartShot3; 
+    Command autoSmartShot3;
+    Command autoSmartShot4;
     Command autoSmartTower1;
     Command autoSmartTower2;
+    Command autoSmartTower3;
     private final PIDController left_PidController = new PIDController(DriveTrainConstants.kPDriveVel, 0, 0);
     private final PIDController right_PidController =new PIDController(DriveTrainConstants.kPDriveVel, 0, 0);
     public DifferentialDriveVoltageConstraint autoVoltageConstraint = new DifferentialDriveVoltageConstraint(
@@ -76,9 +78,11 @@ public class AutoSmartThreeBall  extends SequentialCommandGroup {
         
         Command autoSmartTower1 = new AutoSmartTower(ballTower);
         Command autoSmartTower2 = new AutoSmartTower(ballTower);
+        Command autoSmartTower3 = new AutoSmartTower(ballTower);
         Command autoSmartShot1 = new AutoSmartShot(launcher, ballTower);
         Command autoSmartShot2 = new AutoSmartShot(launcher, ballTower);
         Command autoSmartShot3 = new AutoSmartShot(launcher, ballTower);
+        Command autoSmartShot4 = new AutoSmartShot(launcher, ballTower);
 
         RamseteCommand ramseteCommand_first_pickup = new RamseteCommand(
             first_Pickup_trajectory,
@@ -153,26 +157,30 @@ public class AutoSmartThreeBall  extends SequentialCommandGroup {
             new InstantCommand(limelight::ledPipeline, limelight),
             new InstantCommand(limelight::startTakingSnapshots, limelight),
             new InstantCommand(limelight::setPipelineOne, limelight),
-            new RunCommand(() -> driveTrain.limeLightAim(), driveTrain).withTimeout(2).andThen(() -> driveTrain.tankDriveVolts(0, 0)),
+            new RunCommand(() -> driveTrain.limeLightAim(), driveTrain).withTimeout(.5).andThen(() -> driveTrain.tankDriveVolts(0, 0)),
             new InstantCommand(limelight::stopTakingSnapshots, limelight),
             new InstantCommand(limelight::setPipelineZero),
-            autoSmartShot1.withTimeout(.5),
+            autoSmartShot1.withTimeout(2.25),
+            // new RunCommand(() -> ballTower.liftBall(), ballTower).withTimeout(2),
             autoSmartTower1.withTimeout(2),
-            autoSmartShot2.withTimeout(.5),
+            autoSmartShot2.withTimeout(2.25),
             new InstantCommand(() -> intake.intakeDownnRoll(), intake).alongWith(new InstantCommand(ballTower::runTowerRoller, ballTower)),
             ramseteCommand_second_pickup.andThen(() -> driveTrain.tankDriveVolts(0, 0)),
-            new InstantCommand(intake::intakeRollersOff, intake),
+            
             new InstantCommand(intake::intakeUp, intake),
             new ParallelCommandGroup(
                 autoSmartTower2.withTimeout(2),
                 ramseteCommand_second_shoot.andThen(() -> driveTrain.tankDriveVolts(0, 0))
             ),
+            new InstantCommand(intake::intakeRollersOff, intake),
             new InstantCommand(limelight::setPipelineOne, limelight),
             new InstantCommand(limelight::startTakingSnapshots, limelight),
-            new RunCommand(() -> driveTrain.limeLightAim(), driveTrain).withTimeout(2).andThen(() -> driveTrain.tankDriveVolts(0, 0)),
+            new RunCommand(() -> driveTrain.limeLightAim(), driveTrain).withTimeout(.5).andThen(() -> driveTrain.tankDriveVolts(0, 0)),
             new InstantCommand(limelight::stopTakingSnapshots, limelight),
             new InstantCommand(limelight::setPipelineZero),
-            autoSmartShot3.withTimeout(.5),
+            autoSmartShot3.withTimeout(2.25),
+            autoSmartTower3.withTimeout(2),
+            autoSmartShot4.withTimeout(2.25),
             new InstantCommand(conveyor::stop, conveyor)
         );
     }

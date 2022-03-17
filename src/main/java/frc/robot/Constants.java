@@ -114,8 +114,8 @@ public final class Constants {
         public static final double right_Kp = 3.4966;
         // public static final double kTrackwidthMeters = Units.inchesToMeters(24);
         public static final double kTrackwidthMeters = 0.62675;
-        public static final double kMaxSpeedMetersPerSecond = 1.5;
-        public static final double kMaxAccelerationMetersPerSecondSquared = 1;
+        public static final double kMaxSpeedMetersPerSecond = 1.75;
+        public static final double kMaxAccelerationMetersPerSecondSquared = 1.25;
         public static final double kRamseteB = 2;
         public static final double kRamseteZeta = 0.7;
         public static final double gearRatio = 10.71;

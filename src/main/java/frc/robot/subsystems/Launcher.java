@@ -85,7 +85,7 @@ topRoller.setInverted(true);
  kMaxOutput = 1; 
  kMinOutput = -1;
  maxRPM = 5700;
- allowableError = 50; //Lets the system known when the velocity is close enough to launch
+ allowableError = 100; // 50    //Lets the system known when the velocity is close enough to launch
 
 //  Top Roller PID coefficients these will need to be tuned 
 kPtop = 0.0001;//0.00025; //5e-5; 
@@ -96,7 +96,7 @@ kFFtop = 0.00018;//0.00019
 kMaxOutputTop = 1; 
 kMinOutputTop = -1;
 maxRPMtop = 5700;
-allowableErrortop = 50; //Lets the system known when the velocity is close enough to launch
+allowableErrortop = 100; // 50   //Lets the system known when the velocity is close enough to launch
 
 
 
@@ -265,15 +265,15 @@ SmartDashboard.putNumber("Min Output TopR", kMinOutputTop);
 
       public void midTarmacShoot(){
         //hoodDown();
-        velocitySetpoint = 2500;//3500 ---- 3600 3/5/22
-        velocitySetpointTop = 3900; //3500     Remenber : 3900
+        velocitySetpoint = 2250;//3500 ---- 3600 3/5/22
+        velocitySetpointTop = 3500; //3500     Remenber : 3900
         velocityClosedLoopLaunch();
     }
 
     public void autoMidTarmacShoot(){
       //hoodDown();
-      velocitySetpoint = 2500;//3500 ---- 3600 3/5/22
-      velocitySetpointTop = 3900;
+      velocitySetpoint = 2250;//3500 ---- 3600 3/5/22
+      velocitySetpointTop = 3500;
       velocityClosedLoopLaunch();
   }
     

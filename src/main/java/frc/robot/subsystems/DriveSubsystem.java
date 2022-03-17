@@ -152,9 +152,9 @@ public class DriveSubsystem extends SubsystemBase {
   
   
       //Smart Dashboard Items
-      //SmartDashboard.putNumber("Left Drive Encoder Position", getLeftEncoderPositionMeter());
-      //SmartDashboard.putNumber("Right Drive Encoder Position", getRightEncoderPositionMeter());
-      //SmartDashboard.putNumber("Drive Angle", getHeading());
+      SmartDashboard.putNumber("Left Drive Encoder Position", getLeftEncoderPositionMeter());
+      SmartDashboard.putNumber("Right Drive Encoder Position", getRightEncoderPositionMeter());
+      SmartDashboard.putNumber("Drive Angle", getHeading());
       //SmartDashboard.putNumber("Right Velocity", getRightEncoderVelocityMeterPerSec());
       //SmartDashboard.putNumber("Left Velocity", getLeftEncoderVelocityMeterPerSec());
       //SmartDashboard.putNumber("Left Drive Applied Voltage", leftLeader.getAppliedOutput());

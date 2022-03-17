@@ -54,13 +54,13 @@ public class AutoCommand  extends SequentialCommandGroup {
         List.of(
             new Translation2d(Units.inchesToMeters(-12.75), 0)
         ), 
-        new Pose2d(Units.inchesToMeters(-43), 0, new Rotation2d()), trajectoryConfig_rev);
+        new Pose2d(Units.inchesToMeters(-63), 0, new Rotation2d()), trajectoryConfig_rev);
     redShoot_trajectory = TrajectoryGenerator.generateTrajectory(
-        new Pose2d(Units.inchesToMeters(-43), 0, new Rotation2d()),
+        new Pose2d(Units.inchesToMeters(-63), 0, new Rotation2d()),
         List.of(
             new Translation2d(Units.inchesToMeters(-30.25), Units.inchesToMeters(-1.113))
         ), 
-        new Pose2d(Units.inchesToMeters(-20), Units.inchesToMeters(-3), new Rotation2d(Units.degreesToRadians(-8))), trajectoryConfig);
+        new Pose2d(Units.inchesToMeters(-10), Units.inchesToMeters(-3), new Rotation2d(Units.degreesToRadians(-8))), trajectoryConfig);
     
     Command waitForLauncher1 = new WaitForLauncherAtSpeed(launcher);
     Command waitForLauncher2 = new WaitForLauncherAtSpeed(launcher);
