@@ -265,15 +265,15 @@ SmartDashboard.putNumber("Min Output TopR", kMinOutputTop);
 
       public void midTarmacShoot(){
         //hoodDown();
-        velocitySetpoint = 2250;//3500 ---- 3600 3/5/22
-        velocitySetpointTop = 3500; //3500     Remenber : 3900
+        velocitySetpoint = 2500;//2250      //3500 ---- 3600 3/5/22
+        velocitySetpointTop = 3750; //3500             //3500     Remenber : 3900
         velocityClosedLoopLaunch();
     }
 
     public void autoMidTarmacShoot(){
       //hoodDown();
-      velocitySetpoint = 2250;//3500 ---- 3600 3/5/22
-      velocitySetpointTop = 3500;
+      velocitySetpoint = 2500; //2250           //3500 ---- 3600 3/5/22
+      velocitySetpointTop = 3750; //3500
       velocityClosedLoopLaunch();
   }
     
