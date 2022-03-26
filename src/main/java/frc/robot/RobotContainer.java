@@ -183,7 +183,8 @@ public class RobotContainer {
     
     new JoystickButton(Gamepad0, GamePadButtons.LB)
       .whileHeld(new RunCommand(() -> ballTower.feedBallToLauncher(), ballTower))
-      .whenReleased(new InstantCommand(ballTower::stopBelts));
+      // .whenReleased(new InstantCommand(ballTower::stopBelts));
+      .whenReleased(new RunCommand(() -> ballTower.autoTower(), ballTower));
 
     new JoystickButton(Gamepad0, GamePadButtons.Y)
       .whenPressed(new InstantCommand(limelight::ledPipeline, limelight))
