@@ -5,6 +5,7 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 
 public class Intake extends SubsystemBase{
@@ -35,9 +36,9 @@ public class Intake extends SubsystemBase{
 
     @Override
     public void periodic() {
-    // SmartDashboard.putBoolean("Intake Sensor", IsBallD());
-    // SmartDashboard.putBoolean("Launcher Sensor", IsBallU());
-
+        SmartDashboard.putNumber("Intake Current", talonIntake.getStatorCurrent());
+        // SmartDashboard.putBoolean("Intake Sensor", IsBallD());
+        // SmartDashboard.putBoolean("Launcher Sensor", IsBallU());
     }
 
     public void run() {
