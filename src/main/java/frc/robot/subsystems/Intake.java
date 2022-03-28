@@ -95,13 +95,13 @@ public class Intake extends SubsystemBase{
     public void intakeUp()
     {
         // intakeSolenoid.set(false);
-        intakeSolenoid.set(DoubleSolenoid.Value.kReverse);
+        intakeSolenoid.set(DoubleSolenoid.Value.kForward);
     }
 
     public void intakeDown()
     {
         // intakeSolenoid.set(true);
-        intakeSolenoid.set(DoubleSolenoid.Value.kForward);
+        intakeSolenoid.set(DoubleSolenoid.Value.kReverse);
     }
 
     public void intakeDownnRoll(){
