@@ -3,6 +3,8 @@ package frc.robot.subsystems;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import com.ctre.phoenix.motorcontrol.can.TalonSRXConfiguration;
+import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -28,6 +30,12 @@ public class Intake extends SubsystemBase{
   public Intake(TalonSRX tSrx) {
       talonIntake = tSrx;
       talonIntake.setInverted(true);
+    //   SupplyCurrentLimitConfiguration  config = new SupplyCurrentLimitConfiguration(true, 15, 25, 500);
+    TalonSRXConfiguration config = new TalonSRXConfiguration();
+      config.peakCurrentLimit = 25;
+      config.peakCurrentDuration = 500;
+      config.continuousCurrentLimit = 15;
+      talonIntake.configAllSettings(config);
       
   }
 
