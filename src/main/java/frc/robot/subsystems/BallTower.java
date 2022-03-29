@@ -64,10 +64,10 @@ public class BallTower extends SubsystemBase {
     }
 
     public void feedBallToLauncher() {
-        if (!beamBreak.get()) {
+        // if (!beamBreak.get()) {
         // if (launcherAtSpeed && !beamBreak.get()) {
             towerBelts.set(.9);
-        }
+        // }
     }
 
     public void stopTower() {
