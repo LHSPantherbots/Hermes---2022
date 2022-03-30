@@ -213,6 +213,10 @@ public class DriveSubsystem extends SubsystemBase {
         m_drive.arcadeDrive(move, turn);
       }
     }
+
+    private void limeLightDrive(double move, double turn) {
+      m_drive.arcadeDrive(move, turn);
+    }
     
     public void resetEncoders() {
       leftEncoder.setPosition(0);
@@ -424,9 +428,9 @@ public class DriveSubsystem extends SubsystemBase {
     double outP = kP * error;
     double outputTurn = outF + outP;
     if (RobotContainer.limelight.isTargetValid()){
-      teleopDrive(0, outputTurn);
+      limeLightDrive(0, outputTurn);
     }else{
-      teleopDrive(0, 0);
+      limeLightDrive(0, 0);
     }
   }
 
