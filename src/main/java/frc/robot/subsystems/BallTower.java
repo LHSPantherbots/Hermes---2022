@@ -27,7 +27,7 @@ public class BallTower extends SubsystemBase {
         towerRoller.restoreFactoryDefaults();
         towerBelts.restoreFactoryDefaults();
 
-        towerBelts.setOpenLoopRampRate(.7);
+        towerBelts.setOpenLoopRampRate(.5);
         towerRoller.setOpenLoopRampRate(.7);
 
         towerRoller.setSmartCurrentLimit(20);
@@ -41,7 +41,8 @@ public class BallTower extends SubsystemBase {
     public void liftBall() {
         towerRoller.set(.8);
         if (isBallDetected()) {
-            towerBelts.set(0);
+            // towerBelts.set(0);
+            towerBelts.stopMotor();
         } else {
             towerBelts.set(0.3);
         }
@@ -63,10 +64,10 @@ public class BallTower extends SubsystemBase {
     }
 
     public void feedBallToLauncher() {
-        if (!beamBreak.get()) {
+        // if (!beamBreak.get()) {
         // if (launcherAtSpeed && !beamBreak.get()) {
             towerBelts.set(.9);
-        }
+        // }
     }
 
     public void stopTower() {
