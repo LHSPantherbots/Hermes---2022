@@ -286,8 +286,8 @@ SmartDashboard.putNumber("Min Output TopR", kMinOutputTop);
     
       public void fenderHighShoot(){
         //hoodUp();
-        velocitySetpoint = 2125;
-        velocitySetpointTop = 3187.5;
+        velocitySetpoint = 2325;
+        velocitySetpointTop = 3500;
         velocityClosedLoopLaunch();
       }
     
