@@ -184,7 +184,26 @@ public class DriveSubsystem extends SubsystemBase {
 
 
     public void teleopDrive(double move, double turn) {
-      m_drive.arcadeDrive(move, turn); //m*.8 t*.6
+
+    if (move < 0)
+    {
+      move = Math.pow(move, 2) * -1;
+    }
+    else
+    {
+      move = Math.pow(move, 2);
+    }
+
+    if (turn < 0)
+    {
+      turn = Math.pow(turn, 2) * -1;
+    }
+    else
+    {
+      turn = Math.pow(turn, 2);
+    }
+    m_drive.arcadeDrive(move, turn);
+
     }
 
     public void teleopDrive(double move, double turn, boolean governer) {
