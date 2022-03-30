@@ -58,6 +58,7 @@ public class RobotContainer {
   public final Command m_AutoSmartTwoBall = new AutoSmartTwoBall(driveTrain, launcher, ballTower, intake, conveyor, limelight);
   public final Command m_AutoSmartThreeBall = new AutoSmartThreeBall(driveTrain, launcher, ballTower, intake, conveyor, limelight);
   public final Command m_AutoSmartFourBall = new AutoSmartFourBall(driveTrain, launcher, ballTower, intake, conveyor, limelight);
+  public final Command m_AutoSmartFiveBall = new AutoSmartFiveBall(driveTrain, launcher, ballTower, intake, conveyor, limelight);
   public final Command m_ArmUp = new ArmUp(driveTrain, climbPivot, climb); 
   public final Command m_AutoMidClimb = new AutoMidClimb(driveTrain, climbPivot, climb); 
   public final Command m_AutoHighClimb = new AutoHighClimb(driveTrain, climbPivot, climb);
@@ -108,6 +109,7 @@ public class RobotContainer {
     autoChoice.addOption("Smart Two Ball Auto", m_AutoSmartTwoBall);
     autoChoice.addOption("Smart Three Ball Auto", m_AutoSmartThreeBall);
     autoChoice.addOption("Smart Four Ball Auto", m_AutoSmartFourBall);
+    autoChoice.addOption("Smart Five Ball", m_AutoSmartFiveBall);
 
     // Configure the button bindings
 
