@@ -19,7 +19,7 @@ public class TwoBallAuto extends SequentialCommandGroup {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
-      new RunCommand(RobotContainer.launcher::midTarmacShoot, RobotContainer.launcher).withTimeout(2),
+      new RunCommand(RobotContainer.launcher::greenShoot, RobotContainer.launcher).withTimeout(2),
       new RunCommand(RobotContainer.ballTower::feedBallToLauncher, RobotContainer.ballTower).withTimeout(2),
       new ParallelCommandGroup(
       new RunCommand(RobotContainer.intake::intakeDownnRoll, RobotContainer.intake),
@@ -28,7 +28,7 @@ public class TwoBallAuto extends SequentialCommandGroup {
       new InstantCommand(RobotContainer.intake::intakeUp, RobotContainer.intake),
       new RunCommand(() -> RobotContainer.driveTrain.teleopDrive(.4, 0), RobotContainer.driveTrain).withTimeout(1),
       new RunCommand(RobotContainer.ballTower::autoTower, RobotContainer.ballTower).withTimeout(2),
-      new RunCommand(RobotContainer.launcher::midTarmacShoot, RobotContainer.launcher).withTimeout(2),
+      new RunCommand(RobotContainer.launcher::greenShoot, RobotContainer.launcher).withTimeout(2),
       new RunCommand(RobotContainer.ballTower::feedBallToLauncher, RobotContainer.ballTower).withTimeout(2)
       );
   }

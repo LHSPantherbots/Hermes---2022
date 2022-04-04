@@ -67,6 +67,7 @@ public class BallTower extends SubsystemBase {
         // if (!beamBreak.get()) {
         // if (launcherAtSpeed && !beamBreak.get()) {
             towerBelts.set(.9);
+            towerRoller.set(.8);
         // }
     }
 

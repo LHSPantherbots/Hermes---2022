@@ -256,17 +256,17 @@ SmartDashboard.putNumber("Min Output TopR", kMinOutputTop);
           velocityClosedLoopLaunch();
       }
     
-      public void longTarmacShoot(){
+      public void redShoot(){
           hoodDown();
-          velocitySetpoint = 4000;//4800
-          velocitySetpointTop = 5500;
+          velocitySetpoint = 4150;//4800
+          velocitySetpointTop = 5750;
           velocityClosedLoopLaunch();
       }
 
-      public void midTarmacShoot(){
+      public void purpleShoot(){
         //hoodDown();
-        velocitySetpoint = 2500;//2250      //3500 ---- 3600 3/5/22
-        velocitySetpointTop = 3750; //3500             //3500     Remenber : 3900
+        velocitySetpoint = 2900;//2250      //3500 ---- 3600 3/5/22
+        velocitySetpointTop = 3850; //3500             //3500     Remenber : 3900
         velocityClosedLoopLaunch();
     }
 
@@ -277,17 +277,17 @@ SmartDashboard.putNumber("Min Output TopR", kMinOutputTop);
       velocityClosedLoopLaunch();
   }
     
-      public void fenderLowShoot(){
+      public void blueShoot(){
           //hoodDown();
           velocitySetpoint = 1000;//3100
           velocitySetpointTop = 2500; //2000
           velocityClosedLoopLaunch();
       }
     
-      public void fenderHighShoot(){
+      public void greenShoot(){
         //hoodUp();
-        velocitySetpoint = 2325;
-        velocitySetpointTop = 3500;
+        velocitySetpoint = 2550;
+        velocitySetpointTop = 3550;
         velocityClosedLoopLaunch();
       }
     

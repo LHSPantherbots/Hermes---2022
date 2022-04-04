@@ -4,12 +4,12 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Launcher;
 import frc.robot.subsystems.BallTower;
 
-public class AutoSmartShot extends CommandBase {
+public class AutoSmartShotPurple extends CommandBase {
     private final Launcher m_Launcher;
     private final BallTower m_BallTower;
     private boolean hasBallLaunched = false;
 
-    public AutoSmartShot(Launcher launcher, BallTower ballTower) {
+    public AutoSmartShotPurple(Launcher launcher, BallTower ballTower) {
         m_Launcher = launcher;
         m_BallTower = ballTower;
         addRequirements(m_Launcher, m_BallTower);
@@ -18,7 +18,7 @@ public class AutoSmartShot extends CommandBase {
     @Override
     public void initialize() {
         m_BallTower.stopTower();
-        m_Launcher.greenShoot();
+        m_Launcher.purpleShoot();
     }
 
     @Override

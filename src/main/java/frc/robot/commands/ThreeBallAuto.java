@@ -170,7 +170,7 @@ public class ThreeBallAuto  extends SequentialCommandGroup {
             new RunCommand(() -> limelight.setPipeline(1), limelight).withTimeout(.1),
             new RunCommand(() -> driveTrain.limeLightAim(), driveTrain).withTimeout(2).andThen(() -> driveTrain.tankDriveVolts(0, 0)),
             new RunCommand(() -> limelight.setPipeline(0), limelight).withTimeout(.1),
-            new InstantCommand(() -> launcher.midTarmacShoot(), launcher),
+            new InstantCommand(() -> launcher.greenShoot(), launcher),
             waitForLauncher1,
             new RunCommand(() -> ballTower.feedBallToLauncher(), ballTower).withTimeout(1),
             new InstantCommand(() -> ballTower.stopTower(), ballTower),

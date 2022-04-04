@@ -24,6 +24,7 @@ public class AutoSmartThreeBall  extends SequentialCommandGroup {
     Trajectory first_Shoot_trajectory = new Trajectory();
     Trajectory second_Pickup_trajectory = new Trajectory();
     Trajectory second_Shoot_trajectory = new Trajectory();
+    Trajectory intakeDown_trajectory = new Trajectory();
     RamseteCommand ramseteCommand_first_pickup;
     RamseteCommand ramseteCommand_first_shoot;
     RamseteCommand ramseteCommand_second_pickup;
@@ -51,7 +52,7 @@ public class AutoSmartThreeBall  extends SequentialCommandGroup {
         TrajectoryConfig trajectoryConfig = new TrajectoryConfig(DriveTrainConstants.kMaxSpeedMetersPerSecond,
         DriveTrainConstants.kMaxAccelerationMetersPerSecondSquared).setKinematics(DriveTrainConstants.kDriveKinematics).addConstraint(autoVoltageConstraint).addConstraint(DriveTrainConstants.centripetalAccelerationConstraint).addConstraint(ddKinematicConstraint).addConstraint(maxVelocityConstraint);    
         first_Pickup_trajectory = TrajectoryGenerator.generateTrajectory(
-            new Pose2d(),
+            new Pose2d(Units.inchesToMeters(5), Units.inchesToMeters(0), new Rotation2d(Units.degreesToRadians(0))),
             List.of(
                 new Translation2d(Units.inchesToMeters(-12.75), 0)
             ), 
@@ -61,28 +62,34 @@ public class AutoSmartThreeBall  extends SequentialCommandGroup {
             List.of(
                 new Translation2d(Units.inchesToMeters(-30.25), Units.inchesToMeters(-1.113))
             ), 
-            new Pose2d(Units.inchesToMeters(-20), Units.inchesToMeters(-3), new Rotation2d(Units.degreesToRadians(-8))), trajectoryConfig);
+            new Pose2d(Units.inchesToMeters(-10), Units.inchesToMeters(-3), new Rotation2d(Units.degreesToRadians(-8))), trajectoryConfig);
+            intakeDown_trajectory = TrajectoryGenerator.generateTrajectory(
+                new Pose2d(Units.inchesToMeters(0), 0, new Rotation2d()),
+                List.of(
+                    new Translation2d(Units.inchesToMeters(2.5), Units.inchesToMeters(0))
+                ), 
+                new Pose2d(Units.inchesToMeters(5), Units.inchesToMeters(0), new Rotation2d(Units.degreesToRadians(0))), trajectoryConfig);
         second_Pickup_trajectory = TrajectoryGenerator.generateTrajectory(
-            new Pose2d(Units.inchesToMeters(-20), Units.inchesToMeters(-3), new Rotation2d(Units.degreesToRadians(-8))),
+            new Pose2d(Units.inchesToMeters(-10), Units.inchesToMeters(-3), new Rotation2d(Units.degreesToRadians(-8))),
             List.of(
                 new Translation2d(Units.inchesToMeters(-35), Units.inchesToMeters(28.5))
             ), 
-            new Pose2d(Units.inchesToMeters(-5), Units.inchesToMeters(80), new Rotation2d(Units.degreesToRadians(-110))), trajectoryConfig_rev);
+            new Pose2d(Units.inchesToMeters(-5), Units.inchesToMeters(85), new Rotation2d(Units.degreesToRadians(-110))), trajectoryConfig_rev);
     
         second_Shoot_trajectory = TrajectoryGenerator.generateTrajectory(
-            new Pose2d(Units.inchesToMeters(-5), Units.inchesToMeters(80), new Rotation2d(Units.degreesToRadians(-110))),
+            new Pose2d(Units.inchesToMeters(-5), Units.inchesToMeters(85), new Rotation2d(Units.degreesToRadians(-110))),
             List.of(
-                new Translation2d(Units.inchesToMeters(-13.625), Units.inchesToMeters(50))
+                new Translation2d(Units.inchesToMeters(-8), Units.inchesToMeters(72))
             ), 
-            new Pose2d(Units.inchesToMeters(0), Units.inchesToMeters(30), new Rotation2d(Units.degreesToRadians(-35))), trajectoryConfig);
+            new Pose2d(Units.inchesToMeters(0), Units.inchesToMeters(60), new Rotation2d(Units.degreesToRadians(-35))), trajectoryConfig);
         
         Command autoSmartTower1 = new AutoSmartTower(ballTower);
         Command autoSmartTower2 = new AutoSmartTower(ballTower);
         Command autoSmartTower3 = new AutoSmartTower(ballTower);
         Command autoSmartShot1 = new AutoSmartShot(launcher, ballTower);
         Command autoSmartShot2 = new AutoSmartShot(launcher, ballTower);
-        Command autoSmartShot3 = new AutoSmartShot(launcher, ballTower);
-        Command autoSmartShot4 = new AutoSmartShot(launcher, ballTower);
+        Command autoSmartShot3 = new AutoSmartShotPurple(launcher, ballTower);
+        Command autoSmartShot4 = new AutoSmartShotPurple(launcher, ballTower);
 
         RamseteCommand ramseteCommand_first_pickup = new RamseteCommand(
             first_Pickup_trajectory,
@@ -101,6 +108,21 @@ public class AutoSmartThreeBall  extends SequentialCommandGroup {
 
         RamseteCommand ramseteCommand_first_shoot = new RamseteCommand(
             first_Shoot_trajectory,
+            driveTrain::getPose,
+            new RamseteController(
+                DriveTrainConstants.kRamseteB,
+                DriveTrainConstants.kRamseteZeta),
+            new SimpleMotorFeedforward(DriveTrainConstants.ksVolts, DriveTrainConstants.kvVoltSecondsPerMeter, DriveTrainConstants.kaVoltSecondsSquaredPerMeter),
+            DriveTrainConstants.kDriveKinematics,
+            driveTrain::getWheelSpeeds,
+            left_PidController,
+            right_PidController,
+            driveTrain::tankDriveVolts,
+            driveTrain
+        );
+
+        RamseteCommand ramseteCommand_intake_Down_0 = new RamseteCommand(
+            intakeDown_trajectory,
             driveTrain::getPose,
             new RamseteController(
                 DriveTrainConstants.kRamseteB,
@@ -149,6 +171,7 @@ public class AutoSmartThreeBall  extends SequentialCommandGroup {
             new InstantCommand(() -> driveTrain.zeroHeading(), driveTrain),
             new InstantCommand(() -> driveTrain.resetOdometry(first_Pickup_trajectory.getInitialPose()), driveTrain),
             new InstantCommand(() -> intake.intakeDownnRoll(), intake).alongWith(new InstantCommand(ballTower::runTowerRoller, ballTower)),
+            ramseteCommand_intake_Down_0.andThen(() -> driveTrain.tankDriveVolts(0, 0)),
             new InstantCommand(conveyor::conveyerForward, conveyor),
             ramseteCommand_first_pickup.andThen(() -> driveTrain.tankDriveVolts(0, 0)),
             new InstantCommand(intake::intakeRollersOff, intake),
@@ -160,10 +183,10 @@ public class AutoSmartThreeBall  extends SequentialCommandGroup {
             new RunCommand(() -> driveTrain.limeLightAim(), driveTrain).withTimeout(.5).andThen(() -> driveTrain.tankDriveVolts(0, 0)),
             new InstantCommand(limelight::stopTakingSnapshots, limelight),
             new InstantCommand(limelight::setPipelineZero),
-            autoSmartShot1.withTimeout(2.25),
+            autoSmartShot1.withTimeout(1.5),
             // new RunCommand(() -> ballTower.liftBall(), ballTower).withTimeout(2),
-            autoSmartTower1.withTimeout(2),
-            autoSmartShot2.withTimeout(2.25),
+            autoSmartTower1.withTimeout(1.5),
+            autoSmartShot2.withTimeout(1.5),
             new InstantCommand(() -> intake.intakeDownnRoll(), intake).alongWith(new InstantCommand(ballTower::runTowerRoller, ballTower)),
             ramseteCommand_second_pickup.andThen(() -> driveTrain.tankDriveVolts(0, 0)),
             

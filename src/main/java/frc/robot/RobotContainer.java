@@ -55,6 +55,7 @@ public class RobotContainer {
 
   public final AutoCommand m_AutoCommand = new AutoCommand(driveTrain, launcher, ballTower, intake, conveyor, limelight);
   public final Command m_ThreeBallAuto = new ThreeBallAuto(driveTrain, launcher, ballTower, intake, conveyor, limelight);
+  public final Command m_FourBallAuto = new FourBallAuto(driveTrain, launcher, ballTower, intake, conveyor, limelight);
   public final Command m_AutoSmartTwoBall = new AutoSmartTwoBall(driveTrain, launcher, ballTower, intake, conveyor, limelight);
   public final Command m_AutoSmartThreeBall = new AutoSmartThreeBall(driveTrain, launcher, ballTower, intake, conveyor, limelight);
   public final Command m_AutoSmartFourBall = new AutoSmartFourBall(driveTrain, launcher, ballTower, intake, conveyor, limelight);
@@ -106,6 +107,7 @@ public class RobotContainer {
     autoChoice.addOption("Do Nothing", new RunCommand(()->driveTrain.teleopDrive(0, 0)));
     autoChoice.addOption("Two Ball Auto", m_AutoCommand);
     autoChoice.addOption("Three Ball Auto", m_ThreeBallAuto);
+    autoChoice.addOption("Four Ball Auto", m_FourBallAuto);
     autoChoice.addOption("Smart Two Ball Auto", m_AutoSmartTwoBall);
     autoChoice.addOption("Smart Three Ball Auto", m_AutoSmartThreeBall);
     autoChoice.addOption("Smart Four Ball Auto", m_AutoSmartFourBall);
@@ -134,9 +136,9 @@ public class RobotContainer {
       new RunCommand(() -> leds.rainbow(), leds)
     );
 
-    ballTower.setDefaultCommand(
-      new RunCommand(ballTower::autoTower, ballTower)
-    );
+   ballTower.setDefaultCommand(
+     new RunCommand(ballTower::autoTower, ballTower)
+     );
 
     conveyor.setDefaultCommand(
       new RunCommand(conveyor::conveyerStop, conveyor)
@@ -193,25 +195,25 @@ public class RobotContainer {
     new JoystickButton(Gamepad0, GamePadButtons.Y)
       .whenPressed(new InstantCommand(limelight::ledPipeline, limelight))
       .whenPressed(new InstantCommand(limelight::setPipelineOne, limelight))
-      .whileHeld(new RunCommand(driveTrain::limeLightAim, driveTrain))
+      .whileHeld(new RunCommand(() -> driveTrain.limeLightAim(), driveTrain))
       .whenReleased(new InstantCommand(limelight::setPipelineZero, limelight));
 
         
     new POVButton(Gamepad0, GamePadButtons.Up)
-      .whenPressed(new RunCommand(launcher::longTarmacShoot, launcher))
+      .whenPressed(new RunCommand(launcher::redShoot, launcher))
       .whenPressed(new RunCommand(leds::red, leds));
 
     
     new JoystickButton(Gamepad0, GamePadButtons.X)
-      .whenPressed(new RunCommand(launcher::midTarmacShoot, launcher))
+      .whenPressed(new RunCommand(launcher::purpleShoot, launcher))
       .whenPressed(new RunCommand(leds::purple, leds));
 
     new JoystickButton(Gamepad0, GamePadButtons.A)
-      .whenPressed(new RunCommand(launcher::fenderHighShoot, launcher))
+      .whenPressed(new RunCommand(launcher::greenShoot, launcher))
       .whenPressed(new RunCommand(leds::green, leds));
       
     new JoystickButton(Gamepad0, GamePadButtons.B)
-      .whenPressed(new RunCommand(launcher::fenderLowShoot, launcher))
+      .whenPressed(new RunCommand(launcher::blueShoot, launcher))
       .whenPressed(new RunCommand(leds::blue, leds));
     
     new JoystickButton(Gamepad0, GamePadButtons.Select)
@@ -228,10 +230,10 @@ public class RobotContainer {
     
     new JoystickButton(Gamepad1, GamePadButtons.X)
       .whenHeld(new RunCommand(intake::intakeRollersForward, intake))
-      .whenHeld(new RunCommand(ballTower::runTowerRoller, ballTower))
+      .whenHeld(new RunCommand(ballTower::liftBall, ballTower))
       .whenHeld(new RunCommand(conveyor::conveyerForward, conveyor))
       .whenReleased(new InstantCommand(intake::stop, intake))
-      .whenReleased(new InstantCommand(ballTower::stopTower, ballTower))
+      .whenReleased(new RunCommand(ballTower::autoTower, ballTower))
       .whenReleased(new InstantCommand(conveyor::stop, conveyor));
 
     new JoystickButton(Gamepad1, GamePadButtons.A)
