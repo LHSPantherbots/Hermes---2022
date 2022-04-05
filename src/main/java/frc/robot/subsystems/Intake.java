@@ -135,7 +135,7 @@ public class Intake extends SubsystemBase{
 
     public void intakeRollersReverse()
     {
-        talonIntake.set(ControlMode.PercentOutput,-.8);
+        talonIntake.set(ControlMode.PercentOutput,-.7);
     }
 
     
