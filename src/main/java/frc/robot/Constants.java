@@ -114,8 +114,8 @@ public final class Constants {
         public static final double right_Kp = 3.4966;
         // public static final double kTrackwidthMeters = Units.inchesToMeters(24);
         public static final double kTrackwidthMeters = 0.62675;
-        public static final double kMaxSpeedMetersPerSecond = 1.75;
-        public static final double kMaxAccelerationMetersPerSecondSquared = 1.25;
+        public static final double kMaxSpeedMetersPerSecond = 2.5;
+        public static final double kMaxAccelerationMetersPerSecondSquared = 1.75;
         public static final double kRamseteB = 2;
         public static final double kRamseteZeta = 0.7;
         public static final double gearRatio = 10.71;
@@ -128,7 +128,7 @@ public final class Constants {
         public static final double rpmToMeterPerSec = (Math.PI * 6 * 0.0254)/10.75 / 60;
         public static final double rpmToMetersPerSec = revsToMeter/60;
         public static final DifferentialDriveKinematics kDriveKinematics = new DifferentialDriveKinematics(kTrackwidthMeters);
-        public static final CentripetalAccelerationConstraint centripetalAccelerationConstraint = new CentripetalAccelerationConstraint(1);
+        public static final CentripetalAccelerationConstraint centripetalAccelerationConstraint = new CentripetalAccelerationConstraint(1.25);
     }
     public static final class ArmPidConstants {
         public static final double kP = 0.0000035;
