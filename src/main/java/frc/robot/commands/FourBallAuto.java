@@ -39,17 +39,17 @@ public class FourBallAuto  extends SequentialCommandGroup {
         new SimpleMotorFeedforward(DriveTrainConstants.ksVolts, DriveTrainConstants.kvVoltSecondsPerMeter, DriveTrainConstants.kaVoltSecondsSquaredPerMeter), 
         DriveTrainConstants.kDriveKinematics, 10);
 
-    public DifferentialDriveKinematicsConstraint ddKinematicConstraint = new DifferentialDriveKinematicsConstraint(DriveTrainConstants.kDriveKinematics, DriveTrainConstants.kMaxSpeedMetersPerSecond);
+    public DifferentialDriveKinematicsConstraint ddKinematicConstraint = new DifferentialDriveKinematicsConstraint(DriveTrainConstants.kDriveKinematics, DriveTrainConstants.kFourBallMaxSpeed);
 
-    public MaxVelocityConstraint maxVelocityConstraint = new MaxVelocityConstraint(DriveTrainConstants.kMaxSpeedMetersPerSecond);
+    public MaxVelocityConstraint maxVelocityConstraint = new MaxVelocityConstraint(DriveTrainConstants.kFourBallMaxSpeed);
     public FourBallAuto(DriveSubsystem driveTrain, Launcher launcher, BallTower ballTower, Intake intake, Conveyor conveyor, LimeLight limelight) {
 
-    TrajectoryConfig trajectoryConfig_rev = new TrajectoryConfig(DriveTrainConstants.kMaxSpeedMetersPerSecond,
-    DriveTrainConstants.kMaxAccelerationMetersPerSecondSquared).setKinematics(DriveTrainConstants.kDriveKinematics)
+    TrajectoryConfig trajectoryConfig_rev = new TrajectoryConfig(DriveTrainConstants.kFourBallMaxSpeed,
+    DriveTrainConstants.kFourBallMaxAccel).setKinematics(DriveTrainConstants.kDriveKinematics)
         .addConstraint(autoVoltageConstraint).addConstraint(DriveTrainConstants.centripetalAccelerationConstraint)
         .addConstraint(ddKinematicConstraint).addConstraint(maxVelocityConstraint).setReversed(true);
-    TrajectoryConfig trajectoryConfig = new TrajectoryConfig(DriveTrainConstants.kMaxSpeedMetersPerSecond,
-    DriveTrainConstants.kMaxAccelerationMetersPerSecondSquared).setKinematics(DriveTrainConstants.kDriveKinematics)
+    TrajectoryConfig trajectoryConfig = new TrajectoryConfig(DriveTrainConstants.kFourBallMaxSpeed,
+    DriveTrainConstants.kFourBallMaxAccel).setKinematics(DriveTrainConstants.kDriveKinematics)
         .addConstraint(autoVoltageConstraint).addConstraint(DriveTrainConstants.centripetalAccelerationConstraint)
         .addConstraint(ddKinematicConstraint).addConstraint(maxVelocityConstraint);
     redPickup_trajectory = TrajectoryGenerator.generateTrajectory(
@@ -63,7 +63,7 @@ public class FourBallAuto  extends SequentialCommandGroup {
         List.of(
             new Translation2d(Units.inchesToMeters(-100), Units.inchesToMeters(0))
         ), 
-        new Pose2d(Units.inchesToMeters(-180), Units.inchesToMeters(0), new Rotation2d(Units.degreesToRadians(0))), trajectoryConfig_rev);
+        new Pose2d(Units.inchesToMeters(-203), Units.inchesToMeters(0), new Rotation2d(Units.degreesToRadians(0))), trajectoryConfig_rev);
         intakeDown_trajectory = TrajectoryGenerator.generateTrajectory(
             new Pose2d(Units.inchesToMeters(0), 0, new Rotation2d()),
             List.of(
@@ -71,11 +71,11 @@ public class FourBallAuto  extends SequentialCommandGroup {
             ), 
             new Pose2d(Units.inchesToMeters(5), Units.inchesToMeters(0), new Rotation2d(Units.degreesToRadians(0))), trajectoryConfig);
         forwardShoot2_trajectory = TrajectoryGenerator.generateTrajectory(
-             new Pose2d(Units.inchesToMeters(-180), 0, new Rotation2d(0)),
+             new Pose2d(Units.inchesToMeters(-203), 0, new Rotation2d(0)),
             List.of(
-                  new Translation2d(Units.inchesToMeters(-80), Units.inchesToMeters(0))
+                  new Translation2d(Units.inchesToMeters(-100), Units.inchesToMeters(-10))
              ), 
-            new Pose2d(Units.inchesToMeters(-63), Units.inchesToMeters(0), new Rotation2d(Units.degreesToRadians(0))), trajectoryConfig);
+            new Pose2d(Units.inchesToMeters(-63), Units.inchesToMeters(0), new Rotation2d(Units.degreesToRadians(9))), trajectoryConfig);
 
 
     Command waitForLauncher1 = new WaitForLauncherAtSpeed(launcher);
@@ -156,34 +156,40 @@ public class FourBallAuto  extends SequentialCommandGroup {
         // ramseteCommand2.andThen(() -> driveTrain.tankDriveVolts(0, 0)),
         // new InstantCommand(() -> limelight.ledOn(), limelight),
         // new RunCommand(() -> limelight.ledPipeline(), limelight).withTimeout(.1),
+        new InstantCommand(() -> launcher.purpleShoot(), launcher),
         new InstantCommand(limelight::ledPipeline, limelight),
         new InstantCommand(() -> limelight.setPipeline(1), limelight),
-        new RunCommand(() -> driveTrain.limeLightAim(), driveTrain).withTimeout(1.5).andThen(() -> driveTrain.tankDriveVolts(0, 0)),
+        new RunCommand(() -> ballTower.liftBall(), ballTower).raceWith(new RunCommand(() -> driveTrain.limeLightAim(), driveTrain).withTimeout(1.25).andThen(() -> driveTrain.tankDriveVolts(0, 0))),
+        // new RunCommand(() -> driveTrain.limeLightAim(), driveTrain).withTimeout(1.5).andThen(() -> driveTrain.tankDriveVolts(0, 0)),
         // new InstantCommand(() -> limelight.ledOff(), limelight),
         // new RunCommand(() -> limelight.setPipeline(0), limelight).withTimeout(.1),
-        new InstantCommand(() -> ballTower.liftBall(), ballTower),
-        new InstantCommand(() -> launcher.purpleShoot(), launcher),
-        waitForLauncher1.withTimeout(.2),
+        // new InstantCommand(() -> ballTower.liftBall(), ballTower),
+        // new InstantCommand(() -> launcher.purpleShoot(), launcher),
+        // waitForLauncher1.withTimeout(.2),
         new RunCommand(() -> ballTower.feedBallToLauncher(), ballTower).withTimeout(1),
         new InstantCommand(() -> ballTower.stopTower(), ballTower), 
         new InstantCommand(() -> intake.intakeDownnRoll(), intake).alongWith(new InstantCommand(ballTower::runTowerRoller, ballTower)),
         ramseteCommand2.andThen(() -> driveTrain.tankDriveVolts(0, 0)),
-       
-        new WaitCommand(3),
+        new WaitCommand(.5),
+        new InstantCommand(() -> intake.intakeRollersOff(), intake),
+        new InstantCommand(() -> intake.intakeUp(), intake),
         ramseteCommand3.andThen(() -> driveTrain.tankDriveVolts(0, 0)),
+        new InstantCommand(() -> launcher.purpleShoot(), launcher),
         new InstantCommand(limelight::ledPipeline, limelight),
         new InstantCommand(() -> limelight.setPipeline(1), limelight),
-        new RunCommand(() -> driveTrain.limeLightAim(), driveTrain).withTimeout(1.5).andThen(() -> driveTrain.tankDriveVolts(0, 0)),
+        new RunCommand(() -> ballTower.liftBall(), ballTower).raceWith(new RunCommand(() -> driveTrain.limeLightAim(), driveTrain).withTimeout(.5).andThen(() -> driveTrain.tankDriveVolts(0, 0))),
+        // new RunCommand(() -> driveTrain.limeLightAim(), driveTrain).withTimeout(1.5).andThen(() -> driveTrain.tankDriveVolts(0, 0)),
         // new InstantCommand(() -> ballTower.feedBallToLauncher(), ballTower),
         // waitForShot1.withTimeout(1),
-        new RunCommand(() -> ballTower.liftBall(), ballTower).withTimeout(1),
-        new InstantCommand(() -> launcher.purpleShoot(), launcher),
+        // new RunCommand(() -> ballTower.liftBall(), ballTower).withTimeout(1),
+        // new InstantCommand(() -> launcher.purpleShoot(), launcher),
         // new InstantCommand(() -> ballTower.liftBall(), ballTower),
         // waitForBeamBreak.withTimeout(4),
         
         //waitForBeamBreak,
-        waitForLauncher2.withTimeout(.2),
-        new RunCommand(() -> ballTower.feedBallToLauncher(), ballTower).withTimeout(1),
+        // waitForLauncher2.withTimeout(.2),
+        
+        new RunCommand(() -> ballTower.feedBallToLauncher(), ballTower).withTimeout(3),
         // new InstantCommand(() -> ballTower.feedBallToLauncher(), ballTower),
         // waitForShot2.withTimeout(1),
         new InstantCommand(() -> ballTower.stopTower(), ballTower),

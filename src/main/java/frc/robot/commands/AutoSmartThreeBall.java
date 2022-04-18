@@ -189,7 +189,7 @@ public class AutoSmartThreeBall  extends SequentialCommandGroup {
             autoSmartShot2.withTimeout(1.5),
             new InstantCommand(() -> intake.intakeDownnRoll(), intake).alongWith(new InstantCommand(ballTower::runTowerRoller, ballTower)),
             ramseteCommand_second_pickup.andThen(() -> driveTrain.tankDriveVolts(0, 0)),
-            
+            new InstantCommand(intake::intakeRollersOff, intake),
             new InstantCommand(intake::intakeUp, intake),
             new ParallelCommandGroup(
                 autoSmartTower2.withTimeout(2),

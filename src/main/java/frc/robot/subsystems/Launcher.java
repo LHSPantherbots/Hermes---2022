@@ -258,15 +258,15 @@ SmartDashboard.putNumber("Min Output TopR", kMinOutputTop);
     
       public void redShoot(){
           hoodDown();
-          velocitySetpoint = 4150;//4800
-          velocitySetpointTop = 5750;
+          velocitySetpoint = 5000;//4800
+          velocitySetpointTop = 5700;
           velocityClosedLoopLaunch();
       }
 
       public void purpleShoot(){
         //hoodDown();
-        velocitySetpoint = 2900;//2250      //3500 ---- 3600 3/5/22
-        velocitySetpointTop = 3850; //3500             //3500     Remenber : 3900
+        velocitySetpoint = 2900;  //2900   //2250      //3500 ---- 3600 3/5/22
+        velocitySetpointTop = 4250; //3850  //3500             //3500     Remenber : 3900
         velocityClosedLoopLaunch();
     }
 
@@ -286,8 +286,8 @@ SmartDashboard.putNumber("Min Output TopR", kMinOutputTop);
     
       public void greenShoot(){
         //hoodUp();
-        velocitySetpoint = 2550;
-        velocitySetpointTop = 3550;
+        velocitySetpoint = 2600; //2550
+        velocitySetpointTop = 3800; //3550
         velocityClosedLoopLaunch();
       }
     
