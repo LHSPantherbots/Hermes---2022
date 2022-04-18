@@ -27,12 +27,12 @@ public class FourBallAuto  extends SequentialCommandGroup {
     RamseteCommand ramseteCommand1;
     RamseteCommand ramseteCommand2; 
     RamseteCommand ramseteCommand3;
-    Command waitForLauncher1; 
-    Command waitForLauncher2; 
-    Command waitForLauncher3;
-    Command waitForBeamBreak;
-    Command waitForShot1;
-    Command waitForShot2;
+    // Command waitForLauncher1; 
+    // Command waitForLauncher2; 
+    // Command waitForLauncher3;
+    // Command waitForBeamBreak;
+    // Command waitForShot1;
+    // Command waitForShot2;
     private final PIDController left_PidController = new PIDController(DriveTrainConstants.kPDriveVel, 0, 0);
     private final PIDController right_PidController =new PIDController(DriveTrainConstants.kPDriveVel, 0, 0);
     public DifferentialDriveVoltageConstraint autoVoltageConstraint = new DifferentialDriveVoltageConstraint(
@@ -78,8 +78,8 @@ public class FourBallAuto  extends SequentialCommandGroup {
             new Pose2d(Units.inchesToMeters(-63), Units.inchesToMeters(0), new Rotation2d(Units.degreesToRadians(9))), trajectoryConfig);
 
 
-    Command waitForLauncher1 = new WaitForLauncherAtSpeed(launcher);
-    Command waitForLauncher2 = new WaitForLauncherAtSpeed(launcher);
+    // Command waitForLauncher1 = new WaitForLauncherAtSpeed(launcher);
+    // Command waitForLauncher2 = new WaitForLauncherAtSpeed(launcher);
 
     RamseteCommand ramseteCommand1 = new RamseteCommand(
         redPickup_trajectory,
@@ -160,43 +160,42 @@ public class FourBallAuto  extends SequentialCommandGroup {
         new InstantCommand(limelight::ledPipeline, limelight),
         new InstantCommand(() -> limelight.setPipeline(1), limelight),
         new RunCommand(() -> ballTower.liftBall(), ballTower).raceWith(new RunCommand(() -> driveTrain.limeLightAim(), driveTrain).withTimeout(1.25).andThen(() -> driveTrain.tankDriveVolts(0, 0))),
-        // new RunCommand(() -> driveTrain.limeLightAim(), driveTrain).withTimeout(1.5).andThen(() -> driveTrain.tankDriveVolts(0, 0)),
+        // new RunCommand(() -> driveTrain.limeLightAim(), driveTrain).withTimeout(1.25).andThen(() -> driveTrain.tankDriveVolts(0, 0)),
         // new InstantCommand(() -> limelight.ledOff(), limelight),
         // new RunCommand(() -> limelight.setPipeline(0), limelight).withTimeout(.1),
         // new InstantCommand(() -> ballTower.liftBall(), ballTower),
-        // new InstantCommand(() -> launcher.purpleShoot(), launcher),
         // waitForLauncher1.withTimeout(.2),
         new RunCommand(() -> ballTower.feedBallToLauncher(), ballTower).withTimeout(1),
         new InstantCommand(() -> ballTower.stopTower(), ballTower), 
         new InstantCommand(() -> intake.intakeDownnRoll(), intake).alongWith(new InstantCommand(ballTower::runTowerRoller, ballTower)),
         ramseteCommand2.andThen(() -> driveTrain.tankDriveVolts(0, 0)),
-        new WaitCommand(.5),
-        new InstantCommand(() -> intake.intakeRollersOff(), intake),
-        new InstantCommand(() -> intake.intakeUp(), intake),
+       
+        new WaitCommand(1.5), // Should be able to reduce after practicing on a full feild
         ramseteCommand3.andThen(() -> driveTrain.tankDriveVolts(0, 0)),
         new InstantCommand(() -> launcher.purpleShoot(), launcher),
         new InstantCommand(limelight::ledPipeline, limelight),
         new InstantCommand(() -> limelight.setPipeline(1), limelight),
-        new RunCommand(() -> ballTower.liftBall(), ballTower).raceWith(new RunCommand(() -> driveTrain.limeLightAim(), driveTrain).withTimeout(.5).andThen(() -> driveTrain.tankDriveVolts(0, 0))),
-        // new RunCommand(() -> driveTrain.limeLightAim(), driveTrain).withTimeout(1.5).andThen(() -> driveTrain.tankDriveVolts(0, 0)),
+        new RunCommand(() -> ballTower.liftBall(), ballTower).raceWith(new RunCommand(() -> driveTrain.limeLightAim(), driveTrain).withTimeout(1.25).andThen(() -> driveTrain.tankDriveVolts(0, 0))),
+        // new RunCommand(() -> driveTrain.limeLightAim(), driveTrain).withTimeout(1.25).andThen(() -> driveTrain.tankDriveVolts(0, 0)),
         // new InstantCommand(() -> ballTower.feedBallToLauncher(), ballTower),
         // waitForShot1.withTimeout(1),
         // new RunCommand(() -> ballTower.liftBall(), ballTower).withTimeout(1),
-        // new InstantCommand(() -> launcher.purpleShoot(), launcher),
         // new InstantCommand(() -> ballTower.liftBall(), ballTower),
         // waitForBeamBreak.withTimeout(4),
         
         //waitForBeamBreak,
         // waitForLauncher2.withTimeout(.2),
-        
-        new RunCommand(() -> ballTower.feedBallToLauncher(), ballTower).withTimeout(3),
+        new InstantCommand(() -> intake.intakeRollersOff(), intake),
+        new InstantCommand(() -> intake.intakeUp(), intake),
+        new RunCommand(() -> ballTower.feedBallToLauncher(), ballTower).withTimeout(1),
         // new InstantCommand(() -> ballTower.feedBallToLauncher(), ballTower),
         // waitForShot2.withTimeout(1),
+        
         new InstantCommand(() -> ballTower.stopTower(), ballTower),
         new InstantCommand(conveyor::stop, conveyor),
-        new RunCommand(() -> launcher.setVelocitySetpoint(0), launcher).withTimeout(.1),
+        new InstantCommand(() -> launcher.setVelocitySetpoint(0), launcher),
         // waitForLauncher3,
-        new RunCommand(() -> limelight.setPipeline(0), limelight).withTimeout(.1)
+        new InstantCommand(() -> limelight.setPipeline(0), limelight)
         );
         
     }
