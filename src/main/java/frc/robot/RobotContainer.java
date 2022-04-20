@@ -54,6 +54,7 @@ public class RobotContainer {
  // private final ClimbnHook climbnHook = new ClimbnHook();
 
   public final AutoCommand m_AutoCommand = new AutoCommand(driveTrain, launcher, ballTower, intake, conveyor, limelight);
+  public final Command m_OneBallAuto = new OneBallAuto(driveTrain, launcher, ballTower, intake, conveyor, limelight);
   public final Command m_ThreeBallAuto = new ThreeBallAuto(driveTrain, launcher, ballTower, intake, conveyor, limelight);
   public final Command m_FourBallAuto = new FourBallAuto(driveTrain, launcher, ballTower, intake, conveyor, limelight);
   public final Command m_AutoSmartTwoBall = new AutoSmartTwoBall(driveTrain, launcher, ballTower, intake, conveyor, limelight);
@@ -106,6 +107,7 @@ public class RobotContainer {
     Shuffleboard.getTab("Autonomous").add(autoChoice);
     autoChoice.addOption("Do Nothing", new RunCommand(()->driveTrain.teleopDrive(0, 0)));
     autoChoice.addOption("Two Ball Auto", m_AutoCommand);
+    autoChoice.addOption("One Ball Auto", m_OneBallAuto);
     autoChoice.addOption("Three Ball Auto", m_ThreeBallAuto);
     autoChoice.addOption("Four Ball Auto", m_FourBallAuto);
     autoChoice.addOption("Smart Two Ball Auto", m_AutoSmartTwoBall);
